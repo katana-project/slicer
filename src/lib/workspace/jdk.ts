@@ -70,6 +70,6 @@ export const findClass = async (name: string): Promise<Uint8Array | null> => {
     });
 };
 
-export const jdkRefs: ExternalTypeReference[] = Object.values(rawIndex.data)
-    .flatMap((classes) => classes)
-    .map(refFromName);
+export const jdkRefs: ExternalTypeReference[] = Object.entries(rawIndex.data).flatMap(([module, classes]) =>
+    classes.map((k) => refFromName(k, module))
+);

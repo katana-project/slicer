@@ -11,7 +11,7 @@ expose({
         source: EntrySource,
         options?: DisassemblerOptions
     ): Promise<string> {
-        return decompile(name, { resources, source, options });
+        return (await decompile(name, { resources, source, options }))[name];
     },
     method(): Promise<string> {
         throw new Error("Single-method disassembly not supported");

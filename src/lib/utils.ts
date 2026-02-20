@@ -565,13 +565,14 @@ export const prettyErrorStack = (e: any): string | null => {
     return null;
 };
 
-export const refFromName = (klass: string): ExternalTypeReference => {
+export const refFromName = (klass: string, module: string | null = null): ExternalTypeReference => {
     const parts = klass.split("/");
     const name = parts.pop()!.replaceAll("$", ".");
     return {
         name,
         qualifiedName: klass.replaceAll("/", ".").replaceAll("$", "."),
         packageName: parts.join(".") || null,
+        moduleName: module,
     };
 };
 

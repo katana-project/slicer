@@ -163,7 +163,10 @@ export const classes = derived(entries, ($entries) => {
     );
 });
 
-export const classRefs = derived(classes, ($classes) => Array.from($classes.keys()).map(refFromName));
+export const classRefs = derived(classes, ($classes) => {
+    // FIXME: presuming every class is in the unnamed module, which is fine for decompilation but not much else
+    return Array.from($classes.keys()).map((k) => refFromName(k));
+});
 
 export interface LoadResult {
     entry: Entry;

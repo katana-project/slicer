@@ -9,11 +9,8 @@ importers:
   .:
     dependencies:
       '@codemirror/commands':
-        specifier: ^6.10.0
-        version: 6.10.0
-      '@codemirror/lang-java':
-        specifier: ^6.0.2
-        version: 6.0.2
+        specifier: ^6.10.2
+        version: 6.10.2
       '@codemirror/lang-json':
         specifier: ^6.0.2
         version: 6.0.2
@@ -24,26 +21,26 @@ importers:
         specifier: ^6.1.2
         version: 6.1.2
       '@codemirror/language':
-        specifier: ^6.11.3
-        version: 6.11.3
+        specifier: ^6.12.1
+        version: 6.12.1
       '@codemirror/legacy-modes':
         specifier: ^6.5.2
         version: 6.5.2
       '@codemirror/search':
-        specifier: ^6.5.11
-        version: 6.5.11
+        specifier: ^6.6.0
+        version: 6.6.0
       '@codemirror/state':
-        specifier: ^6.5.2
-        version: 6.5.2
+        specifier: ^6.5.4
+        version: 6.5.4
       '@codemirror/view':
-        specifier: ^6.39.11
-        version: 6.39.11
+        specifier: ^6.39.15
+        version: 6.39.15
       '@katana-project/asm':
         specifier: ^0.24.0
         version: 0.24.0
       '@katana-project/laser':
-        specifier: ^0.2.4
-        version: 0.2.4
+        specifier: ^0.3.1
+        version: 0.3.1
       '@katana-project/zip':
         specifier: ^0.7.1
         version: 0.7.1
@@ -56,6 +53,9 @@ importers:
       '@run-slicer/jasm':
         specifier: 0.4.5-2.8.0
         version: 0.4.5-2.8.0
+      '@run-slicer/lezer-java':
+        specifier: ^1.2.1
+        version: 1.2.1
       '@run-slicer/procyon':
         specifier: 0.1.2-0.6.0
         version: 0.1.2-0.6.0
@@ -63,8 +63,8 @@ importers:
         specifier: ^0.12.0
         version: 0.12.0
       '@run-slicer/vf':
-        specifier: 0.3.1-1.11.2
-        version: 0.3.1-1.11.2
+        specifier: 0.5.0-1.11.2
+        version: 0.5.0-1.11.2
       '@tanstack/table-core':
         specifier: ^8.21.3
         version: 8.21.3
@@ -220,14 +220,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@codemirror/autocomplete@6.19.1':
-    resolution: {integrity: sha512-q6NenYkEy2fn9+JyjIxMWcNjzTL/IhwqfzOut1/G3PrIFkrbl4AL7Wkse5tLrQUUyqGoAKU5+Pi5jnnXxH5HGw==}
+  '@codemirror/autocomplete@6.20.0':
+    resolution: {integrity: sha512-bOwvTOIJcG5FVo5gUUupiwYh8MioPLQ4UcqbcRf7UQ98X90tCa9E1kZ3Z7tqwpZxYyOvh1YTYbmZE9RTfTp5hg==}
 
-  '@codemirror/commands@6.10.0':
-    resolution: {integrity: sha512-2xUIc5mHXQzT16JnyOFkh8PvfeXuIut3pslWGfsGOhxP/lpgRm9HOl/mpzLErgt5mXDovqA0d11P21gofRLb9w==}
-
-  '@codemirror/lang-java@6.0.2':
-    resolution: {integrity: sha512-m5Nt1mQ/cznJY7tMfQTJchmrjdjQ71IDs+55d1GAa8DGaB8JXWsVCkVT284C3RTASaY43YknrK2X3hPO/J3MOQ==}
+  '@codemirror/commands@6.10.2':
+    resolution: {integrity: sha512-vvX1fsih9HledO1c9zdotZYUZnE4xV0m6i3m25s5DIfXofuprk6cRcLUZvSk3CASUbwjQX21tOGbkY2BH8TpnQ==}
 
   '@codemirror/lang-json@6.0.2':
     resolution: {integrity: sha512-x2OtO+AvwEHrEwR0FyyPtfDUiloG3rnVTSZV1W8UteaLL8/MajQd8DpvUb2YVzC+/T18aSDv0H9mu+xw0EStoQ==}
@@ -238,20 +235,20 @@ packages:
   '@codemirror/lang-yaml@6.1.2':
     resolution: {integrity: sha512-dxrfG8w5Ce/QbT7YID7mWZFKhdhsaTNOYjOkSIMt1qmC4VQnXSDSYVHHHn8k6kJUfIhtLo8t1JJgltlxWdsITw==}
 
-  '@codemirror/language@6.11.3':
-    resolution: {integrity: sha512-9HBM2XnwDj7fnu0551HkGdrUrrqmYq/WC5iv6nbY2WdicXdGbhR/gfbZOH73Aqj4351alY1+aoG9rCNfiwS1RA==}
+  '@codemirror/language@6.12.1':
+    resolution: {integrity: sha512-Fa6xkSiuGKc8XC8Cn96T+TQHYj4ZZ7RdFmXA3i9xe/3hLHfwPZdM+dqfX0Cp0zQklBKhVD8Yzc8LS45rkqcwpQ==}
 
   '@codemirror/legacy-modes@6.5.2':
     resolution: {integrity: sha512-/jJbwSTazlQEDOQw2FJ8LEEKVS72pU0lx6oM54kGpL8t/NJ2Jda3CZ4pcltiKTdqYSRk3ug1B3pil1gsjA6+8Q==}
 
-  '@codemirror/search@6.5.11':
-    resolution: {integrity: sha512-KmWepDE6jUdL6n8cAAqIpRmLPBZ5ZKnicE8oGU/s3QrAVID+0VhLFrzUucVKHG5035/BSykhExDL/Xm7dHthiA==}
+  '@codemirror/search@6.6.0':
+    resolution: {integrity: sha512-koFuNXcDvyyotWcgOnZGmY7LZqEOXZaaxD/j6n18TCLx2/9HieZJ5H6hs1g8FiRxBD0DNfs0nXn17g872RmYdw==}
 
-  '@codemirror/state@6.5.2':
-    resolution: {integrity: sha512-FVqsPqtPWKVVL3dPSxy8wEF/ymIEuVzF1PK3VbUgrxXpJUSHQWWZz4JMToquRxnkw+36LTamCZG2iua2Ptq0fA==}
+  '@codemirror/state@6.5.4':
+    resolution: {integrity: sha512-8y7xqG/hpB53l25CIoit9/ngxdfoG+fx+V3SHBrinnhOtLvKHRyAJJuHzkWrR4YXXLX8eXBsejgAAxHUOdW1yw==}
 
-  '@codemirror/view@6.39.11':
-    resolution: {integrity: sha512-bWdeR8gWM87l4DB/kYSF9A+dVackzDb/V56Tq7QVrQ7rn86W0rgZFtlL3g3pem6AeGcb9NQNoy3ao4WpW4h5tQ==}
+  '@codemirror/view@6.39.15':
+    resolution: {integrity: sha512-aCWjgweIIXLBHh7bY6cACvXuyrZ0xGafjQ2VInjp4RM4gMfscK5uESiNdrH0pE+e1lZr2B4ONGsjchl2KsKZzg==}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -711,32 +708,29 @@ packages:
   '@katana-project/asm@0.24.0':
     resolution: {integrity: sha512-9eOk2mnIfJw0yY7TUep0xy7yeyvaHJ24Boj9x1wqEjLJNJhQ54n9ZU7x4T/x2aDW289uJTDI0eHTvStkku3zAQ==}
 
-  '@katana-project/laser@0.2.4':
-    resolution: {integrity: sha512-WxUQNS8B3S0ORMKwF48NlJl4yt9MrRiwsy9Wr052/N4DFv52JeCVWjx40Ox3KD2JlrC0WAW4k014LKqqhbeuJQ==}
+  '@katana-project/laser@0.3.1':
+    resolution: {integrity: sha512-jMBG2plod0tjQxFxnGaBEoreBoE5TcEkahFje6ASLKjgCNvtpmUMyqJGtnopZx1aqEqZbAgFED7JgBsvkgjCLg==}
 
   '@katana-project/zip@0.7.1':
     resolution: {integrity: sha512-yRoiCt7H6o9ayFHLBBbTczmlqcy8UHNjKOpHgB2OYZMNG2gVpCXa7vSwFTo9Tal0R0SSDaudhLn+B6m3BOH+mA==}
 
-  '@lezer/common@1.5.0':
-    resolution: {integrity: sha512-PNGcolp9hr4PJdXR4ix7XtixDrClScvtSCYW3rQG106oVMOOI+jFb+0+J3mbeL/53g1Zd6s0kJzaw6Ri68GmAA==}
+  '@lezer/common@1.5.1':
+    resolution: {integrity: sha512-6YRVG9vBkaY7p1IVxL4s44n5nUnaNnGM2/AckNgYOnxTG2kWh1vR8BMxPseWPjRNpb5VtXnMpeYAEAADoRV1Iw==}
 
   '@lezer/highlight@1.2.3':
     resolution: {integrity: sha512-qXdH7UqTvGfdVBINrgKhDsVTJTxactNNxLk7+UMwZhU13lMHaOBlJe9Vqp907ya56Y3+ed2tlqzys7jDkTmW0g==}
 
-  '@lezer/java@1.1.3':
-    resolution: {integrity: sha512-yHquUfujwg6Yu4Fd1GNHCvidIvJwi/1Xu2DaKl/pfWIA2c1oXkVvawH3NyXhCaFx4OdlYBVX5wvz2f7Aoa/4Xw==}
-
   '@lezer/json@1.0.3':
     resolution: {integrity: sha512-BP9KzdF9Y35PDpv04r0VeSTKDeox5vVr3efE7eBbx3r4s3oNLfunchejZhjArmeieBH+nVOpgIiBJpEAv8ilqQ==}
 
-  '@lezer/lr@1.4.3':
-    resolution: {integrity: sha512-yenN5SqAxAPv/qMnpWW0AT7l+SxVrgG+u0tNsRQWqbrz66HIl8DnEbBObvy21J5K7+I1v7gsAnlE2VQ5yYVSeA==}
+  '@lezer/lr@1.4.8':
+    resolution: {integrity: sha512-bPWa0Pgx69ylNlMlPvBPryqeLYQjyJjqPx+Aupm5zydLIF3NE+6MMLT8Yi23Bd9cif9VS00aUebn+6fDIGBcDA==}
 
   '@lezer/xml@1.0.6':
     resolution: {integrity: sha512-CdDwirL0OEaStFue/66ZmFSeppuL6Dwjlk8qk153mSQwiSH/Dlri4GNymrNWnUmPl2Um7QfV1FO9KFUyX3Twww==}
 
-  '@lezer/yaml@1.0.3':
-    resolution: {integrity: sha512-GuBLekbw9jDBDhGur82nuwkxKQ+a3W5H0GfaAthDXcAu+XdpS43VlnxA9E9hllkpSP5ellRDKjLLj7Lu9Wr6xA==}
+  '@lezer/yaml@1.0.4':
+    resolution: {integrity: sha512-2lrrHqxalACEbxIbsjhqGpSW8kWpUKuY6RHgnSAFZa6qK62wvnPxA8hGOwOoDbwHcOFs5M4o27mjGu+P7TvBmw==}
 
   '@lucide/svelte@0.556.0':
     resolution: {integrity: sha512-jsJhyyd2xrJ4WtflO5TrTtyCBacF4OLBNCzotvwh4zfbbuE6aqdblx+OB0zg6zOno06ib1GJGdDcfR/2TUcb7g==}
@@ -871,14 +865,17 @@ packages:
   '@run-slicer/jasm@0.4.5-2.8.0':
     resolution: {integrity: sha512-J/NyVKwgJb3J9G7lOYACiE0Yba0LyaWDyBCvKe4gPrDWEydAOxutKU7NxheKdDCw7EPprNddMNy9DsYATQAs4Q==}
 
+  '@run-slicer/lezer-java@1.2.1':
+    resolution: {integrity: sha512-QlqVAajWw4YNc49Sswyu96mNH3q1u7QLrT6KKheBBBHDZ4cM6cTz+LizBeGTEXZQKTb6dtoq+qlGXAX3Ew+kLA==}
+
   '@run-slicer/procyon@0.1.2-0.6.0':
     resolution: {integrity: sha512-xPra0FuATHnjLYLXFUlmRYkfmIukCrl5Zv6iM8ajSTYFDgK85HVNpBAo23NQbp+cMU6QpvOEviwE8nRwGuS07Q==}
 
   '@run-slicer/script@0.12.0':
     resolution: {integrity: sha512-g53Lw3qOlgQYyHI5SJe0GKm8cm3mx87b8yMFflaS3bV22BsvwdKZEwzpntPqzjc9DSwQa2CbQtKE4nTqeuPjpw==}
 
-  '@run-slicer/vf@0.3.1-1.11.2':
-    resolution: {integrity: sha512-e3O1wjq8Es5qNSLZEw5h/diSH1Fx0qSOusOKtFF6K0W+N5q0PQXAnH1lxqA1ZctJCllvAC8XAKZEhdH9OM5IiQ==}
+  '@run-slicer/vf@0.5.0-1.11.2':
+    resolution: {integrity: sha512-8+otfmuAuuEl1bo6LPp+qeR2TpY5pCccLrONK6/reJpCWdrU+g9++j4Eec1fqqv/DRX7nB79Xp9ZwaETR1mhXA==}
 
   '@sindresorhus/is@7.1.1':
     resolution: {integrity: sha512-rO92VvpgMc3kfiTjGT52LEtJ8Yc5kCWhZjLQ3LwlA4pSgPpQO7bVpYXParOD8Jwf+cVQECJo3yP/4I8aZtUQTQ==}
@@ -1785,75 +1782,70 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20251202.0':
     optional: true
 
-  '@codemirror/autocomplete@6.19.1':
+  '@codemirror/autocomplete@6.20.0':
     dependencies:
-      '@codemirror/language': 6.11.3
-      '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.39.11
-      '@lezer/common': 1.5.0
+      '@codemirror/language': 6.12.1
+      '@codemirror/state': 6.5.4
+      '@codemirror/view': 6.39.15
+      '@lezer/common': 1.5.1
 
-  '@codemirror/commands@6.10.0':
+  '@codemirror/commands@6.10.2':
     dependencies:
-      '@codemirror/language': 6.11.3
-      '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.39.11
-      '@lezer/common': 1.5.0
-
-  '@codemirror/lang-java@6.0.2':
-    dependencies:
-      '@codemirror/language': 6.11.3
-      '@lezer/java': 1.1.3
+      '@codemirror/language': 6.12.1
+      '@codemirror/state': 6.5.4
+      '@codemirror/view': 6.39.15
+      '@lezer/common': 1.5.1
 
   '@codemirror/lang-json@6.0.2':
     dependencies:
-      '@codemirror/language': 6.11.3
+      '@codemirror/language': 6.12.1
       '@lezer/json': 1.0.3
 
   '@codemirror/lang-xml@6.1.0':
     dependencies:
-      '@codemirror/autocomplete': 6.19.1
-      '@codemirror/language': 6.11.3
-      '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.39.11
-      '@lezer/common': 1.5.0
+      '@codemirror/autocomplete': 6.20.0
+      '@codemirror/language': 6.12.1
+      '@codemirror/state': 6.5.4
+      '@codemirror/view': 6.39.15
+      '@lezer/common': 1.5.1
       '@lezer/xml': 1.0.6
 
   '@codemirror/lang-yaml@6.1.2':
     dependencies:
-      '@codemirror/autocomplete': 6.19.1
-      '@codemirror/language': 6.11.3
-      '@codemirror/state': 6.5.2
-      '@lezer/common': 1.5.0
+      '@codemirror/autocomplete': 6.20.0
+      '@codemirror/language': 6.12.1
+      '@codemirror/state': 6.5.4
+      '@lezer/common': 1.5.1
       '@lezer/highlight': 1.2.3
-      '@lezer/lr': 1.4.3
-      '@lezer/yaml': 1.0.3
+      '@lezer/lr': 1.4.8
+      '@lezer/yaml': 1.0.4
 
-  '@codemirror/language@6.11.3':
+  '@codemirror/language@6.12.1':
     dependencies:
-      '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.39.11
-      '@lezer/common': 1.5.0
+      '@codemirror/state': 6.5.4
+      '@codemirror/view': 6.39.15
+      '@lezer/common': 1.5.1
       '@lezer/highlight': 1.2.3
-      '@lezer/lr': 1.4.3
+      '@lezer/lr': 1.4.8
       style-mod: 4.1.3
 
   '@codemirror/legacy-modes@6.5.2':
     dependencies:
-      '@codemirror/language': 6.11.3
+      '@codemirror/language': 6.12.1
 
-  '@codemirror/search@6.5.11':
+  '@codemirror/search@6.6.0':
     dependencies:
-      '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.39.11
+      '@codemirror/state': 6.5.4
+      '@codemirror/view': 6.39.15
       crelt: 1.0.6
 
-  '@codemirror/state@6.5.2':
+  '@codemirror/state@6.5.4':
     dependencies:
       '@marijn/find-cluster-break': 1.0.2
 
-  '@codemirror/view@6.39.11':
+  '@codemirror/view@6.39.15':
     dependencies:
-      '@codemirror/state': 6.5.2
+      '@codemirror/state': 6.5.4
       crelt: 1.0.6
       style-mod: 4.1.3
       w3c-keyname: 2.2.8
@@ -2139,45 +2131,39 @@ snapshots:
 
   '@katana-project/asm@0.24.0': {}
 
-  '@katana-project/laser@0.2.4':
+  '@katana-project/laser@0.3.1':
     dependencies:
-      '@lezer/common': 1.5.0
+      '@lezer/common': 1.5.1
 
   '@katana-project/zip@0.7.1': {}
 
-  '@lezer/common@1.5.0': {}
+  '@lezer/common@1.5.1': {}
 
   '@lezer/highlight@1.2.3':
     dependencies:
-      '@lezer/common': 1.5.0
-
-  '@lezer/java@1.1.3':
-    dependencies:
-      '@lezer/common': 1.5.0
-      '@lezer/highlight': 1.2.3
-      '@lezer/lr': 1.4.3
+      '@lezer/common': 1.5.1
 
   '@lezer/json@1.0.3':
     dependencies:
-      '@lezer/common': 1.5.0
+      '@lezer/common': 1.5.1
       '@lezer/highlight': 1.2.3
-      '@lezer/lr': 1.4.3
+      '@lezer/lr': 1.4.8
 
-  '@lezer/lr@1.4.3':
+  '@lezer/lr@1.4.8':
     dependencies:
-      '@lezer/common': 1.5.0
+      '@lezer/common': 1.5.1
 
   '@lezer/xml@1.0.6':
     dependencies:
-      '@lezer/common': 1.5.0
+      '@lezer/common': 1.5.1
       '@lezer/highlight': 1.2.3
-      '@lezer/lr': 1.4.3
+      '@lezer/lr': 1.4.8
 
-  '@lezer/yaml@1.0.3':
+  '@lezer/yaml@1.0.4':
     dependencies:
-      '@lezer/common': 1.5.0
+      '@lezer/common': 1.5.1
       '@lezer/highlight': 1.2.3
-      '@lezer/lr': 1.4.3
+      '@lezer/lr': 1.4.8
 
   '@lucide/svelte@0.556.0(svelte@5.45.6)':
     dependencies:
@@ -2267,11 +2253,17 @@ snapshots:
 
   '@run-slicer/jasm@0.4.5-2.8.0': {}
 
+  '@run-slicer/lezer-java@1.2.1':
+    dependencies:
+      '@lezer/common': 1.5.1
+      '@lezer/highlight': 1.2.3
+      '@lezer/lr': 1.4.8
+
   '@run-slicer/procyon@0.1.2-0.6.0': {}
 
   '@run-slicer/script@0.12.0': {}
 
-  '@run-slicer/vf@0.3.1-1.11.2': {}
+  '@run-slicer/vf@0.5.0-1.11.2': {}
 
   '@sindresorhus/is@7.1.1': {}
 

@@ -5,7 +5,7 @@ export type Language = "java" | "kotlin" | "xml" | "json" | "yaml" | "properties
 export const load = async (lang: Language): Promise<LanguageSupport | null> => {
     switch (lang) {
         case "java":
-            return (await import("@codemirror/lang-java")).java();
+            return (await import("./parser/java")).java();
         case "xml":
             return (await import("@codemirror/lang-xml")).xml();
         case "json":
