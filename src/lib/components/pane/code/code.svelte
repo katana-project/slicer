@@ -103,7 +103,6 @@
     let resolver = $derived(unit ? createTypeReferenceResolver(unit, [...jdkRefs, ...$classRefs]) : null);
 
     const resolverStore = new Compartment();
-
     $effect(() => {
         if (!view) return;
 
@@ -113,7 +112,7 @@
         });
     });
 
-    let clickPosition = $state({ x: 0, y: 0 });
+    let mousePosition = $state({ x: 0, y: 0 });
 </script>
 
 <div class="scrollbar-thin relative basis-full overflow-hidden">
@@ -124,7 +123,7 @@
         />
     {:then [lang, value]}
         <ContextMenu>
-            <ContextMenuTrigger onmousedown={(e) => (clickPosition = { x: e.clientX, y: e.clientY })}>
+            <ContextMenuTrigger onmousedown={(e) => (mousePosition = { x: e.clientX, y: e.clientY })}>
                 <CodeEditor
                     bind:view
                     {value}
@@ -146,8 +145,8 @@
                 {handler}
                 bind:wrap
                 bind:sizeSync={$editorTextSizeSync}
-                bind:resolver
-                bind:mousePosition={clickPosition}
+                {resolver}
+                {mousePosition}
             />
         </ContextMenu>
     {/await}

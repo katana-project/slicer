@@ -1,14 +1,14 @@
 <script lang="ts">
     import type { Tab } from "$lib/tab";
-    import { transformEntry, type Entry } from "$lib/workspace";
+    import { type Entry, transformEntry } from "$lib/workspace";
     import {
+        ContextMenuCheckboxItem,
         ContextMenuContent,
         ContextMenuItem,
-        ContextMenuCheckboxItem,
+        ContextMenuSeparator,
         ContextMenuSub,
         ContextMenuSubContent,
         ContextMenuSubTrigger,
-        ContextMenuSeparator,
     } from "$lib/components/ui/context-menu";
     import ContextMenuLabel from "$lib/components/menu_label.svelte";
     import { Binary, CaseSensitive, Code, CornerDownRight, TextSearch, TextWrap, Workflow } from "@lucide/svelte";
@@ -49,14 +49,14 @@
         handler,
         wrap = $bindable(),
         sizeSync = $bindable(),
-        resolver = $bindable(),
-        mousePosition = $bindable(),
+        resolver,
+        mousePosition,
     }: Props = $props();
     let entry = $derived(tab.entry!);
 
-    const resolved = $derived.by(() => {
+    let resolved = $derived.by(() => {
         const coords = view?.posAndSideAtCoords(mousePosition);
-        if (!coords || !resolver || interpType !== Interpretation.CLASS) {
+        if (!coords || !resolver || (interpType !== Interpretation.CLASS && interpType !== Interpretation.TEXT)) {
             return null;
         }
 
