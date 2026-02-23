@@ -11,7 +11,7 @@
     import { scripts } from "$lib/script";
     import { entries as logEntries } from "$lib/log";
     import { all as disasms } from "$lib/disasm";
-    import { root as rootKey, panes } from "$lib/state";
+    import { root as rootKey, panes, urlRemote, urlScript } from "$lib/state";
     import { theme } from "$lib/theme";
     import { tasks } from "$lib/task";
     import { handler } from "$lib/event";
@@ -46,16 +46,13 @@
     });
 
     onMount(() => {
-        const url = new URL(window.location.href);
-        if (url.searchParams.has("url")) {
+        if ($urlRemote) {
             // HTTP file share handler
-            const fetchUrl = url.searchParams.get("url")!;
-
-            $handler.addRemote(fetchUrl);
+            $handler.addRemote($urlRemote);
         }
-        if (url.searchParams.has("script")) {
+        if ($urlScript) {
             // script load share handler
-            modals.open(ScriptLoadShareDialog, { url: url.searchParams.get("script")!, handler: $handler });
+            modals.open(ScriptLoadShareDialog, { url: $urlScript, handler: $handler });
         }
     });
 </script>

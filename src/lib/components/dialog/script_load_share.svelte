@@ -14,6 +14,7 @@
     import { buttonVariants } from "$lib/components/ui/button";
     import type { ModalProps } from "svelte-modals";
     import { t } from "$lib/i18n";
+    import { urlScript } from "$lib/state";
 
     interface Props extends ModalProps {
         url: string;
@@ -28,10 +29,8 @@
             await handler.addScript(url, enabled);
         }
 
-        // clear search params on dialog close
-        const windowUrl = new URL(window.location.href);
-        windowUrl.searchParams.delete("script");
-        window.history.replaceState(null, "", windowUrl);
+        // clear search param if it was used to open the dialog
+        $urlScript = null;
     };
 </script>
 

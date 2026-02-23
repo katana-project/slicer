@@ -1,6 +1,6 @@
 import type { DisassemblerOptions } from "$lib/disasm";
 import type { TabPosition, TabType } from "$lib/tab";
-import { persisted } from "$lib/utils";
+import { persisted, urlPersistedRaw } from "$lib/utils";
 
 export const root = "slicer.state";
 
@@ -71,3 +71,8 @@ export const clear = () => {
     localStorage.clear();
     window.location.reload();
 };
+
+// URL parameters for temporary overrides
+
+export const urlScript = urlPersistedRaw("script");
+export const urlRemote = urlPersistedRaw("url");

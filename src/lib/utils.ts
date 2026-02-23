@@ -246,6 +246,45 @@ export const persisted = <T>(key: string, initialValue: T): Writable<T> => {
     return store;
 };
 
+const withParams = (func: (params: URLSearchParams) => void) => {
+    const url = new URL(window.location.href);
+    func(url.searchParams);
+
+    window.history.replaceState(null, "", url);
+};
+
+export const urlPersistedRaw = (key: string): Writable<string | null> => {
+    const value = new URLSearchParams(window.location.search).get(key);
+
+    const store = writable<string | null>(value);
+    store.subscribe((v) => {
+        withParams((params) => {
+            if (v === null) {
+                params.delete(key);
+            } else {
+                params.set(key, v);
+            }
+        });
+    });
+    return store;
+};
+
+export const urlPersisted = <T>(key: string): Writable<T | null> => {
+    const value = new URLSearchParams(window.location.search).get(key);
+
+    const store = writable<T | null>(value !== null ? JSON.parse(value) : null);
+    store.subscribe((v) => {
+        withParams((params) => {
+            if (v === null) {
+                params.delete(key);
+            } else {
+                params.set(key, JSON.stringify(v));
+            }
+        });
+    });
+    return store;
+};
+
 export const debounced = <T>(store: Readable<T>, delay: number): Readable<T> => {
     let timeoutId: any;
     return derived(store, ($store, set) => {
