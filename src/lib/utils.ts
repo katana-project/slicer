@@ -236,21 +236,22 @@ export const cyrb53 = (str: string, seed: number = 0): number => {
 
 /* stores */
 
-export const persisted = <T>(key: string, initialValue: T): Writable<T> => {
-    const value = localStorage.getItem(key);
-
-    const store = writable<T>(value ? JSON.parse(value) : initialValue);
-    store.subscribe((v) => {
-        localStorage.setItem(key, JSON.stringify(v));
-    });
-    return store;
-};
-
 const withParams = (func: (params: URLSearchParams) => void) => {
     const url = new URL(window.location.href);
     func(url.searchParams);
 
     window.history.replaceState(null, "", url);
+};
+
+export const persisted = <T>(ns: string, key: string, initialValue: T): Writable<T> => {
+    // allow overriding localStorage with URL parameters for sharing specific state
+    const value = new URLSearchParams(window.location.search).get(key) ?? localStorage.getItem(`${ns}.${key}`);
+
+    const store = writable<T>(value ? JSON.parse(value) : initialValue);
+    store.subscribe((v) => {
+        localStorage.setItem(`${ns}.${key}`, JSON.stringify(v));
+    });
+    return store;
 };
 
 export const urlPersistedRaw = (key: string): Writable<string | null> => {
@@ -272,7 +273,7 @@ export const urlPersistedRaw = (key: string): Writable<string | null> => {
 export const urlPersisted = <T>(key: string): Writable<T | null> => {
     const value = new URLSearchParams(window.location.search).get(key);
 
-    const store = writable<T | null>(value !== null ? JSON.parse(value) : null);
+    const store = writable<T | null>(value !== null ? tryOrNull(() => JSON.parse(value)) : null);
     store.subscribe((v) => {
         withParams((params) => {
             if (v === null) {

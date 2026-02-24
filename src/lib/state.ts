@@ -24,29 +24,30 @@ export interface TabData {
 export type ProjectMode = "file" | "package";
 export type DuplicateEntryHandling = "skip" | "overwrite" | "rename";
 
-export const locale = persisted<string>(`${root}.locale`, new Intl.Locale(navigator.language).language);
-export const themeColor = persisted<string>(`${root}.theme.color`, "zinc");
-export const themeRadius = persisted<number>(`${root}.theme.radius`, 0.5);
-export const projectMode = persisted<ProjectMode>(`${root}.project.mode`, "file");
-export const workspaceEncoding = persisted<string>(`${root}.workspace.encoding`, "utf-8");
-export const workspaceArchiveEncoding = persisted<string>(`${root}.workspace.archive.encoding`, "utf-8");
+export const locale = persisted<string>(root, "locale", new Intl.Locale(navigator.language).language);
+export const themeColor = persisted<string>(root, "theme.color", "zinc");
+export const themeRadius = persisted<number>(root, "theme.radius", 0.5);
+export const projectMode = persisted<ProjectMode>(root, "project.mode", "file");
+export const workspaceEncoding = persisted<string>(root, "workspace.encoding", "utf-8");
+export const workspaceArchiveEncoding = persisted<string>(root, "workspace.archive.encoding", "utf-8");
 export const workspaceArchiveDuplicateHandling = persisted<DuplicateEntryHandling>(
-    `${root}.workspace.archive.duplicate-handling`,
+    root,
+    "workspace.archive.duplicate-handling",
     "skip"
 );
-export const toolsDisasm = persisted<string>(`${root}.tools.disasm`, "vf" /* vf.id ($lib/disasm/builtin) */);
-export const toolsDisasmOptions = persisted<Record<string, DisassemblerOptions>>(`${root}.tools.disasm.options`, {});
-export const loggingMaxEntries = persisted<number>(`${root}.logging.max-entries`, 150);
-export const scriptingScripts = persisted<ScriptData[]>(`${root}.scripting.scripts`, []);
-export const editorWrap = persisted<boolean>(`${root}.editor.wrap`, true);
-export const editorTextSize = persisted<number>(`${root}.editor.text-size`, 0.75);
-export const editorTextSizeSync = persisted<boolean>(`${root}.editor.text-size.sync`, true);
-export const analysisBackground = persisted<boolean>(`${root}.analysis.background`, true);
-export const analysisJdkClasses = persisted<boolean>(`${root}.analysis.jdk-classes`, true);
-export const analysisTransformers = persisted<string[]>(`${root}.analysis.transformers`, ["script"]);
-export const interpHexRowBytes = persisted<number>(`${root}.interp.hex.row-bytes`, 16);
+export const toolsDisasm = persisted<string>(root, "tools.disasm", "vf" /* vf.id ($lib/disasm/builtin) */);
+export const toolsDisasmOptions = persisted<Record<string, DisassemblerOptions>>(root, "tools.disasm.options", {});
+export const loggingMaxEntries = persisted<number>(root, "logging.max-entries", 150);
+export const scriptingScripts = persisted<ScriptData[]>(root, "scripting.scripts", []);
+export const editorWrap = persisted<boolean>(root, "editor.wrap", true);
+export const editorTextSize = persisted<number>(root, "editor.text-size", 0.75);
+export const editorTextSizeSync = persisted<boolean>(root, "editor.text-size.sync", true);
+export const analysisBackground = persisted<boolean>(root, "analysis.background", true);
+export const analysisJdkClasses = persisted<boolean>(root, "analysis.jdk-classes", true);
+export const analysisTransformers = persisted<string[]>(root, "analysis.transformers", ["script"]);
+export const interpHexRowBytes = persisted<number>(root, "interp.hex.row-bytes", 16);
 
-export const panes = persisted<PaneData[]>(`${root}.panes`, [
+export const panes = persisted<PaneData[]>(root, "panes", [
     { position: "primary_center" as TabPosition, tabs: [{ type: "welcome" as TabType, active: true }], open: true },
     { position: "secondary_left" as TabPosition, tabs: [{ type: "project" as TabType, active: true }], open: true },
     { position: "secondary_right" as TabPosition, tabs: [{ type: "structure" as TabType, active: true }], open: true },
@@ -72,7 +73,7 @@ export const clear = () => {
     window.location.reload();
 };
 
-// URL parameters for temporary overrides
+// URL parameters
 
 export const urlScript = urlPersistedRaw("script");
 export const urlRemote = urlPersistedRaw("url");
