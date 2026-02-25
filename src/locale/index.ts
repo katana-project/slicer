@@ -66,6 +66,7 @@ export interface LocaleData {
     "pane.header.menu.close.all": string;
     "pane.header.menu.pin": string;
     "pane.header.menu.unpin": string;
+    "pane.header.menu.copy-remote": string;
     "pane.welcome.title": string;
     "pane.welcome.get-started": string;
     "pane.welcome.get-started.open": string;
@@ -357,6 +358,7 @@ export interface LocaleData {
     "toast.error.prefs-import": string;
     "toast.error.search": string;
     "toast.error.load": string;
+    "toast.error.load-remote": string;
     "toast.error.read": string;
     "toast.error.clipboard.unsupported": string;
     "toast.error.clipboard.denied": string;

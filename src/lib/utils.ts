@@ -239,6 +239,7 @@ export const cyrb53 = (str: string, seed: number = 0): number => {
 const withParams = (func: (params: URLSearchParams) => void) => {
     const url = new URL(window.location.href);
     func(url.searchParams);
+    url.searchParams.sort(); // keep params sorted for better readability and caching
 
     window.history.replaceState(null, "", url);
 };
@@ -264,6 +265,21 @@ export const urlPersistedRaw = (key: string): Writable<string | null> => {
                 params.delete(key);
             } else {
                 params.set(key, v);
+            }
+        });
+    });
+    return store;
+};
+
+export const urlPersistedRawArray = (key: string): Writable<string[]> => {
+    const value = new URLSearchParams(window.location.search).getAll(key);
+
+    const store = writable<string[]>(value);
+    store.subscribe((v) => {
+        withParams((params) => {
+            params.delete(key);
+            for (const item of v) {
+                params.append(key, item);
             }
         });
     });

@@ -12,6 +12,7 @@
     import type { PaneAPI } from "paneforge";
     import type { CloseType } from "./header/item.svelte";
     import { t } from "$lib/i18n";
+    import { urlRemote, urlRemoteFile } from "$lib/state";
 
     interface Props {
         tabs: Tab[];
@@ -122,6 +123,11 @@
 
         localTabs = normalizeTabs([...pinned, tab, ...unpinned]);
     };
+
+    const handleCopy = async (tab: Tab) => {
+        $urlRemoteFile = tab.entry!.name;
+        await navigator.clipboard.writeText(window.location.href);
+    };
 </script>
 
 {#if handleBefore}<ResizableHandle class={cn(hidden && "hidden")} />{/if}
@@ -146,9 +152,11 @@
                         icon={tab0.icon}
                         closeable={tab0.closeable}
                         pinned={tab0.pinned}
+                        copyable={$urlRemote.length > 0 && !!tab0.entry}
                         onclick={() => updateCurrent(position, tab0)}
                         onclose={(type) => handleClose(type, tab0)}
                         onpin={(value) => handlePin(value, tab0)}
+                        oncopy={() => handleCopy(tab0)}
                     />
                 {/each}
             </div>

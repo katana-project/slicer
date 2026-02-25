@@ -24,9 +24,11 @@
         active?: boolean;
         closeable?: boolean;
         pinned?: boolean;
+        copyable?: boolean;
         onclick?: () => void;
         onclose?: (type: CloseType) => void;
         onpin?: (value: boolean) => void;
+        oncopy?: () => void;
     }
 
     let {
@@ -35,9 +37,11 @@
         active = true,
         closeable = false,
         pinned = false,
+        copyable = false,
         onclick,
         onclose,
         onpin,
+        oncopy,
     }: Props = $props();
 
     let Icon = $derived(icon?.icon);
@@ -125,6 +129,10 @@
         <ContextMenuSeparator />
         <ContextMenuItem onclick={handlePin}>
             {$t(pinned ? "pane.header.menu.unpin" : "pane.header.menu.pin")}
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem onclick={() => oncopy?.()} disabled={!copyable}>
+            {$t("pane.header.menu.copy-remote")}
         </ContextMenuItem>
     </ContextMenuContent>
 </ContextMenu>

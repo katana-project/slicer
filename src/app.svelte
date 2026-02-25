@@ -11,7 +11,7 @@
     import { scripts } from "$lib/script";
     import { entries as logEntries } from "$lib/log";
     import { all as disasms } from "$lib/disasm";
-    import { root as rootKey, panes, urlRemote, urlScript } from "$lib/state";
+    import { root as rootKey, panes, urlRemote, urlScript, urlRemoteFile } from "$lib/state";
     import { theme } from "$lib/theme";
     import { tasks } from "$lib/task";
     import { handler } from "$lib/event";
@@ -48,7 +48,19 @@
     onMount(() => {
         if ($urlRemote) {
             // HTTP file share handler
-            $handler.addRemote($urlRemote);
+            (async () => {
+                for (const url of $urlRemote) {
+                    await $handler.addRemote(url);
+                }
+
+                // open remote file if specified
+                if ($urlRemoteFile) {
+                    const entry = $entries.get($urlRemoteFile);
+                    if (entry) {
+                        await $handler.open(entry);
+                    }
+                }
+            })();
         }
         if ($urlScript) {
             // script load share handler

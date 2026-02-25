@@ -1,6 +1,6 @@
 import type { DisassemblerOptions } from "$lib/disasm";
 import type { TabPosition, TabType } from "$lib/tab";
-import { persisted, urlPersistedRaw } from "$lib/utils";
+import { persisted, urlPersistedRaw, urlPersistedRawArray } from "$lib/utils";
 
 export const root = "slicer.state";
 
@@ -76,4 +76,5 @@ export const clear = () => {
 // URL parameters
 
 export const urlScript = urlPersistedRaw("script");
-export const urlRemote = urlPersistedRaw("url");
+export const urlRemote = urlPersistedRawArray("url");
+export const urlRemoteFile = urlPersistedRaw("file");

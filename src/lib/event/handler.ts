@@ -8,6 +8,7 @@ import {
     remove as removeScript,
     unload as unloadScript,
 } from "$lib/script";
+import { urlRemote, urlRemoteFile } from "$lib/state";
 import {
     clear as clearTabs,
     current as currentTab,
@@ -158,18 +159,39 @@ export default {
         await toastAdd(created, skipped, time);
     },
     async addRemote(url: string): Promise<void> {
-        const { time, result } = await recordTimedProgress("task.add", url, (task) => {
-            return loadRemote(url, null, (loaded, total) => {
-                if (total === -1) {
-                    // total size unknown
-                    task.desc.set(`${url} (${humanSize(loaded)})`);
-                    task.progress = undefined; // indeterminate
-                } else {
-                    task.desc.set(`${url} (${humanSize(loaded)}/${humanSize(total)})`);
-                    task.progress?.set((loaded / total) * 100);
-                }
-            });
+        // append to list of loaded remote URLs, for shareable links
+        urlRemote.update(($urlRemote) => {
+            if (!$urlRemote.includes(url)) {
+                return [...$urlRemote, url];
+            }
+            return $urlRemote;
         });
+
+        const { time, result } = await recordTimedProgress("task.add", url, async (task) => {
+            try {
+                return await loadRemote(url, null, (loaded, total) => {
+                    if (total === -1) {
+                        // total size unknown
+                        task.desc.set(`${url} (${humanSize(loaded)})`);
+                        task.progress = undefined; // indeterminate
+                    } else {
+                        task.desc.set(`${url} (${humanSize(loaded)}/${humanSize(total)})`);
+                        task.progress?.set((loaded / total) * 100);
+                    }
+                });
+            } catch (e) {
+                error(`failed to load remote url ${url}`, e);
+                toast.error(tl("toast.error.title.generic"), {
+                    description: tl("toast.error.load-remote", url),
+                });
+            }
+
+            return null;
+        });
+
+        if (result === null) {
+            return;
+        }
 
         const [created, skipped] = partition(result, (r) => r.created);
         await toastAdd(created, skipped, time);
@@ -295,6 +317,10 @@ export default {
     clear(): void {
         clearWs();
         clearTabs();
+
+        // clear search params, no more entries to open remotely
+        urlRemote.set([]);
+        urlRemoteFile.set(null);
     },
     close(tab: Tab | undefined = get(currentTab) ?? undefined): void {
         if (tab) {
