@@ -4,7 +4,6 @@ import { error } from "$lib/log";
 import { analysisTransformers, panes, workspaceEncoding } from "$lib/state";
 import { type Entry, EntryType, readDeferred } from "$lib/workspace";
 import { AnalysisState } from "$lib/workspace/analysis";
-import { unwrapTransform } from "$lib/workspace/data";
 import { Box, Folders, LayoutList, ScrollText, Search, Settings, Sparkles } from "@lucide/svelte";
 import { derived, get, writable } from "svelte/store";
 
@@ -235,13 +234,11 @@ export const update = (tab: Tab): Tab => {
 };
 
 export const refresh = async (tab: Tab, hard: boolean = false): Promise<Tab> => {
-    if (hard && tab.entry) {
-        tab.entry = await readDeferred({
-            ...tab.entry,
-            // unwrap any transforms, something may have touched the tab entry
-            data: unwrapTransform(tab.entry.data),
-            state: AnalysisState.NONE,
-        });
+    const entry = tab.entry;
+    if (hard && entry) {
+        // re-analysis will unwrap any late transformations
+        entry.state = AnalysisState.NONE;
+        tab.entry = await readDeferred(entry);
     }
 
     // try immediate update for the current tab
@@ -343,6 +340,7 @@ workspaceEncoding.subscribe(() => {
 });
 
 // hard-refresh tabs on transformer change
+// TODO: transformer state change should trigger this as well
 analysisTransformers.subscribe(() => {
     refreshIf(({ entry }) => {
         return entry !== undefined && (entry.type === EntryType.CLASS || entry.type === EntryType.MEMBER);

@@ -155,8 +155,13 @@ export const transformData = (origin: Data, data: Uint8Array): TransformData => 
     return { ...memoryData(origin.name, data), origin };
 };
 
-export const unwrapTransform = (data: Data): Data => {
-    return "origin" in data ? (data as TransformData).origin : data;
+export const unwrapTransforms = (data: Data): Data => {
+    let current: Data = data;
+    while ("origin" in current) {
+        current = (current as TransformData).origin;
+    }
+
+    return current;
 };
 
 export const download = async (
