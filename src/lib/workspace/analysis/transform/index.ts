@@ -1,43 +1,20 @@
-import type { Icon } from "$lib/components/icons";
 import { log } from "$lib/log";
-import { rootContext } from "$lib/script";
 import { analysisTransformers } from "$lib/state";
 import type { ClassEntry } from "$lib/workspace";
 import { transformData, unwrapTransforms } from "$lib/workspace/data";
 import { get, writable, type Writable } from "svelte/store";
+import { internalEarlyTransformers, internalTransformers } from "./internal";
 import normalizationTransformers from "./norm";
 import readabilityTransformers from "./read";
-
-export enum TransformationPoint {
-    EARLY = "early",
-    LATE = "late",
-}
+import { TransformationPoint, type Transformer } from "./types";
 
 // transformers are responsible for keeping entry structures up-to-date, as the entry does not undergo additional analysis after transformation
 
-export interface Transformer {
-    id: string;
-    group?: string;
-    icon?: Icon;
-    point?: TransformationPoint;
-
-    // hides it from the menu and makes it always enabled
-    internal?: boolean;
-
-    run(entry: ClassEntry, data: Uint8Array): Uint8Array | PromiseLike<Uint8Array>;
-}
-
 export const transformers: Writable<Transformer[]> = writable([
+    ...internalEarlyTransformers,
     ...readabilityTransformers,
     ...normalizationTransformers,
-    // script transforms should be processed last
-    {
-        id: "script",
-        internal: true,
-        async run(entry, data) {
-            return (await rootContext.dispatchEvent({ type: "preload", name: entry.name, data })).data;
-        },
-    },
+    ...internalTransformers,
 ]);
 
 export const enabled = (trf: Transformer): boolean => trf.internal || get(analysisTransformers).includes(trf.id);
@@ -58,7 +35,8 @@ export const transform = async (
     point: TransformationPoint = TransformationPoint.LATE
 ): Promise<ClassEntry> => {
     const enabledTrfs = Array.from(get(transformers).values()).filter(
-        (trf) => enabled(trf) && (trf.point ?? TransformationPoint.LATE) === point
+        (trf) =>
+            enabled(trf) && ((trf.point ?? TransformationPoint.LATE) === point || trf.point === TransformationPoint.ANY)
     );
 
     const unwrappedData = unwrapTransforms(entry.data);
@@ -93,3 +71,5 @@ export const transformInPlace = async (
         Object.assign(entry, transformedEntry);
     }
 };
+
+export * from "./types";

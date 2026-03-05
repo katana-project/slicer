@@ -2,7 +2,7 @@ import { type DirtyMarkable, type Node, write } from "@katana-project/asm";
 import type { Attributable, Attribute, CodeAttribute } from "@katana-project/asm/attr";
 import { AttributeType, Opcode } from "@katana-project/asm/spec";
 import { AtSign, BugOff, RefreshCwOff, Type, Variable, ZapOff } from "@lucide/svelte";
-import type { Transformer } from "./";
+import type { Transformer } from "./types";
 
 // walking logic adapted from @katana-project/asm/analysis/verify
 
