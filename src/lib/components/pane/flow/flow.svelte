@@ -30,7 +30,7 @@
     import { Button } from "$lib/components/ui/button";
 
     let { tab, handler, classes }: PaneProps = $props();
-    const entry = tab.entry!;
+    const entry = $derived(tab.entry!);
 
     const node = "node" in entry ? (entry as ClassEntry).node : null;
     const methods = node ? node.methods : [];

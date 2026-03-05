@@ -88,7 +88,7 @@ export const readDeferred = async (entry: Entry): Promise<Entry> => {
 
     // preprocess class file
     if (entry.type === EntryType.CLASS || entry.type === EntryType.MEMBER) {
-        entry = await transform(entry as ClassEntry, await entry.data.bytes());
+        entry = await transform(entry as ClassEntry);
     }
     return entry;
 };

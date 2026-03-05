@@ -12,6 +12,8 @@ import {
     EntryType,
     type MemberEntry,
 } from "$lib/workspace";
+import { TransformationPoint, transformInPlace } from "$lib/workspace/analysis/transform";
+import { unwrapTransforms } from "$lib/workspace/data";
 import { FLAG_SKIP_ATTR_PARSE, FLAG_SLICE_BUFFER, type Node } from "@katana-project/asm";
 import { type Annotation, type AnnotationsAttribute, readAnnotations } from "@katana-project/asm/attr/annotation";
 import type { ClassEntry as ClassPoolEntry, RefEntry } from "@katana-project/asm/pool";
@@ -48,11 +50,17 @@ const analyzeClass = async (entry: Entry, skipAttr: boolean) => {
                 ) || member;
         } else {
             classEntry.type = EntryType.CLASS;
+        }
+
+        await transformInPlace(classEntry, TransformationPoint.EARLY);
+
+        // post-transform analysis
+        if (entry.type === EntryType.CLASS) {
             classEntry.entryPoints = analyzeEntryPoints(classEntry.node);
             classEntry.characteristics = analyzeCharacteristics(classEntry.node);
         }
     } catch (e) {
-        error(`failed to read class ${entry.name}`, e);
+        error(`failed to analyze class ${entry.name}`, e);
     }
 };
 
@@ -235,6 +243,9 @@ const analyzeCharacteristics = (node: Node): CharacteristicType[] => {
 
 export const analyze = async (entry: Entry, state: AnalysisState = AnalysisState.PARTIAL) => {
     if (entry.state === AnalysisState.FULL) return;
+
+    // unwrap all transforms before analysis to get the original data
+    entry.data = unwrapTransforms(entry.data);
 
     // full analysis does more expensive magic header detection
     // and reads class nodes in their entirety
