@@ -2,6 +2,7 @@ import type { Disassembler } from "$lib/disasm";
 import type { ProtoScript } from "$lib/script";
 import type { Tab, TabDefinition, TabPosition, TabType } from "$lib/tab";
 import type { Entry } from "$lib/workspace";
+import type { Data } from "$lib/workspace/data";
 import { writable } from "svelte/store";
 import defaultHandler from "./handler";
 
@@ -17,6 +18,8 @@ export interface EventHandler {
     remove(entries: Entry[]): Awaitable<void>;
     export(entries?: Entry[], disasm?: Disassembler): Awaitable<void>;
     close(tab?: Tab): Awaitable<void>;
+
+    loadMappings(data?: Data, dst?: string): Awaitable<void>;
 
     addScript(url?: string, load?: boolean): Awaitable<void>;
     loadScript(proto: ProtoScript): Awaitable<void>;

@@ -43,6 +43,8 @@ export interface LocaleData {
     "menu.scripts.script.info": string;
     "menu.scripts.script.delete": string;
     "menu.scripts.docs": string;
+    "menu.mapping": string;
+    "menu.mapping.load.clipboard": string;
     "tab.project": string;
     "tab.logging": string;
     "tab.playground": string;
@@ -359,6 +361,7 @@ export interface LocaleData {
     "toast.error.search": string;
     "toast.error.load": string;
     "toast.error.load-remote": string;
+    "toast.error.load-mappings": string;
     "toast.error.read": string;
     "toast.error.clipboard.unsupported": string;
     "toast.error.clipboard.denied": string;
@@ -379,6 +382,7 @@ export interface LocaleData {
     "toast.success.export-prefs": string;
     "toast.success.import-script": string;
     "toast.success.delete-script": string;
+    "toast.success.load-mappings": string;
     "toast.info.title.duplicate.single": string;
     "toast.info.title.duplicate.multiple": string;
     "toast.info.duplicate.single": string;

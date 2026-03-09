@@ -307,6 +307,20 @@
         </MenubarMenu>
         <MenubarMenu>
             <MenubarTrigger class="relative">
+                {$t("menu.mapping")}
+            </MenubarTrigger>
+            <MenubarContent align="start">
+                <!-- <MenubarItem onclick={() => modals.open(LoadMappingsDialog, { handler })}>
+                    {$t("menu.mapping.load")}
+                </MenubarItem> -->
+                <MenubarItem class="justify-between" onclick={() => handler.loadMappings()}>
+                    {$t("menu.mapping.load.clipboard")}
+                    <Clipboard size={16} />
+                </MenubarItem>
+            </MenubarContent>
+        </MenubarMenu>
+        <MenubarMenu>
+            <MenubarTrigger class="relative">
                 {$t("menu.scripts")}
             </MenubarTrigger>
             <MenubarContent align="start">

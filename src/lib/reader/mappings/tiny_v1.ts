@@ -3,14 +3,14 @@ import { type MappedClass, mappingSet, type MappingSet } from "$lib/workspace/an
 // https://wiki.fabricmc.net/documentation:tiny
 
 // src is always the first one
-export const read = (data: string, dst: string): MappingSet => {
+export const read = (data: string, dst?: string): MappingSet => {
     const lines = data.split("\n");
     const header = lines.shift()?.split("\t") ?? [];
     if (header.shift() !== "v1") {
         throw new Error("Not a valid Tiny v1 mapping file");
     }
 
-    const dstIdx = header.indexOf(dst);
+    const dstIdx = dst ? header.indexOf(dst) : 1;
     if (dstIdx === -1) {
         throw new Error(`Destination namespace "${dst}" not found in mapping file`);
     }

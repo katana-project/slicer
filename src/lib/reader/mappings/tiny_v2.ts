@@ -16,7 +16,7 @@ const shouldSkip = (line: string, wantedLevel: number): boolean => {
 };
 
 // src is always the first one
-export const read = (data: string, dst: string): MappingSet => {
+export const read = (data: string, dst?: string): MappingSet => {
     const lines = data.split("\n");
     const header = lines.shift()?.split("\t") ?? [];
     if (header.shift() !== "tiny" || header.shift() !== "2") {
@@ -25,7 +25,7 @@ export const read = (data: string, dst: string): MappingSet => {
 
     header.shift(); // skip minor version
 
-    const dstIdx = header.indexOf(dst);
+    const dstIdx = dst ? header.indexOf(dst) : 1;
     if (dstIdx === -1) {
         throw new Error(`Destination namespace "${dst}" not found in mapping file`);
     }
