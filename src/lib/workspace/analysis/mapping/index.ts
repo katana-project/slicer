@@ -79,7 +79,4 @@ export interface MappingSet extends MappingCollection<MappedClass> {}
 
 const mappingSet = (): MappingSet => collection(mappedClass);
 
-const testSet = mappingSet();
-testSet.get("java/lang/String").dst = "java/lang/MyString";
-
-export const mappings = writable(testSet);
+export const mappings = writable(mappingSet());

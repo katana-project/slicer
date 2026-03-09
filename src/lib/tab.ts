@@ -4,6 +4,7 @@ import { error } from "$lib/log";
 import { analysisTransformers, panes, workspaceEncoding } from "$lib/state";
 import { type Entry, EntryType, readDeferred } from "$lib/workspace";
 import { AnalysisState } from "$lib/workspace/analysis";
+import { mappings } from "$lib/workspace/analysis/mapping";
 import { Box, Folders, LayoutList, ScrollText, Search, Settings, Sparkles } from "@lucide/svelte";
 import { derived, get, writable } from "svelte/store";
 
@@ -339,9 +340,8 @@ workspaceEncoding.subscribe(() => {
     refreshIf(isEncodingDependent).then();
 });
 
-// hard-refresh tabs on transformer change
-// TODO: transformer state change should trigger this as well
-analysisTransformers.subscribe(() => {
+// hard-refresh tabs on transformer (state) change
+derived([analysisTransformers, mappings], (a) => a).subscribe(() => {
     refreshIf(({ entry }) => {
         return entry !== undefined && (entry.type === EntryType.CLASS || entry.type === EntryType.MEMBER);
     }, true).then();
