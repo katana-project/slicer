@@ -14,6 +14,10 @@ const primTypes: Record<string, string> = {
     void: "V",
 };
 
+const toInternalName = (name: string): string => {
+    return name.replaceAll(".", "/");
+};
+
 const formatType = (type: string, mappings: MappingSet): string => {
     if (type.endsWith("[]")) {
         const component = type.replace(/\[]/g, "");
@@ -26,7 +30,7 @@ const formatType = (type: string, mappings: MappingSet): string => {
         return primType;
     }
 
-    let internalName = type.replaceAll(".", "/");
+    let internalName = toInternalName(type);
     // remap dst name to src
     internalName = mappings.getOrNull(internalName)?.dst ?? internalName;
 
@@ -34,13 +38,17 @@ const formatType = (type: string, mappings: MappingSet): string => {
 };
 
 const formatMethodParams = (desc: string, mappings: MappingSet): string => {
+    if (desc === "()") {
+        return desc;
+    }
+
     const params = desc.slice(1, -1).split(",");
     return `(${params.map((p) => formatType(p, mappings)).join("")})`;
 };
 
 export const read = (data: string): MappingSet => {
     const lines = data.split("\n");
-    const mappings = mappingSet();
+    const reverseMappings = mappingSet();
 
     // first pass: read classes
     for (const line of lines) {
@@ -48,15 +56,17 @@ export const read = (data: string): MappingSet => {
             continue; // skip comments and empty lines
         }
 
-        let [dst, src] = line.trim().split("->", 2);
+        let [dst, src] = line.trim().split(" -> ", 2);
         if (src.endsWith(":")) {
             // class
             src = src.substring(0, src.length - 1);
 
-            const currentClass = mappings.get(src);
-            currentClass.dst = dst;
+            const currentClass = reverseMappings.get(toInternalName(dst));
+            currentClass.dst = toInternalName(src);
         }
     }
+
+    const mappings = mappingSet();
 
     // second pass: read members
     let currentClass: MappedClass | null = null;
@@ -66,13 +76,13 @@ export const read = (data: string): MappingSet => {
             continue; // skip comments and empty lines
         }
 
-        let [dst, src] = line.trim().split("->", 2);
+        let [dst, src] = line.trim().split(" -> ", 2);
         if (src.endsWith(":")) {
             // class
             src = src.substring(0, src.length - 1);
 
-            currentClass = mappings.get(src);
-            currentClass.dst = dst;
+            currentClass = mappings.get(toInternalName(src));
+            currentClass.dst = toInternalName(dst);
         } else {
             // field or method
             if (!currentClass) {
@@ -94,12 +104,12 @@ export const read = (data: string): MappingSet => {
 
                 const method = currentClass.methods.get(
                     src,
-                    `${formatMethodParams(methodDesc, mappings)}${formatType(desc, mappings)}`
+                    `${formatMethodParams(methodDesc, reverseMappings)}${formatType(desc, reverseMappings)}`
                 );
                 method.dst = methodName;
             } else {
                 // field
-                const field = currentClass.fields.get(src, formatType(desc, mappings));
+                const field = currentClass.fields.get(src, formatType(desc, reverseMappings));
                 field.dst = name;
             }
         }

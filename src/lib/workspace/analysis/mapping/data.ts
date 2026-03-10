@@ -1,5 +1,5 @@
 interface MappingCollection<T extends MappedElement> {
-    elements: Map<string, T>;
+    elements: Record<string, T>;
 
     get(src: string, srcDesc?: string): T;
     getOrNull(src: string, srcDesc?: string): T | null;
@@ -11,27 +11,23 @@ const collection = <T extends MappedElement>(
     mergeFunc: (src: T, dst: T) => void
 ): MappingCollection<T> => {
     return {
-        elements: new Map(),
+        elements: {},
         get(key: string): T {
-            let element = this.elements.get(key);
+            let element = this.elements[key];
             if (!element) {
                 element = func(key);
-                this.elements.set(key, element);
+                this.elements[key] = element;
             }
 
             return element;
         },
         getOrNull(key: string): T | null {
-            return this.elements.get(key) ?? null;
+            return this.elements[key] ?? null;
         },
         merge(coll: MappingCollection<T>): void {
-            for (const [key, element] of coll.elements) {
-                const existing = this.elements.get(key);
-                if (existing) {
-                    mergeFunc(existing, element);
-                } else {
-                    this.elements.set(key, element);
-                }
+            for (const [key, element] of Object.entries(coll.elements)) {
+                const elem = this.get(key);
+                mergeFunc(elem, element);
             }
         },
     };
@@ -42,13 +38,13 @@ const memberCollection = <T extends MappedMember = MappedMember>(
     mergeFunc: (src: T, dst: T) => void
 ): MappingCollection<T> => {
     return {
-        elements: new Map(),
+        elements: {},
         get(src: string, srcDesc: string): T {
-            const key = `${src}${srcDesc}`;
-            let element = this.elements.get(key);
+            const key = `${src}:${srcDesc}`;
+            let element = this.elements[key];
             if (!element) {
                 element = func(src, srcDesc);
-                this.elements.set(key, element);
+                this.elements[key] = element;
             }
 
             return element;
@@ -58,16 +54,17 @@ const memberCollection = <T extends MappedMember = MappedMember>(
                 return null;
             }
 
-            return this.elements.get(`${src}${srcDesc}`) ?? null;
+            return this.elements[`${src}:${srcDesc}`] ?? null;
         },
         merge(coll: MappingCollection<T>): void {
-            for (const [key, element] of coll.elements) {
-                const existing = this.elements.get(key);
-                if (existing) {
-                    mergeFunc(existing, element);
-                } else {
-                    this.elements.set(key, element);
+            for (const [key, element] of Object.entries(coll.elements)) {
+                let elem = this.elements[key];
+                if (!elem) {
+                    elem = func(element.src, element.srcDesc);
+                    this.elements[key] = elem;
                 }
+
+                mergeFunc(elem, element);
             }
         },
     };
