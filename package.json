@@ -23,7 +23,7 @@
         "@codemirror/search": "^6.6.0",
         "@codemirror/state": "^6.5.4",
         "@codemirror/view": "^6.39.15",
-        "@katana-project/asm": "^0.24.0",
+        "@katana-project/asm": "^0.25.2",
         "@katana-project/laser": "^0.3.1",
         "@katana-project/zip": "^0.7.1",
         "@lezer/highlight": "^1.2.3",

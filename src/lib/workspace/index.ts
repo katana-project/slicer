@@ -157,9 +157,13 @@ export const classes = derived(entries, ($entries) => {
     return new Map(
         Array.from($entries.values())
             .filter((e) => e.extension === "class")
-            // use the data name, since we don't want the prepended nested archive path
-            // this will be weird when you have conflicting classes across archives, but oh well
-            .map((e) => [e.data.name.substring(0, e.data.name.indexOf(".class")), e])
+            .map((e) => {
+                const nodeName = e.type === EntryType.CLASS ? (e as ClassEntry).node.thisClass.nameEntry?.string : null;
+
+                // use the data name, since we don't want the prepended nested archive path
+                // this will be weird when you have conflicting classes across archives, but oh well
+                return [nodeName ?? e.data.name.substring(0, e.data.name.indexOf(".class")), e];
+            })
     );
 });
 
