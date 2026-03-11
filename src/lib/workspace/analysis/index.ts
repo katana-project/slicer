@@ -280,36 +280,66 @@ export const analyze = async (entry: Entry, state: AnalysisState = AnalysisState
     entry.state = state;
 };
 
-let queue: Entry[] = [];
+const queue = new Set<Entry>();
 
-export const analyzeSchedule = (...entries: Entry[]) => queue.push(...entries);
+export const analyzeSchedule = (...entries: Entry[]) => {
+    entries.forEach((e) => queue.add(e));
+};
 
+let backgroundRunning = false;
+const backgroundCallbacks: (() => boolean)[] = [];
 export const analyzeBackground = async () => {
+    // schedule another run if one is already running, since something new was added to the queue
+    if (backgroundRunning) {
+        backgroundCallbacks.push(() => true);
+        return;
+    }
+
+    backgroundRunning = true;
+
     // snapshot queue
-    const $queue = queue.filter((e) => e.state === AnalysisState.NONE);
-    queue = [];
+    const $queue = Array.from(queue.values()).filter((e) => e.state === AnalysisState.NONE);
 
-    if (!get(analysisBackground) || $queue.length === 0) return;
+    queue.clear();
 
-    await recordProgress("task.analyze", null, async (task) => {
-        let completed = 0;
-        await Promise.all(
-            $queue.map(
-                rateLimit(async (entry) => {
-                    await analyze(entry);
+    if (get(analysisBackground) && $queue.length > 0) {
+        await recordProgress("task.analyze", null, async (task) => {
+            let completed = 0;
+            await Promise.all(
+                $queue.map(
+                    rateLimit(async (entry) => {
+                        await analyze(entry);
 
-                    completed++;
-                    task.desc.set(`${completed}/${$queue.length}`);
-                    task.progress?.set((completed / $queue.length) * 100);
-                }, workers.size * 2)
-            )
-        );
+                        completed++;
+                        task.desc.set(`${completed}/${$queue.length}`);
+                        task.progress?.set((completed / $queue.length) * 100);
+                    }, workers.size * 2)
+                )
+            );
 
-        task.desc.set(`${$queue.length}`);
-    });
+            task.desc.set(`${$queue.length}`);
+        });
 
-    // very hacky, but we need to trigger post-analysis updates to entries -> classes -> consumers
-    entries.update(($entries) => $entries);
+        // very hacky, but we need to trigger post-analysis updates to entries -> classes -> consumers
+        entries.update(($entries) => $entries);
+    }
+
+    backgroundRunning = false;
+    const wantsAgain = backgroundCallbacks.map((cb) => cb()).some((v) => v);
+    if (wantsAgain) {
+        analyzeBackground().then();
+    }
+};
+
+export const waitForBackgroundAnalysis = (func: () => boolean) => {
+    if (!backgroundRunning) {
+        const wantsAgain = func();
+        if (wantsAgain) {
+            analyzeBackground().then();
+        }
+    } else {
+        backgroundCallbacks.push(func);
+    }
 };
 
 export { QueryType, SearchMode, type SearchQuery, type SearchResult };

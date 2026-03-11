@@ -4,6 +4,9 @@ interface MappingCollection<T extends MappedElement> {
     get(src: string, srcDesc?: string): T;
     getOrNull(src: string, srcDesc?: string): T | null;
     merge(coll: MappingCollection<T>): void;
+
+    size(): number;
+    clear(): void;
 }
 
 const collection = <T extends MappedElement>(
@@ -29,6 +32,12 @@ const collection = <T extends MappedElement>(
                 const elem = this.get(key);
                 mergeFunc(elem, element);
             }
+        },
+        size(): number {
+            return Object.keys(this.elements).length;
+        },
+        clear(): void {
+            this.elements = {};
         },
     };
 };
@@ -66,6 +75,12 @@ const memberCollection = <T extends MappedMember = MappedMember>(
 
                 mergeFunc(elem, element);
             }
+        },
+        size(): number {
+            return Object.keys(this.elements).length;
+        },
+        clear(): void {
+            this.elements = {};
         },
     };
 };

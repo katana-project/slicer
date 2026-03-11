@@ -37,7 +37,11 @@ interface FlatRemapper extends Remapper {
     typeParameter(tp: TypeParameter): TypeParameter;
 }
 
-const remapper = derived(mappings, ($mappings): FlatRemapper => {
+const remapper = derived(mappings, ($mappings): FlatRemapper | null => {
+    if ($mappings.size() === 0) {
+        return null;
+    }
+
     return {
         ref(owner: Type, name: string, type: Type): string {
             const mappedOwner = $mappings.getOrNull(owner.value.slice(1, -1));
@@ -122,9 +126,15 @@ export const internalEarlyTransformers: Transformer[] = [
         id: "remap",
         internal: true,
         point: TransformationPoint.ANY,
-        async run(entry, _data) {
+        async run(entry, data) {
+            // if no mappings are loaded, skip remapping to avoid unnecessary processing
+            const $remapper = get(remapper);
+            if (!$remapper) {
+                return data;
+            }
+
             const { remap } = await import("@katana-project/asm/analysis/remap");
-            remap(entry.node, get(remapper));
+            remap(entry.node, $remapper);
 
             return write(entry.node);
         },

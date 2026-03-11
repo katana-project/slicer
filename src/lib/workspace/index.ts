@@ -2,10 +2,11 @@ import { warn } from "$lib/log";
 import { analysisBackground, workspaceArchiveDuplicateHandling } from "$lib/state";
 import { record } from "$lib/task";
 import { fetchProgress, groupBy, prettyMethodDesc, refFromName } from "$lib/utils";
+import { mappings } from "$lib/workspace/analysis/mapping";
 import type { Member, Node } from "@katana-project/asm";
 import type { Zip, Entry as ZipEntry } from "@katana-project/zip";
 import { derived, get, writable } from "svelte/store";
-import { AnalysisState, analyze, analyzeBackground, analyzeSchedule } from "./analysis";
+import { AnalysisState, analyze, analyzeBackground, analyzeSchedule, waitForBackgroundAnalysis } from "./analysis";
 import { transform } from "./analysis/transform";
 import { type Data, fileData, memoryData, type Named, parseName, zipData } from "./data";
 import { archiveDecoder } from "./encoding";
@@ -145,6 +146,22 @@ analysisBackground.subscribe(($analysisBackground) => {
         analyzeSchedule(...Array.from(get(entries).values()));
         analyzeBackground().then();
     }
+});
+
+// discard cached analysis results when mappings change, since they can affect the structure of classes and members
+mappings.subscribe(() => {
+    waitForBackgroundAnalysis(() => {
+        entries.update(($entries) => {
+            for (const entry of $entries.values()) {
+                if (entry.type === EntryType.CLASS) {
+                    entry.state = AnalysisState.NONE;
+                    analyzeSchedule(entry);
+                }
+            }
+            return $entries;
+        });
+        return true; // re-analyze
+    });
 });
 
 // ask user for confirmation if there are entries in the workspace
