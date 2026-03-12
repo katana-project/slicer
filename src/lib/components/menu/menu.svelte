@@ -10,7 +10,13 @@
     import { Modifier } from "$lib/shortcut";
     import Shortcut from "./shortcut.svelte";
     import ScriptMenu from "./script/menu.svelte";
-    import { AboutDialog, ClearDialog, LoadExternalDialog, ScriptLoadDialog } from "$lib/components/dialog";
+    import {
+        AboutDialog,
+        ClearDialog,
+        LoadExternalDialog,
+        ScriptLoadDialog,
+        LoadMappingsDialog,
+    } from "$lib/components/dialog";
     import {
         Menubar,
         MenubarCheckboxItem,
@@ -38,6 +44,8 @@
         Moon,
         Settings,
         Sun,
+        FileInput,
+        Trash,
     } from "@lucide/svelte";
     import { themes } from "$lib/theme";
     import type { Disassembler } from "$lib/disasm";
@@ -46,6 +54,8 @@
     import PaneButton from "./pane_button.svelte";
     import { groupBy } from "$lib/utils";
     import { modals } from "svelte-modals";
+    import { mappings } from "$lib/workspace/analysis/mapping";
+    import { mappingSet } from "$lib/workspace/analysis/mapping/data";
 
     interface Props {
         panes: PaneData[];
@@ -310,12 +320,32 @@
                 {$t("menu.mapping")}
             </MenubarTrigger>
             <MenubarContent align="start">
-                <!-- <MenubarItem onclick={() => modals.open(LoadMappingsDialog, { handler })}>
-                    {$t("menu.mapping.load")}
-                </MenubarItem> -->
-                <MenubarItem class="justify-between" onclick={() => handler.loadMappings()}>
-                    {$t("menu.mapping.load.clipboard")}
-                    <Clipboard size={16} />
+                <MenubarSub>
+                    <MenubarSubTrigger>
+                        {$t("menu.mapping.load")}
+                    </MenubarSubTrigger>
+                    <MenubarSubContent class="min-w-[12rem]" align="start">
+                        <MenubarItem
+                            class="justify-between"
+                            onclick={() => modals.open(LoadMappingsDialog, { handler })}
+                        >
+                            {$t("menu.mapping.load.file")}
+                            <FileInput size={16} />
+                        </MenubarItem>
+                        <MenubarItem class="justify-between" onclick={() => handler.loadMappings()}>
+                            {$t("menu.mapping.load.clipboard")}
+                            <Clipboard size={16} />
+                        </MenubarItem>
+                    </MenubarSubContent>
+                </MenubarSub>
+                <MenubarSeparator />
+                <MenubarItem
+                    class="justify-between"
+                    onclick={() => ($mappings = mappingSet())}
+                    disabled={$mappings.size() === 0}
+                >
+                    {$t("menu.mapping.clear")}
+                    <Trash size={16} />
                 </MenubarItem>
             </MenubarContent>
         </MenubarMenu>

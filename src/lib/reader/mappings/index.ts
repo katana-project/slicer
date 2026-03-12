@@ -1,7 +1,7 @@
 import type { MappingSet } from "$lib/workspace/analysis/mapping/data";
 import { read as readProguard } from "./proguard";
-import { read as readTinyV1 } from "./tiny_v1";
-import { read as readTinyV2 } from "./tiny_v2";
+import { read as readTinyV1, readNamespaces as readTinyV1Namespaces } from "./tiny_v1";
+import { read as readTinyV2, readNamespaces as readTinyV2Namespaces } from "./tiny_v2";
 
 export enum MappingType {
     TINY_V1 = "tiny_v1",
@@ -19,6 +19,21 @@ export const detect = (data: string): MappingType | null => {
     }
 
     return null;
+};
+
+export const namespaces = (data: string): string[] => {
+    const type = detect(data);
+    if (!type) {
+        throw new Error("Could not detect mapping format");
+    }
+
+    switch (type) {
+        case MappingType.TINY_V1:
+            return readTinyV1Namespaces(data);
+        case MappingType.TINY_V2:
+            return readTinyV2Namespaces(data);
+    }
+    return [];
 };
 
 export const read = (data: string, dst?: string): MappingSet => {

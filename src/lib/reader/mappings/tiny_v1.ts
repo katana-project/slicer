@@ -2,6 +2,16 @@ import { type MappedClass, mappingSet, type MappingSet } from "$lib/workspace/an
 
 // https://wiki.fabricmc.net/documentation:tiny
 
+export const readNamespaces = (data: string): string[] => {
+    const lines = data.split("\n", 1);
+    const header = lines.shift()?.split("\t") ?? [];
+    if (header.shift() !== "v1") {
+        throw new Error("Not a valid Tiny v1 mapping file");
+    }
+
+    return header;
+};
+
 // src is always the first one
 export const read = (data: string, dst?: string): MappingSet => {
     const lines = data.split("\n");

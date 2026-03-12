@@ -44,7 +44,10 @@ export interface LocaleData {
     "menu.scripts.script.delete": string;
     "menu.scripts.docs": string;
     "menu.mapping": string;
+    "menu.mapping.load": string;
+    "menu.mapping.load.file": string;
     "menu.mapping.load.clipboard": string;
+    "menu.mapping.clear": string;
     "tab.project": string;
     "tab.logging": string;
     "tab.playground": string;
@@ -329,6 +332,12 @@ export interface LocaleData {
     "dialog.load-external.desc": string;
     "dialog.load-external.url": string;
     "dialog.load-external.action.confirm": string;
+    "dialog.load-mappings.title": string;
+    "dialog.load-mappings.desc": string;
+    "dialog.load-mappings.file": string;
+    "dialog.load-mappings.dst-ns": string;
+    "dialog.load-mappings.dst-ns.placeholder": string;
+    "dialog.load-mappings.action.confirm": string;
     "dialog.prefs-clear.title": string;
     "dialog.prefs-clear.desc": string;
     "dialog.prefs-clear.action.cancel": string;

@@ -2,6 +2,18 @@ import { type MappedClass, mappingSet, type MappingSet } from "$lib/workspace/an
 
 // https://wiki.fabricmc.net/documentation:tiny2
 
+export const readNamespaces = (data: string): string[] => {
+    const lines = data.split("\n", 1);
+    const header = lines.shift()?.split("\t") ?? [];
+    if (header.shift() !== "tiny" || header.shift() !== "2") {
+        throw new Error("Not a valid Tiny v2 mapping file");
+    }
+
+    header.shift(); // skip minor version
+
+    return header;
+};
+
 const shouldSkip = (line: string, wantedLevel: number): boolean => {
     let level = 0;
     for (const char of line) {
