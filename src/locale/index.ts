@@ -119,6 +119,7 @@ export interface LocaleData {
     "pane.structure.summary.title": string;
     "pane.structure.summary.total-classes": string;
     "pane.structure.summary.total-files": string;
+    "pane.structure.summary.total-mapped": string;
     "pane.structure.summary.entry-points": string;
     "pane.structure.summary.entry-points.none": string;
     "pane.structure.summary.entry-points.main": string;

@@ -8,6 +8,7 @@
         FileCodeCorner,
         LayoutList,
         LandPlot,
+        Map as MapIcon,
     } from "@lucide/svelte";
     import { cn } from "$lib/components/utils";
     import { EntryType, type ClassEntry, type Entry, EntryPointType, CharacteristicType } from "$lib/workspace";
@@ -15,6 +16,7 @@
     import handler from "$lib/event/handler";
     import { Button } from "$lib/components/ui/button";
     import { prettyInternalName } from "$lib/utils";
+    import { mappings } from "$lib/workspace/analysis/mapping";
 
     interface Props {
         classes: Map<string, Entry>;
@@ -78,7 +80,7 @@
                 <span class="text-foreground font-medium">{$t("pane.structure.summary.title")}</span>
             </div>
 
-            <div class="text-muted-foreground mt-1.5 flex items-center gap-3 text-xs">
+            <div class="text-muted-foreground mt-1.5 flex flex-wrap items-center gap-3 text-xs">
                 <span class="flex items-center gap-1">
                     <Layers class="h-3 w-3" />
                     {$t("pane.structure.summary.total-classes", classes.size)}
@@ -86,6 +88,10 @@
                 <span class="flex items-center gap-1">
                     <FileCodeCorner class="h-3 w-3" />
                     {$t("pane.structure.summary.total-files", entries.length)}
+                </span>
+                <span class="flex items-center gap-1">
+                    <MapIcon class="h-3 w-3" />
+                    {$t("pane.structure.summary.total-mapped", $mappings.size())}
                 </span>
             </div>
         </div>
