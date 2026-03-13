@@ -1,20 +1,33 @@
-interface MappingCollection<T extends MappedElement> {
+interface CollectionProto<T> {
     elements: Record<string, T>;
-
-    get(src: string, srcDesc?: string): T;
-    getOrNull(src: string, srcDesc?: string): T | null;
-    merge(coll: MappingCollection<T>): void;
-
     size(): number;
     clear(): void;
 }
 
-const collection = <T extends MappedElement>(
+interface MappingCollection<T extends MappedElement> extends CollectionProto<T> {
+    get(src: string, srcDesc?: string): T;
+    getOrNull(src: string, srcDesc?: string): T | null;
+    merge(coll: MappingCollection<T>): void;
+}
+
+const collection = <T>(): CollectionProto<T> => {
+    return {
+        elements: {},
+        size(): number {
+            return Object.keys(this.elements).length;
+        },
+        clear(): void {
+            this.elements = {};
+        },
+    };
+};
+
+const elementCollection = <T extends MappedElement>(
     func: (src: string) => T,
     mergeFunc: (src: T, dst: T) => void
 ): MappingCollection<T> => {
     return {
-        elements: {},
+        ...collection(),
         get(key: string): T {
             let element = this.elements[key];
             if (!element) {
@@ -33,12 +46,6 @@ const collection = <T extends MappedElement>(
                 mergeFunc(elem, element);
             }
         },
-        size(): number {
-            return Object.keys(this.elements).length;
-        },
-        clear(): void {
-            this.elements = {};
-        },
     };
 };
 
@@ -47,7 +54,7 @@ const memberCollection = <T extends MappedMember = MappedMember>(
     mergeFunc: (src: T, dst: T) => void
 ): MappingCollection<T> => {
     return {
-        elements: {},
+        ...collection(),
         get(src: string, srcDesc: string): T {
             const key = `${src}:${srcDesc}`;
             let element = this.elements[key];
@@ -75,12 +82,6 @@ const memberCollection = <T extends MappedMember = MappedMember>(
 
                 mergeFunc(elem, element);
             }
-        },
-        size(): number {
-            return Object.keys(this.elements).length;
-        },
-        clear(): void {
-            this.elements = {};
         },
     };
 };
@@ -124,4 +125,4 @@ const mergeClasses = (src: MappedClass, dst: MappedClass): void => {
 
 export interface MappingSet extends MappingCollection<MappedClass> {}
 
-export const mappingSet = (): MappingSet => collection(mappedClass, mergeClasses);
+export const mappingSet = (): MappingSet => elementCollection(mappedClass, mergeClasses);
