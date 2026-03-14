@@ -1,6 +1,7 @@
 import { type MappedClass, mappingSet, type MappingSet } from "$lib/workspace/analysis/mapping/data";
 
 // https://github.com/Guardsquare/proguard/blob/master/base/src/main/java/proguard/obfuscate/MappingReader.java
+// https://www.guardsquare.com/manual/tools/retrace#specifications
 
 const primTypes: Record<string, string> = {
     byte: "B",
@@ -89,10 +90,10 @@ export const read = (data: string): MappingSet => {
                 throw new Error(`Tried to read a member before reading a class (line ${i})`);
             }
 
-            const colonIdx = dst.lastIndexOf(":");
-            if (colonIdx !== -1) {
+            const parts = dst.split(":");
+            if (parts.length > 1) {
                 // remove line data
-                dst = dst.substring(colonIdx + 1, dst.length);
+                dst = parts.find((p) => isNaN(parseInt(p, 10)))!;
             }
 
             const [desc, name] = dst.split(" ", 2);
