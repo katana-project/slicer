@@ -229,6 +229,12 @@ export const update = (tab: Tab): Tab => {
                 ) + 1;
         }
 
+        const nodeName =
+            tab.entry?.type === EntryType.CLASS ? (tab.entry as ClassEntry).node.thisClass.nameEntry?.string : null;
+
+        // update name based on entry, if possible
+        tab.name = nodeName ? prettyInternalName(nodeName, true) : tab.name;
+
         $tabs.set(tab.id, tab);
         return $tabs;
     });
@@ -373,19 +379,15 @@ export const open = async (entry: Entry, type: TabType = detectType(entry)): Pro
     if (!tab) {
         // tab doesn't exist, create
         try {
-            const tabEntry = await readDeferred(entry);
-            const nodeName =
-                tabEntry.type === EntryType.CLASS ? (tabEntry as ClassEntry).node.thisClass.nameEntry?.string : null;
-
             tab = update({
                 id,
                 type,
                 // TODO: disambiguate tabs with the same name?
-                name: nodeName ? prettyInternalName(nodeName, true) : entry.shortName,
+                name: entry.shortName,
                 position: TabPosition.PRIMARY_CENTER,
                 index: null,
                 closeable: true,
-                entry: tabEntry,
+                entry: await readDeferred(entry),
                 icon: tabIcon(type, entry),
             });
         } catch (e) {

@@ -145,7 +145,7 @@
                 onconsider={(e) => (localTabs = e.detail.items)}
                 onfinalize={finalizeMove}
             >
-                {#each localTabs as tab0 (tab0.id)}
+                {#each localTabs as tab0 (tab0.internalId)}
                     <PaneHeaderItem
                         name={tab0.name ?? $t(`tab.${tab0.type}`)}
                         active={posCurrent?.id === tab0.id}

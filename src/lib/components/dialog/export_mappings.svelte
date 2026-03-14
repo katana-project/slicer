@@ -23,8 +23,8 @@
     let format = $state<MappingType>(MappingType.TINY_V2);
 
     const exportMappings = async (clipboard: boolean) => {
-        await handler.exportMappings(format, clipboard);
         isOpen = false;
+        await handler.exportMappings(format, clipboard);
     };
 </script>
 
