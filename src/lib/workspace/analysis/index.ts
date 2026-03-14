@@ -326,6 +326,8 @@ export const analyzeBackground = async () => {
 
     backgroundRunning = false;
     const wantsAgain = backgroundCallbacks.map((cb) => cb()).some((v) => v);
+    backgroundCallbacks.length = 0; // clear callbacks
+
     if (wantsAgain) {
         analyzeBackground().then();
     }
