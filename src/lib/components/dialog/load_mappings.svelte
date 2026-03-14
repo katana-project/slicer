@@ -53,7 +53,14 @@
                 <Label for="file" class="text-right">
                     {$t("dialog.load-mappings.file")}
                 </Label>
-                <Input id="file" type="file" class="col-span-3" multiple={false} accept=".txt,.tiny" bind:files />
+                <Input
+                    id="file"
+                    type="file"
+                    class="col-span-3"
+                    multiple={false}
+                    accept=".txt,.tiny,.srg,.tsrg,.csrg"
+                    bind:files
+                />
             </div>
             <div class="grid grid-cols-4 items-center gap-4">
                 <Label for="dst-ns" class="text-right">{$t("dialog.load-mappings.dst-ns")}</Label>

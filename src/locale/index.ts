@@ -348,6 +348,9 @@ export interface LocaleData {
     "dialog.export-mappings.format.tiny_v1": string;
     "dialog.export-mappings.format.tiny_v2": string;
     "dialog.export-mappings.format.proguard": string;
+    "dialog.export-mappings.format.srg": string;
+    "dialog.export-mappings.format.csrg": string;
+    "dialog.export-mappings.format.tsrg": string;
     "dialog.export-mappings.action.copy": string;
     "dialog.export-mappings.action.download": string;
     "dialog.mapping-stats.title": string;

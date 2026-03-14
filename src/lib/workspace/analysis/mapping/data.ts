@@ -73,10 +73,10 @@ const memberCollection = <T extends MappedMember = MappedMember>(
         },
         getOrNull(src: string, srcDesc?: string): T | null {
             if (!srcDesc) {
-                return null;
+                return this.elements[`${src}:`] ?? null;
             }
 
-            return this.elements[`${src}:${srcDesc}`] ?? null;
+            return this.elements[`${src}:${srcDesc}`] ?? this.elements[`${src}:`] ?? null;
         },
         merge(coll: MappingCollection<T>): void {
             for (const [key, element] of Object.entries(coll.elements)) {

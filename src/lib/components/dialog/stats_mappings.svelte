@@ -62,9 +62,17 @@
             const classUsesDstNames = mappedClass !== null && mappedClass.dst === className;
 
             let mappedFieldKeys: Set<string> | null = null;
+            let mappedFieldNames: Set<string> | null = null;
             let mappedMethodKeys: Set<string> | null = null;
 
             if (mappedClass && classUsesDstNames) {
+                mappedFieldNames = new Set(
+                    mappedClass.fields
+                        .values()
+                        .filter((member) => isMappedName(member.src, member.dst) && Boolean(member.dst))
+                        .map((member) => member.dst!)
+                );
+
                 mappedFieldKeys = new Set(
                     mappedClass.fields
                         .values()
@@ -92,7 +100,8 @@
                     : mappedClass?.fields.getOrNull(field.name.string, field.type.string);
                 const fieldIsMapped =
                     (mappedField && isMappedName(field.name.string, mappedField.dst)) ||
-                    (mappedFieldKeys?.has(`${field.name.string}:${field.type.string}`) ?? false);
+                    (mappedFieldKeys?.has(`${field.name.string}:${field.type.string}`) ?? false) ||
+                    (mappedFieldNames?.has(field.name.string) ?? false);
                 if (fieldIsMapped) {
                     mappedFields++;
                 }
