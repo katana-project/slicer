@@ -2,7 +2,8 @@ import { type Icon, type StyledIcon, tabIcon } from "$lib/components/icons";
 import { t } from "$lib/i18n";
 import { error } from "$lib/log";
 import { analysisTransformers, panes, workspaceEncoding } from "$lib/state";
-import { type Entry, EntryType, readDeferred } from "$lib/workspace";
+import { prettyInternalName } from "$lib/utils";
+import { type ClassEntry, type Entry, EntryType, readDeferred } from "$lib/workspace";
 import { AnalysisState } from "$lib/workspace/analysis";
 import { mappings } from "$lib/workspace/analysis/mapping";
 import { Box, Folders, LayoutList, ScrollText, Search, Settings, Sparkles } from "@lucide/svelte";
@@ -372,14 +373,19 @@ export const open = async (entry: Entry, type: TabType = detectType(entry)): Pro
     if (!tab) {
         // tab doesn't exist, create
         try {
+            const tabEntry = await readDeferred(entry);
+            const nodeName =
+                tabEntry.type === EntryType.CLASS ? (tabEntry as ClassEntry).node.thisClass.nameEntry?.string : null;
+
             tab = update({
                 id,
                 type,
-                name: entry.shortName,
+                // TODO: disambiguate tabs with the same name?
+                name: nodeName ? prettyInternalName(nodeName, true) : entry.shortName,
                 position: TabPosition.PRIMARY_CENTER,
                 index: null,
                 closeable: true,
-                entry: await readDeferred(entry),
+                entry: tabEntry,
                 icon: tabIcon(type, entry),
             });
         } catch (e) {
