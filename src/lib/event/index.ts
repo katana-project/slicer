@@ -1,11 +1,11 @@
 import type { Disassembler } from "$lib/disasm";
+import type { MappingType } from "$lib/reader/mappings";
 import type { ProtoScript } from "$lib/script";
 import type { Tab, TabDefinition, TabPosition, TabType } from "$lib/tab";
 import type { Entry } from "$lib/workspace";
 import type { Data } from "$lib/workspace/data";
 import { writable } from "svelte/store";
 import defaultHandler from "./handler";
-import type { MappingType } from "$lib/reader/mappings";
 
 type Awaitable<T> = T | PromiseLike<T>;
 

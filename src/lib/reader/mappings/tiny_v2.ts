@@ -57,7 +57,11 @@ export const read = (data: string, dst?: string): MappingSet => {
         switch (type) {
             case "c": {
                 currentClass = mappings.get(columns[0]);
-                currentClass.dst = columns[dstIdx];
+
+                const dst = columns[dstIdx];
+                if (dst.trim() !== "") {
+                    currentClass.dst = dst;
+                }
                 level = 1; // enter into members
                 break;
             }
@@ -70,7 +74,10 @@ export const read = (data: string, dst?: string): MappingSet => {
                 const desc = columns.shift()!;
                 const member = (type === "f" ? currentClass.fields : currentClass.methods).get(columns[0], desc);
 
-                member.dst = columns[dstIdx];
+                const dst = columns[dstIdx];
+                if (dst.trim() !== "") {
+                    member.dst = dst;
+                }
                 // level = 2; // members may have comments or local variable names, but we don't care about those for now, so we won't go deeper
                 break;
             }

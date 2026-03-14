@@ -2,6 +2,7 @@ interface CollectionProto<T> {
     elements: Record<string, T>;
     size(): number;
     clear(): void;
+    values(): T[];
 }
 
 interface MappingCollection<T extends MappedElement> extends CollectionProto<T> {
@@ -18,6 +19,11 @@ const collection = <T>(): CollectionProto<T> => {
         },
         clear(): void {
             this.elements = {};
+        },
+        values(): T[] {
+            return Object.entries(this.elements)
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([, element]) => element);
         },
     };
 };

@@ -2,6 +2,7 @@ import { disassembleEntry, type Disassembler } from "$lib/disasm";
 import { tl } from "$lib/i18n";
 import { error } from "$lib/log";
 import { workers } from "$lib/reader";
+import { MappingType } from "$lib/reader/mappings";
 import {
     load as loadScript,
     type ProtoScript,
@@ -35,7 +36,6 @@ import {
     recordTimedProgress,
     remove as removeTask,
 } from "$lib/task";
-import { getExtension as getMappingsExtension, write as writeMappings } from "$lib/writer/mappings";
 import { chunk, distribute, downloadBlob, humanSize, partition, readFiles, timestampFile, truncate } from "$lib/utils";
 import {
     type ClassEntry,
@@ -52,11 +52,11 @@ import {
 } from "$lib/workspace";
 import { mappings } from "$lib/workspace/analysis/mapping";
 import { type Data, download, textMemoryData } from "$lib/workspace/data";
+import { getExtension as getMappingsExtension, write as writeMappings } from "$lib/writer/mappings";
 import { Channel } from "queueable";
 import { toast } from "svelte-sonner";
 import { get } from "svelte/store";
 import type { EventHandler } from "./";
-import { MappingType } from "$lib/reader/mappings";
 
 // one hell of a file that responds to basically all essential actions as signalled by the UI
 

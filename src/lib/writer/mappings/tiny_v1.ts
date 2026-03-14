@@ -1,20 +1,15 @@
 import type { MappingSet } from "$lib/workspace/analysis/mapping/data";
-import { getSortedClasses } from "./common";
 
 export const write = (mappingSet: MappingSet): string => {
     const lines: string[] = ["v1\tsrc\tdst"];
 
-    const classes = getSortedClasses(mappingSet);
-    for (const klass of classes) {
-        const fields = klass.sortedFields;
-        const methods = klass.sortedMethods;
-
+    for (const klass of mappingSet.values()) {
         lines.push(`CLASS\t${klass.src}\t${klass.dst ?? ""}`);
-        for (const field of fields) {
+        for (const field of klass.fields.values()) {
             lines.push(`FIELD\t${klass.src}\t${field.srcDesc}\t${field.src}\t${field.dst ?? ""}`);
         }
 
-        for (const method of methods) {
+        for (const method of klass.methods.values()) {
             lines.push(`METHOD\t${klass.src}\t${method.srcDesc}\t${method.src}\t${method.dst ?? ""}`);
         }
     }
