@@ -40,7 +40,7 @@ export const read = (data: string, dst?: string): MappingSet => {
                 currentClass = mappings.get(columns[0]);
 
                 const dst = columns[dstIdx];
-                if (dst.trim() !== "") {
+                if (dst && dst.trim() !== "") {
                     currentClass.dst = dst;
                 }
                 break;
@@ -56,7 +56,7 @@ export const read = (data: string, dst?: string): MappingSet => {
                 const member = (type === "FIELD" ? currentClass.fields : currentClass.methods).get(columns[0], desc);
 
                 const dst = columns[dstIdx];
-                if (dst.trim() !== "") {
+                if (dst && dst.trim() !== "") {
                     member.dst = dst;
                 }
                 break;
