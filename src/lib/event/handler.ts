@@ -371,45 +371,32 @@ export default {
             });
         }
     },
-    async exportMappings(format: MappingType): Promise<void> {
+    async exportMappings(format: MappingType, clipboard: boolean): Promise<void> {
         const mappingSet = get(mappings);
-        const text = writeMappings(format, mappingSet);
-
         try {
-            const extension = getMappingsExtension(format);
-            const fileName = `mappings-${timestampFile()}.${extension}`;
-            await downloadBlob(fileName, new Blob([text], { type: "text/plain;charset=utf-8" }));
+            const text = writeMappings(format, mappingSet);
+            if (clipboard) {
+                if (!navigator.clipboard) {
+                    toast.error(tl("toast.error.title.generic"), {
+                        description: tl("toast.error.clipboard.unsupported"),
+                    });
+                    return;
+                }
+
+                await navigator.clipboard.writeText(text);
+            } else {
+                const extension = getMappingsExtension(format);
+                const fileName = `mappings-${timestampFile()}.${extension}`;
+                await downloadBlob(fileName, new Blob([text], { type: "text/plain;charset=utf-8" }));
+            }
 
             toast.success(tl("toast.success.title.export"), {
-                description: tl("toast.success.export-mappings", fileName),
+                description: tl("toast.success.export-mappings"),
             });
         } catch (e) {
             error("failed to export mappings", e);
             toast.error(tl("toast.error.title.generic"), {
-                description: tl("toast.error.export-mappings.generic"),
-            });
-        }
-    },
-    async copyMappings(format: MappingType): Promise<void> {
-        if (!navigator.clipboard) {
-            toast.error(tl("toast.error.title.generic"), {
-                description: tl("toast.error.clipboard.unsupported"),
-            });
-            return;
-        }
-
-        const mappingSet = get(mappings);
-        const text = writeMappings(format, mappingSet);
-
-        try {
-            await navigator.clipboard.writeText(text);
-            toast.success(tl("toast.success.title.export"), {
-                description: tl("toast.success.copy-mappings"),
-            });
-        } catch (e) {
-            error("failed to copy mappings", e);
-            toast.error(tl("toast.error.title.generic"), {
-                description: tl("toast.error.copy-mappings.generic"),
+                description: tl("toast.error.export-mappings"),
             });
         }
     },

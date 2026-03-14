@@ -22,12 +22,8 @@
     let { isOpen, close, handler }: Props = $props();
     let format = $state<MappingType>(MappingType.TINY_V2);
 
-    const copyMappings = async () => {
-        await handler.copyMappings(format);
-    };
-
-    const downloadMappings = async () => {
-        await handler.exportMappings(format);
+    const exportMappings = async (clipboard: boolean) => {
+        await handler.exportMappings(format, clipboard);
         isOpen = false;
     };
 </script>
@@ -54,10 +50,10 @@
             </div>
         </div>
         <DialogFooter>
-            <Button type="button" variant="secondary" onclick={copyMappings}>
+            <Button variant="secondary" onclick={() => exportMappings(true)}>
                 {$t("dialog.export-mappings.action.copy")}
             </Button>
-            <Button type="button" onclick={downloadMappings}>
+            <Button onclick={() => exportMappings(false)}>
                 {$t("dialog.export-mappings.action.download")}
             </Button>
         </DialogFooter>

@@ -387,8 +387,7 @@ export interface LocaleData {
     "toast.error.script.read": string;
     "toast.error.script.load": string;
     "toast.error.script.unload": string;
-    "toast.error.export-mappings.generic": string;
-    "toast.error.copy-mappings.generic": string;
+    "toast.error.export-mappings": string;
     "toast.success.title.add": string;
     "toast.success.title.load": string;
     "toast.success.title.delete": string;
@@ -405,7 +404,6 @@ export interface LocaleData {
     "toast.success.delete-script": string;
     "toast.success.load-mappings": string;
     "toast.success.export-mappings": string;
-    "toast.success.copy-mappings": string;
     "toast.info.title.duplicate.single": string;
     "toast.info.title.duplicate.multiple": string;
     "toast.info.duplicate.single": string;
