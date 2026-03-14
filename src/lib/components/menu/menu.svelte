@@ -16,6 +16,7 @@
         ExportMappingsDialog,
         LoadExternalDialog,
         ScriptLoadDialog,
+        StatsMappingsDialog,
         LoadMappingsDialog,
     } from "$lib/components/dialog";
     import {
@@ -56,8 +57,10 @@
     import PaneButton from "./pane_button.svelte";
     import { groupBy } from "$lib/utils";
     import { modals } from "svelte-modals";
+    import { tasks } from "$lib/task";
     import { mappings } from "$lib/workspace/analysis/mapping";
     import { mappingSet } from "$lib/workspace/analysis/mapping/data";
+    import { get } from "svelte/store";
 
     interface Props {
         panes: PaneData[];
@@ -71,6 +74,10 @@
     }
 
     let { panes = $bindable(), tab, entries, classes, scripts, disasms, transformers, handler }: Props = $props();
+
+    const analysisRunning = $derived.by(() =>
+        Array.from($tasks.values()).some((task) => get(task.name) === "task.analyze")
+    );
 
     const updatePane = (position: TabPosition, open: boolean) => {
         let pane = panes.find((p) => p.position === position);
@@ -348,6 +355,19 @@
                 >
                     {$t("menu.mapping.export")}
                     <ExternalLink size={16} />
+                </MenubarItem>
+                <MenubarItem
+                    class="justify-between"
+                    disabled={analysisRunning || $mappings.size() === 0}
+                    onclick={() => modals.open(StatsMappingsDialog)}
+                >
+                    <div class="flex flex-col">
+                        <span>{$t("menu.mapping.stats")}</span>
+                        {#if analysisRunning && $mappings.size() > 0}
+                            <span class="text-xs text-muted-foreground">{$t("menu.mapping.stats.disabled-analysis")}</span>
+                        {/if}
+                    </div>
+                    <Info size={16} />
                 </MenubarItem>
                 <MenubarItem
                     class="justify-between"
