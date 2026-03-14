@@ -14,7 +14,7 @@ export const readNamespaces = (data: string): string[] => {
     return header;
 };
 
-const shouldSkip = (line: string, wantedLevel: number): boolean => {
+const countLevel = (line: string): number => {
     let level = 0;
     for (const char of line) {
         if (char === "\t") {
@@ -24,7 +24,7 @@ const shouldSkip = (line: string, wantedLevel: number): boolean => {
         }
     }
 
-    return level > wantedLevel;
+    return level;
 };
 
 // src is always the first one
@@ -48,7 +48,9 @@ export const read = (data: string, dst?: string): MappingSet => {
     let level = 0;
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        if (shouldSkip(line, level)) {
+
+        const lineLevel = countLevel(line);
+        if (lineLevel > level) {
             continue; // skip sections that are deeper than the current level
         }
 
@@ -56,6 +58,10 @@ export const read = (data: string, dst?: string): MappingSet => {
         const type = columns.shift()!;
         switch (type) {
             case "c": {
+                if (lineLevel > 0) {
+                    // comment, ignore
+                    break;
+                }
                 currentClass = mappings.get(columns[0]);
 
                 const dst = columns[dstIdx];
