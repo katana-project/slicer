@@ -49,9 +49,6 @@ export interface LocaleData {
     "menu.mapping.load.clipboard": string;
     "menu.mapping.clear": string;
     "menu.mapping.export": string;
-    "menu.mapping.export.tiny_v1": string;
-    "menu.mapping.export.tiny_v2": string;
-    "menu.mapping.export.proguard": string;
     "tab.project": string;
     "tab.logging": string;
     "tab.playground": string;
@@ -343,6 +340,14 @@ export interface LocaleData {
     "dialog.load-mappings.dst-ns": string;
     "dialog.load-mappings.dst-ns.placeholder": string;
     "dialog.load-mappings.action.confirm": string;
+    "dialog.export-mappings.title": string;
+    "dialog.export-mappings.desc": string;
+    "dialog.export-mappings.format": string;
+    "dialog.export-mappings.format.tiny_v1": string;
+    "dialog.export-mappings.format.tiny_v2": string;
+    "dialog.export-mappings.format.proguard": string;
+    "dialog.export-mappings.action.copy": string;
+    "dialog.export-mappings.action.download": string;
     "dialog.prefs-clear.title": string;
     "dialog.prefs-clear.desc": string;
     "dialog.prefs-clear.action.cancel": string;
@@ -383,7 +388,7 @@ export interface LocaleData {
     "toast.error.script.load": string;
     "toast.error.script.unload": string;
     "toast.error.export-mappings.generic": string;
-    "toast.error.export-mappings.no-mappings": string;
+    "toast.error.copy-mappings.generic": string;
     "toast.success.title.add": string;
     "toast.success.title.load": string;
     "toast.success.title.delete": string;
@@ -400,6 +405,7 @@ export interface LocaleData {
     "toast.success.delete-script": string;
     "toast.success.load-mappings": string;
     "toast.success.export-mappings": string;
+    "toast.success.copy-mappings": string;
     "toast.info.title.duplicate.single": string;
     "toast.info.title.duplicate.multiple": string;
     "toast.info.duplicate.single": string;

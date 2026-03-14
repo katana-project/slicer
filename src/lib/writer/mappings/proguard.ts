@@ -1,5 +1,5 @@
 import type { MappingSet } from "$lib/workspace/analysis/mapping/data";
-import { getSortedClassesWithMappedMembers } from "./common";
+import { getSortedClasses } from "./common";
 
 const fromInternalName = (name: string): string => {
     return name.replaceAll("/", ".");
@@ -94,26 +94,30 @@ const decodeFieldDescriptor = (descriptor: string, mappingSet: MappingSet): stri
     return type;
 };
 
+const getProguardName = (src: string, dst?: string): string => {
+    return dst && dst.length > 0 ? dst : src;
+};
+
 export const write = (mappingSet: MappingSet): string => {
     const lines: string[] = [];
-    const classes = getSortedClassesWithMappedMembers(mappingSet);
+    const classes = getSortedClasses(mappingSet);
 
     for (const klass of classes) {
-        const fields = klass.fieldsWithDst;
-        const methods = klass.methodsWithDst;
+        const fields = klass.sortedFields;
+        const methods = klass.sortedMethods;
 
         const srcName = fromInternalName(klass.src);
-        const dstName = fromInternalName(klass.dst ?? klass.src);
+        const dstName = fromInternalName(getProguardName(klass.src, klass.dst));
         lines.push(`${dstName} -> ${srcName}:`);
 
         for (const field of fields) {
             const fieldType = decodeFieldDescriptor(field.srcDesc, mappingSet);
-            lines.push(`    ${fieldType} ${field.dst} -> ${field.src}`);
+            lines.push(`    ${fieldType} ${getProguardName(field.src, field.dst)} -> ${field.src}`);
         }
 
         for (const method of methods) {
             const { parameters, returnType } = decodeMethodDescriptor(method.srcDesc, mappingSet);
-            lines.push(`    ${returnType} ${method.dst}(${parameters.join(",")}) -> ${method.src}`);
+            lines.push(`    ${returnType} ${getProguardName(method.src, method.dst)}(${parameters.join(",")}) -> ${method.src}`);
         }
     }
 

@@ -21,6 +21,6 @@ export const getExtension = (mappingType: MappingType): string => {
         case MappingType.TINY_V2:
             return "tiny";
         case MappingType.PROGUARD:
-            return "map";
+            return "txt";
     }
 };

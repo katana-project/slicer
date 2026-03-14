@@ -1,9 +1,5 @@
 import type { MappedClass, MappedMember, MappingSet } from "$lib/workspace/analysis/mapping/data";
 
-export interface MappedMemberWithDst extends MappedMember {
-    dst: string;
-}
-
 const sortBySource = <T extends { src: string }>(items: T[]): T[] => {
     return items.sort((left, right) => left.src.localeCompare(right.src));
 };
@@ -14,39 +10,23 @@ const sortMembers = <T extends { src: string; srcDesc: string }>(items: T[]): T[
     );
 };
 
-const hasDst = (member: MappedMember): member is MappedMemberWithDst => {
-    return typeof member.dst === "string" && member.dst.length > 0;
-};
-
-const getMappedMembers = (members: Record<string, MappedMember>): MappedMemberWithDst[] => {
-    return sortMembers(Object.values(members)).filter(hasDst);
-};
-
-const shouldWriteClass = (classDst: string | undefined, fieldCount: number, methodCount: number): boolean => {
-    return Boolean(classDst) || fieldCount > 0 || methodCount > 0;
-};
-
-export interface MappedClassWithMembers extends MappedClass {
-    fieldsWithDst: MappedMemberWithDst[];
-    methodsWithDst: MappedMemberWithDst[];
+export interface SortedClass extends MappedClass {
+    sortedFields: MappedMember[];
+    sortedMethods: MappedMember[];
 }
 
-export const getSortedClassesWithMappedMembers = (mappingSet: MappingSet): MappedClassWithMembers[] => {
+export const getSortedClasses = (mappingSet: MappingSet): SortedClass[] => {
     const classes = sortBySource(Object.values(mappingSet.elements));
 
-    const result: MappedClassWithMembers[] = [];
+    const result: SortedClass[] = [];
     for (const klass of classes) {
-        const fieldsWithDst = getMappedMembers(klass.fields.elements);
-        const methodsWithDst = getMappedMembers(klass.methods.elements);
-
-        if (!shouldWriteClass(klass.dst, fieldsWithDst.length, methodsWithDst.length)) {
-            continue;
-        }
+        const sortedFields = sortMembers(Object.values(klass.fields.elements));
+        const sortedMethods = sortMembers(Object.values(klass.methods.elements));
 
         result.push({
             ...klass,
-            fieldsWithDst,
-            methodsWithDst,
+            sortedFields,
+            sortedMethods,
         });
     }
 
