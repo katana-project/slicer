@@ -38,7 +38,11 @@ export const read = (data: string, dst?: string): MappingSet => {
         switch (type) {
             case "CLASS": {
                 currentClass = mappings.get(columns[0]);
-                currentClass.dst = columns[dstIdx];
+
+                const dst = columns[dstIdx];
+                if (dst.trim() !== "") {
+                    currentClass.dst = dst;
+                }
                 break;
             }
             case "FIELD":
@@ -51,7 +55,10 @@ export const read = (data: string, dst?: string): MappingSet => {
                 const desc = columns.shift()!;
                 const member = (type === "FIELD" ? currentClass.fields : currentClass.methods).get(columns[0], desc);
 
-                member.dst = columns[dstIdx];
+                const dst = columns[dstIdx];
+                if (dst.trim() !== "") {
+                    member.dst = dst;
+                }
                 break;
             }
         }

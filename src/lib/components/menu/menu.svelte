@@ -13,6 +13,7 @@
     import {
         AboutDialog,
         ClearDialog,
+        ExportMappingsDialog,
         LoadExternalDialog,
         ScriptLoadDialog,
         LoadMappingsDialog,
@@ -46,6 +47,7 @@
         Sun,
         FileInput,
         Trash,
+        ExternalLink,
     } from "@lucide/svelte";
     import { themes } from "$lib/theme";
     import type { Disassembler } from "$lib/disasm";
@@ -339,6 +341,14 @@
                     </MenubarSubContent>
                 </MenubarSub>
                 <MenubarSeparator />
+                <MenubarItem
+                    class="justify-between"
+                    onclick={() => modals.open(ExportMappingsDialog, { handler })}
+                    disabled={$mappings.size() === 0}
+                >
+                    {$t("menu.mapping.export")}
+                    <ExternalLink size={16} />
+                </MenubarItem>
                 <MenubarItem
                     class="justify-between"
                     onclick={() => ($mappings = mappingSet())}
