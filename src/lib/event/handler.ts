@@ -35,6 +35,7 @@ import {
     recordTimedProgress,
     remove as removeTask,
 } from "$lib/task";
+import { getExtension as getMappingsExtension, write as writeMappings } from "$lib/writer/mappings";
 import { chunk, distribute, downloadBlob, humanSize, partition, readFiles, timestampFile, truncate } from "$lib/utils";
 import {
     type ClassEntry,
@@ -55,6 +56,7 @@ import { Channel } from "queueable";
 import { toast } from "svelte-sonner";
 import { get } from "svelte/store";
 import type { EventHandler } from "./";
+import { MappingType } from "$lib/reader/mappings";
 
 // one hell of a file that responds to basically all essential actions as signalled by the UI
 
@@ -366,6 +368,39 @@ export default {
             error(`failed to load mappings from ${data.name}`, e);
             toast.error(tl("toast.error.title.generic"), {
                 description: tl("toast.error.load-mappings", data.name),
+            });
+        }
+    },
+    async exportMappings(format: MappingType): Promise<void> {
+        const mappingSet = get(mappings);
+
+        if (mappingSet.size() === 0) {
+            toast.info(tl("toast.error.title.generic"), {
+                description: tl("toast.error.export-mappings.no-mappings"),
+            });
+            return;
+        }
+
+        try {
+            const text = writeMappings(format, mappingSet);
+            if (!text.trim()) {
+                toast.info(tl("toast.error.title.generic"), {
+                    description: tl("toast.error.export-mappings.no-mappings"),
+                });
+                return;
+            }
+
+            const extension = getMappingsExtension(format);
+            const fileName = `mappings-${timestampFile()}.${extension}`;
+            await downloadBlob(fileName, new Blob([text], { type: "text/plain;charset=utf-8" }));
+
+            toast.success(tl("toast.success.title.export"), {
+                description: tl("toast.success.export-mappings", fileName),
+            });
+        } catch (e) {
+            error("failed to export mappings", e);
+            toast.error(tl("toast.error.title.generic"), {
+                description: tl("toast.error.export-mappings.generic"),
             });
         }
     },

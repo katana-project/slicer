@@ -5,6 +5,7 @@ import type { Entry } from "$lib/workspace";
 import type { Data } from "$lib/workspace/data";
 import { writable } from "svelte/store";
 import defaultHandler from "./handler";
+import type { MappingType } from "$lib/reader/mappings";
 
 type Awaitable<T> = T | PromiseLike<T>;
 
@@ -20,6 +21,7 @@ export interface EventHandler {
     close(tab?: Tab): Awaitable<void>;
 
     loadMappings(data?: Data, dst?: string): Awaitable<void>;
+    exportMappings(format: MappingType): Awaitable<void>;
 
     addScript(url?: string, load?: boolean): Awaitable<void>;
     loadScript(proto: ProtoScript): Awaitable<void>;

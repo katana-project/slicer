@@ -56,6 +56,7 @@
     import { modals } from "svelte-modals";
     import { mappings } from "$lib/workspace/analysis/mapping";
     import { mappingSet } from "$lib/workspace/analysis/mapping/data";
+    import { MappingType } from "$lib/reader/mappings";
 
     interface Props {
         panes: PaneData[];
@@ -339,6 +340,19 @@
                     </MenubarSubContent>
                 </MenubarSub>
                 <MenubarSeparator />
+                <MenubarSub>
+                    <MenubarSubTrigger disabled={$mappings.size() === 0}>
+                        {$t("menu.mapping.export")}
+                    </MenubarSubTrigger>
+
+                    <MenubarSubContent class="min-w-[12rem]" align="start">
+                        {#each Object.values(MappingType) as format}
+                            <MenubarItem class="justify-between" onclick={() => handler.exportMappings(format)}>
+                                {$t(`menu.mapping.export.${format}`)}
+                            </MenubarItem>
+                        {/each}
+                    </MenubarSubContent>
+                </MenubarSub>
                 <MenubarItem
                     class="justify-between"
                     onclick={() => ($mappings = mappingSet())}
