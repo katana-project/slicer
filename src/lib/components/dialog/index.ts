@@ -9,7 +9,6 @@ import ScriptDialog from "./script.svelte";
 import ScriptDeleteDialog from "./script_delete.svelte";
 import ScriptLoadDialog from "./script_load.svelte";
 import ScriptLoadShareDialog from "./script_load_share.svelte";
-import StatsMappingsDialog from "./stats_mappings.svelte";
 
 export {
     AboutDialog,
@@ -23,5 +22,4 @@ export {
     ScriptDialog,
     ScriptLoadDialog,
     ScriptLoadShareDialog,
-    StatsMappingsDialog,
 };

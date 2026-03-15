@@ -49,8 +49,6 @@ export interface LocaleData {
     "menu.mapping.load.clipboard": string;
     "menu.mapping.clear": string;
     "menu.mapping.export": string;
-    "menu.mapping.stats": string;
-    "menu.mapping.stats.disabled-analysis": string;
     "tab.project": string;
     "tab.logging": string;
     "tab.playground": string;
@@ -353,12 +351,6 @@ export interface LocaleData {
     "dialog.export-mappings.format.tsrg": string;
     "dialog.export-mappings.action.copy": string;
     "dialog.export-mappings.action.download": string;
-    "dialog.mapping-stats.title": string;
-    "dialog.mapping-stats.desc": string;
-    "dialog.mapping-stats.classes": string;
-    "dialog.mapping-stats.fields": string;
-    "dialog.mapping-stats.methods": string;
-    "dialog.mapping-stats.total": string;
     "dialog.prefs-clear.title": string;
     "dialog.prefs-clear.desc": string;
     "dialog.prefs-clear.action.cancel": string;
