@@ -113,6 +113,9 @@ export interface LocaleData {
     "pane.structure.constructors": string;
     "pane.structure.inner-classes": string;
     "pane.structure.inner-classes.anonymous": string;
+    "pane.structure.rename": string;
+    "pane.structure.rename.placeholder": string;
+    "pane.structure.rename.clear": string;
     "pane.structure.menu.disasm": string;
     "pane.structure.menu.graph": string;
     "pane.structure.search.placeholder": string;
