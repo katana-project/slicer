@@ -61,7 +61,7 @@ const memberCollection = <T extends MappedMember = MappedMember>(
 ): MappingCollection<T> => {
     return {
         ...collection(),
-        get(src: string, srcDesc: string): T {
+        get(src: string, srcDesc: string = ""): T {
             const key = `${src}:${srcDesc}`;
             let element = this.elements[key];
             if (!element) {

@@ -14,7 +14,7 @@ export const readNamespaces = (data: string): string[] => {
 
 // src is always the first one
 export const read = (data: string, dst?: string): MappingSet => {
-    const lines = data.split("\n");
+    const lines = data.split("\n").filter((l) => l.trim() !== "" && !l.trim().startsWith("#"));
     const header = lines.shift()?.split("\t") ?? [];
     if (header.shift() !== "v1") {
         throw new Error("Not a valid Tiny v1 mapping file");
@@ -29,10 +29,6 @@ export const read = (data: string, dst?: string): MappingSet => {
 
     let currentClass: MappedClass | null = null;
     for (const line of lines) {
-        if (line.startsWith("#") || line.trim() === "") {
-            continue; // skip comments and empty lines
-        }
-
         const columns = line.split("\t");
         const type = columns.shift()!;
         switch (type) {

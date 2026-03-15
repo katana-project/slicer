@@ -1,85 +1,93 @@
 import { type MappedClass, mappingSet, type MappingSet } from "$lib/workspace/analysis/mapping/data";
 
-export const read = (data: string): MappingSet => {
+// https://github.com/MinecraftForge/SrgUtils/blob/master/src/main/java/net/minecraftforge/srgutils/InternalUtils.java#L260
+// https://github.com/MinecraftForge/SrgUtils/blob/master/src/main/java/net/minecraftforge/srgutils/InternalUtils.java#L194
+
+// TSRG and TSRG2
+
+export const readNamespaces = (data: string): string[] => {
+    const lines = data.split("\n").filter((l) => l.trim() !== "" && !l.trim().startsWith("#"));
+    const header = lines.shift()?.split(" ") ?? [];
+    if (header[0] !== "tsrg2") {
+        return []; // not a valid TSRG2 mapping file, but maybe it's a TSRG file, which doesn't have a header
+    }
+
+    return header.slice(1);
+};
+
+const countLevel = (line: string): number => {
+    let level = 0;
+    for (const char of line) {
+        if (char === "\t") {
+            level++;
+        } else {
+            break;
+        }
+    }
+
+    return level;
+};
+
+export const read = (data: string, dst?: string): MappingSet => {
+    const lines = data.split("\n").filter((l) => l.trim() !== "" && !l.trim().startsWith("#"));
+
+    let dstIdx = 1;
+    if (lines[0]?.startsWith("tsrg2")) {
+        const header = lines.shift()!.split(" ").slice(1);
+        if (dst) {
+            dstIdx = header.indexOf(dst);
+            if (dstIdx === -1) {
+                throw new Error(`Destination namespace "${dst}" not found in mapping file`);
+            }
+        }
+    }
+
     const mappings = mappingSet();
-    const lines = data.split("\n");
-
-    const headerLineIndex = lines.findIndex((line) => {
-        const trimmed = line.trim();
-        return trimmed !== "" && !trimmed.startsWith("#");
-    });
-    const isTsrg2 = headerLineIndex !== -1 && lines[headerLineIndex].trim().startsWith("tsrg2");
-
-    const pickDst = (parts: string[], startIdx: number, fallback: string): string => {
-        const dst = parts[startIdx];
-        return dst && dst.trim() !== "" ? dst : fallback;
-    };
 
     let currentClass: MappedClass | null = null;
-    let memberIndent: number | null = null;
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        const trimmed = line.trim();
-        if (trimmed === "" || trimmed.startsWith("#")) {
-            continue;
-        }
 
-        if (isTsrg2 && i === headerLineIndex) {
-            continue;
-        }
-
-        if (/^\s+/.test(line)) {
-            if (!currentClass) {
-                throw new Error(`Tried to parse TSRG member before class (line ${i + 1})`);
-            }
-
-            if (isTsrg2) {
-                const indent = line.match(/^\s*/)?.[0].length ?? 0;
-                if (memberIndent === null) {
-                    memberIndent = indent;
-                }
-
-                if (indent > memberIndent) {
+        const lineLevel = countLevel(line);
+        switch (lineLevel) {
+            case 0: {
+                // top-level, should be a class
+                const columns = line.trim().split(" ");
+                if (columns.some((c) => c.endsWith("/"))) {
+                    // package mapping, skip
                     continue;
                 }
-            }
 
-            const parts = trimmed.split(/\s+/g);
-            if (parts.length < 2) {
-                throw new Error(`Invalid TSRG member on line ${i + 1}: ${trimmed}`);
+                currentClass = mappings.get(columns[0]);
+                currentClass.dst = columns[dstIdx];
+                break;
             }
-
-            if (isTsrg2) {
-                const src = parts[0];
-                const second = parts[1];
-                if (second.startsWith("(")) {
-                    const srcDesc = second;
-                    const dst = pickDst(parts, 2, src);
-                    currentClass.methods.get(src, srcDesc).dst = dst;
-                } else {
-                    const dst = pickDst(parts, 1, src);
-                    currentClass.fields.get(src, "").dst = dst;
+            case 1: {
+                // member of the current class
+                if (!currentClass) {
+                    throw new Error(`Tried to parse TSRG member before class (line ${i + 1})`);
                 }
-            } else if (parts.length === 2) {
-                const [src, dst] = parts;
-                currentClass.fields.get(src, "").dst = dst;
-            } else {
-                const [src, srcDesc, dst] = parts;
-                currentClass.methods.get(src, srcDesc).dst = dst;
+
+                const columns = line.trim().split(" ");
+                const src = columns.shift()!;
+                const desc = columns.shift()!;
+
+                if (desc.startsWith("(")) {
+                    const names = [src, ...columns];
+
+                    const currentMethod = currentClass.methods.get(src, desc);
+                    currentMethod.dst = names[dstIdx];
+                } else {
+                    // not actually a descriptor, put it back
+                    const names = [src, desc, ...columns];
+
+                    const currentField = currentClass.fields.get(src);
+                    currentField.dst = names[dstIdx];
+                }
+                break;
             }
-
-            continue;
+            // default: deeper level, skip
         }
-
-        const parts = trimmed.split(/\s+/g);
-        if (parts.length < 2) {
-            throw new Error(`Invalid TSRG class line on ${i + 1}: ${trimmed}`);
-        }
-
-        const src = parts[0];
-        currentClass = mappings.get(src);
-        currentClass.dst = pickDst(parts, 1, src);
-        memberIndent = null;
     }
 
     return mappings;

@@ -48,15 +48,11 @@ const formatMethodParams = (desc: string, mappings: MappingSet): string => {
 };
 
 export const read = (data: string): MappingSet => {
-    const lines = data.split("\n");
+    const lines = data.split("\n").filter((l) => l.trim() !== "" && !l.trim().startsWith("#"));
     const reverseMappings = mappingSet();
 
     // first pass: read classes
     for (const line of lines) {
-        if (line.startsWith("#") || line.trim() === "") {
-            continue; // skip comments and empty lines
-        }
-
         let [dst, src] = line.trim().split(" -> ", 2);
         if (src.endsWith(":")) {
             // class
@@ -73,9 +69,6 @@ export const read = (data: string): MappingSet => {
     let currentClass: MappedClass | null = null;
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        if (line.startsWith("#") || line.trim() === "") {
-            continue; // skip comments and empty lines
-        }
 
         let [dst, src] = line.trim().split(" -> ", 2);
         if (src.endsWith(":")) {

@@ -4,7 +4,7 @@ import { read as readProguard } from "./proguard";
 import { read as readSrg } from "./srg";
 import { read as readTinyV1, readNamespaces as readTinyV1Namespaces } from "./tiny_v1";
 import { read as readTinyV2, readNamespaces as readTinyV2Namespaces } from "./tiny_v2";
-import { read as readTsrg } from "./tsrg";
+import { read as readTsrg, readNamespaces as readTsrgNamespaces } from "./tsrg";
 
 export enum MappingType {
     TINY_V1 = "tiny_v1",
@@ -15,105 +15,45 @@ export enum MappingType {
     TSRG = "tsrg",
 }
 
-const hasIndentedMembers = (data: string): boolean => {
-    return data
-        .split("\n")
-        .some((line) => /^\s+/.test(line) && line.trim() !== "" && !line.trim().startsWith("#"));
-};
-
-const isSrg = (data: string): boolean => {
-    return /^\s*(PK:|CL:|FD:|MD:)\s+/m.test(data);
-};
-
-const isTsrg = (data: string): boolean => {
-    if (!hasIndentedMembers(data)) {
-        return false;
-    }
-
-    const lines = data.split("\n").map((line) => line.trimEnd());
-    let hasClass = false;
-    let hasMember = false;
-    for (const line of lines) {
-        const trimmed = line.trim();
-        if (trimmed === "" || trimmed.startsWith("#")) {
-            continue;
-        }
-
-        const parts = trimmed.split(/\s+/g);
-        if (/^\s+/.test(line)) {
-            hasMember = hasMember || parts.length >= 2;
+const detect = (data: string): MappingType => {
+    const lines = data.split("\n").filter((l) => l.trim() !== "" && !l.trim().startsWith("#"));
+    if (lines.some((l) => l.startsWith("\t"))) {
+        // tab indents exist
+        const header = lines[0];
+        if (header.startsWith("v1\t")) {
+            return MappingType.TINY_V1;
+        } else if (header.startsWith("tiny\t2\t")) {
+            return MappingType.TINY_V2;
         } else {
-            hasClass = hasClass || parts.length >= 2;
+            return MappingType.TSRG;
+        }
+    } else {
+        if (data.includes("->") && data.includes(":")) {
+            return MappingType.PROGUARD;
+        } else if (/^(PK:|CL:|FD:|MD:)/m.test(data)) {
+            return MappingType.SRG;
+        } else {
+            return MappingType.CSRG;
         }
     }
-
-    return hasClass && hasMember;
-};
-
-const isCsrg = (data: string): boolean => {
-    if (hasIndentedMembers(data)) {
-        return false;
-    }
-
-    const lines = data.split("\n");
-    for (const raw of lines) {
-        const line = raw.trim();
-        if (line === "" || line.startsWith("#")) {
-            continue;
-        }
-
-        if (line.includes("->")) {
-            return false;
-        }
-
-        const parts = line.split(/\s+/g);
-        if (parts.length === 2 || parts.length === 3 || parts.length === 4) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
-export const detect = (data: string): MappingType | null => {
-    if (data.startsWith("v1\t")) {
-        return MappingType.TINY_V1;
-    } else if (data.startsWith("tiny\t2\t")) {
-        return MappingType.TINY_V2;
-    } else if (isSrg(data)) {
-        return MappingType.SRG;
-    } else if (isTsrg(data)) {
-        return MappingType.TSRG;
-    } else if (isCsrg(data)) {
-        return MappingType.CSRG;
-    } else if (data.includes("->") && data.includes(":")) {
-        return MappingType.PROGUARD;
-    }
-
-    return null;
 };
 
 export const namespaces = (data: string): string[] => {
     const type = detect(data);
-    if (!type) {
-        throw new Error("Could not detect mapping format");
-    }
-
     switch (type) {
         case MappingType.TINY_V1:
             return readTinyV1Namespaces(data);
         case MappingType.TINY_V2:
             return readTinyV2Namespaces(data);
+        case MappingType.TSRG:
+            return readTsrgNamespaces(data);
     }
+
     return [];
 };
 
 export const read = (data: string, dst?: string): MappingSet => {
     const type = detect(data);
-    if (!type) {
-        throw new Error("Could not detect mapping format");
-    }
-
     switch (type) {
         case MappingType.TINY_V1:
             return readTinyV1(data, dst);

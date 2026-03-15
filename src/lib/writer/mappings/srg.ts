@@ -1,4 +1,6 @@
 import type { MappingSet } from "$lib/workspace/analysis/mapping/data";
+import { parseType } from "@katana-project/asm/type";
+import { remapType } from "./internal";
 
 export const write = (mappingSet: MappingSet): string => {
     const lines: string[] = [];
@@ -12,8 +14,10 @@ export const write = (mappingSet: MappingSet): string => {
         }
 
         for (const method of klass.methods.values()) {
-            const srcDesc = method.srcDesc || "()V";
-            lines.push(`MD: ${klass.src}/${method.src} ${srcDesc} ${dstClass}/${method.dst ?? method.src} ${srcDesc}`);
+            const dstDesc = remapType(parseType(method.srcDesc), mappingSet).value;
+            lines.push(
+                `MD: ${klass.src}/${method.src} ${method.srcDesc} ${dstClass}/${method.dst ?? method.src} ${dstDesc}`
+            );
         }
     }
 

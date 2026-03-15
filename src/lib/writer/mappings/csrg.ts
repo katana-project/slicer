@@ -11,7 +11,7 @@ export const write = (mappingSet: MappingSet): string => {
         }
 
         for (const method of klass.methods.values()) {
-            lines.push(`${klass.src} ${method.src} ${method.srcDesc || "()V"} ${method.dst ?? method.src}`);
+            lines.push(`${klass.src} ${method.src} ${method.srcDesc} ${method.dst ?? method.src}`);
         }
     }
 

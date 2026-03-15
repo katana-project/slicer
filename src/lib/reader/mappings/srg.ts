@@ -1,5 +1,9 @@
 import { mappingSet, type MappingSet } from "$lib/workspace/analysis/mapping/data";
 
+// https://github.com/MinecraftForge/SrgUtils/blob/master/src/main/java/net/minecraftforge/srgutils/InternalUtils.java#L67
+
+// SRG and XSRG
+
 const splitRef = (value: string): { owner: string; name: string } => {
     const index = value.lastIndexOf("/");
     if (index === -1) {
@@ -13,65 +17,59 @@ const splitRef = (value: string): { owner: string; name: string } => {
 };
 
 export const read = (data: string): MappingSet => {
+    const lines = data.split("\n").filter((l) => l.trim() !== "" && !l.trim().startsWith("#"));
+
     const mappings = mappingSet();
-    const lines = data.split("\n");
-
     for (let i = 0; i < lines.length; i++) {
-        const raw = lines[i].trim();
-        if (raw === "" || raw.startsWith("#")) {
-            continue;
-        }
+        const line = lines[i];
+        const columns = line.split(" ");
 
-        const parts = raw.split(/\s+/g);
-        const kind = parts[0];
-
-        switch (kind) {
+        const type = columns.shift()!;
+        switch (type) {
             case "PK:":
                 break;
             case "CL:": {
-                if (parts.length < 3) {
-                    throw new Error(`Invalid CL mapping on line ${i + 1}`);
+                if (columns.length < 2) {
+                    throw new Error(`Invalid CL mapping (line ${i + 1})`);
                 }
 
-                const klass = mappings.get(parts[1]);
-                klass.dst = parts[2];
+                const currentClass = mappings.get(columns[0]);
+                currentClass.dst = columns[1];
                 break;
             }
             case "FD:": {
-                if (parts.length < 3) {
-                    throw new Error(`Invalid FD mapping on line ${i + 1}`);
+                if (columns.length < 2) {
+                    throw new Error(`Invalid FD mapping (line ${i + 1})`);
                 }
 
-                const src = splitRef(parts[1]);
-                const dst = splitRef(parts[2]);
+                const isXsrg = !columns[1].includes("/");
 
-                const klass = mappings.get(src.owner);
-                if (dst.owner !== src.owner) {
-                    klass.dst = dst.owner;
-                }
+                const src = splitRef(columns[0]);
+                const dst = splitRef(columns[isXsrg ? 2 : 1]);
 
-                klass.fields.get(src.name, "").dst = dst.name;
+                const currentClass = mappings.get(src.owner);
+                currentClass.dst = dst.owner;
+
+                const currentField = currentClass.fields.get(src.name, isXsrg ? columns[1] : undefined);
+                currentField.dst = dst.name;
                 break;
             }
             case "MD:": {
-                if (parts.length < 5) {
-                    throw new Error(`Invalid MD mapping on line ${i + 1}`);
+                if (columns.length < 4) {
+                    throw new Error(`Invalid MD mapping (line ${i + 1})`);
                 }
 
-                const src = splitRef(parts[1]);
-                const srcDesc = parts[2];
-                const dst = splitRef(parts[3]);
+                const src = splitRef(columns[0]);
+                const dst = splitRef(columns[2]);
 
-                const klass = mappings.get(src.owner);
-                if (dst.owner !== src.owner) {
-                    klass.dst = dst.owner;
-                }
+                const currentClass = mappings.get(src.owner);
+                currentClass.dst = dst.owner;
 
-                klass.methods.get(src.name, srcDesc).dst = dst.name;
+                const currentMethod = currentClass.methods.get(src.name, columns[1]);
+                currentMethod.dst = dst.name;
                 break;
             }
-            default:
-                throw new Error(`Unsupported SRG line on ${i + 1}: ${raw}`);
+            // default: ignore
         }
     }
 
