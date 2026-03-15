@@ -35,8 +35,19 @@ import {
     recordTimed,
     recordTimedProgress,
     remove as removeTask,
+    type Task,
 } from "$lib/task";
-import { chunk, distribute, downloadBlob, humanSize, partition, readFiles, timestampFile, truncate } from "$lib/utils";
+import {
+    chunk,
+    distribute,
+    downloadBlob,
+    fetchProgress,
+    humanSize,
+    partition,
+    readFiles,
+    timestampFile,
+    truncate,
+} from "$lib/utils";
 import {
     type ClassEntry,
     clear as clearWs,
@@ -51,7 +62,7 @@ import {
     ZIP_EXTENSIONS,
 } from "$lib/workspace";
 import { mappings } from "$lib/workspace/analysis/mapping";
-import { type Data, download, textMemoryData } from "$lib/workspace/data";
+import { type Data, download, memoryData, textMemoryData } from "$lib/workspace/data";
 import { getExtension as getMappingsExtension, write as writeMappings } from "$lib/writer/mappings";
 import { Channel } from "queueable";
 import { toast } from "svelte-sonner";
@@ -84,6 +95,19 @@ const toastAdd = async (created: LoadResult[], skipped: LoadResult[], time: numb
             ),
         });
     }
+};
+
+const remoteProgress = (task: Task, url: string): ((loaded: number, total: number) => void) => {
+    return (loaded, total) => {
+        if (total === -1) {
+            // total size unknown
+            task.desc.set(`${url} (${humanSize(loaded)})`);
+            task.progress = undefined; // indeterminate
+        } else {
+            task.desc.set(`${url} (${humanSize(loaded)}/${humanSize(total)})`);
+            task.progress?.set((loaded / total) * 100);
+        }
+    };
 };
 
 export default {
@@ -173,16 +197,7 @@ export default {
 
         const { time, result } = await recordTimedProgress("task.add", url, async (task) => {
             try {
-                return await loadRemote(url, null, (loaded, total) => {
-                    if (total === -1) {
-                        // total size unknown
-                        task.desc.set(`${url} (${humanSize(loaded)})`);
-                        task.progress = undefined; // indeterminate
-                    } else {
-                        task.desc.set(`${url} (${humanSize(loaded)}/${humanSize(total)})`);
-                        task.progress?.set((loaded / total) * 100);
-                    }
-                });
+                return await loadRemote(url, null, remoteProgress(task, url));
             } catch (e) {
                 error(`failed to load remote url ${url}`, e);
                 toast.error(tl("toast.error.title.generic"), {
@@ -370,6 +385,26 @@ export default {
                 description: tl("toast.error.load-mappings", data.name),
             });
         }
+    },
+    async loadRemoteMappings(url: string): Promise<void> {
+        const result = await recordProgress("task.load", url, async (task) => {
+            try {
+                return await fetchProgress(url, remoteProgress(task, url));
+            } catch (e) {
+                error(`failed to load remote url ${url}`, e);
+                toast.error(tl("toast.error.title.generic"), {
+                    description: tl("toast.error.load-remote", url),
+                });
+            }
+
+            return null;
+        });
+
+        if (result === null) {
+            return;
+        }
+
+        await this.loadMappings(memoryData(url, result));
     },
     async exportMappings(format: MappingType, clipboard: boolean): Promise<void> {
         const mappingSet = get(mappings);

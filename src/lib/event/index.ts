@@ -21,6 +21,7 @@ export interface EventHandler {
     close(tab?: Tab): Awaitable<void>;
 
     loadMappings(data?: Data, dst?: string): Awaitable<void>;
+    loadRemoteMappings(url: string): Awaitable<void>;
     exportMappings(format: MappingType, clipboard: boolean): Awaitable<void>;
 
     addScript(url?: string, load?: boolean): Awaitable<void>;

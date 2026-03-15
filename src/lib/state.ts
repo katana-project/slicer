@@ -78,3 +78,4 @@ export const clear = () => {
 export const urlScript = urlPersistedRaw("script");
 export const urlRemote = urlPersistedRawArray("url");
 export const urlRemoteFile = urlPersistedRaw("file");
+export const urlRemoteMapping = urlPersistedRaw("mapping");
