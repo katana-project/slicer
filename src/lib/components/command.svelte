@@ -2,13 +2,14 @@
     import { t } from "$lib/i18n";
     import { CommandDialog, CommandGroup, CommandInput, CommandItem, CommandList } from "$lib/components/ui/command";
     import { onMount } from "svelte";
-    import type { Entry } from "$lib/workspace";
+    import { type ClassEntry, type Entry, EntryType } from "$lib/workspace";
     import { entryIcon } from "$lib/components/icons";
     import { Search } from "@lucide/svelte";
     import { cn } from "$lib/components/utils";
     import { VList } from "virtua/svelte";
     import type { EventHandler } from "$lib/event";
     import { tabDefs, TabPosition } from "$lib/tab";
+    import { prettyInternalName } from "$lib/utils";
 
     interface Props {
         entries: Entry[];
@@ -21,13 +22,35 @@
     let searchWorkspace = $state(false);
     let search = $state("");
 
-    const filter = (entries: Entry[], term: string): Entry[] => {
-        return entries
-            .filter((e) => e.name.includes(term))
-            .sort((a, b) => a.name.length - term.length - (b.name.length - term.length));
+    const alternateName = (entry: Entry): string | null => {
+        if (entry.type === EntryType.CLASS) {
+            const internalName = (entry as ClassEntry).node.thisClass.nameEntry?.string;
+            return internalName ? prettyInternalName(internalName) : null;
+        }
+
+        return null;
     };
 
-    let filteredEntries = $derived(search && searchWorkspace ? filter(entries, search) : entries);
+    type RankedEntry = { entry: Entry; altName: string | null; distance: number };
+    const filter = (entries: Entry[], term: string): RankedEntry[] => {
+        term = term.toLowerCase();
+        return entries
+            .map((e) => {
+                const altName = alternateName(e);
+                if (e.name.toLowerCase().includes(term)) {
+                    return { entry: e, altName, distance: e.name.length - term.length };
+                }
+                if (altName?.toLowerCase()?.includes(term)) {
+                    return { entry: e, altName, distance: altName!.length - term.length };
+                }
+
+                return null;
+            })
+            .filter(Boolean)
+            .sort((a, b) => a!.distance - b!.distance) as RankedEntry[];
+    };
+
+    let filteredEntries = $derived(search && searchWorkspace ? filter(entries, search) : []);
 
     let shift = false;
     onMount(() => {
@@ -66,8 +89,8 @@
         {#if searchWorkspace}
             {#if entries.length > 0}
                 {#key filteredEntries.length}
-                    <VList data={filteredEntries} getKey={(e) => e.name} class="p-2">
-                        {#snippet children(entry)}
+                    <VList data={filteredEntries} getKey={(e) => e.entry.name} class="p-2">
+                        {#snippet children({ entry, altName })}
                             <CommandItem
                                 class="py-2.5!"
                                 onSelect={async () => {
@@ -77,7 +100,14 @@
                             >
                                 {@const { icon: Icon, classes } = entryIcon(entry)}
                                 <Icon class={classes} />
-                                <span class="break-anywhere">{entry.name}</span>
+                                <div class="flex flex-col">
+                                    <span class="break-anywhere">{entry.name}</span>
+                                    {#if altName}
+                                        <span class="break-anywhere text-muted-foreground text-xs">
+                                            ({altName})
+                                        </span>
+                                    {/if}
+                                </div>
                             </CommandItem>
                         {/snippet}
                     </VList>

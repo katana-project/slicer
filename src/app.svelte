@@ -20,6 +20,10 @@
     import { transformers } from "$lib/workspace/analysis/transform";
     import { modals, Modals } from "svelte-modals";
     import { ScriptLoadShareDialog } from "$lib/components/dialog";
+    import { overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
+
+    // use internalId for dndzone item keys instead of id, since we want the pane headers to be reactive to tab state changes
+    overrideItemIdKeyNameBeforeInitialisingDndZones("internalId");
 
     let tabs0 = $derived(Array.from($tabs.values()));
     let entries0 = $derived(Array.from($entries.values()));

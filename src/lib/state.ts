@@ -44,7 +44,7 @@ export const editorTextSize = persisted<number>(root, "editor.text-size", 0.75);
 export const editorTextSizeSync = persisted<boolean>(root, "editor.text-size.sync", true);
 export const analysisBackground = persisted<boolean>(root, "analysis.background", true);
 export const analysisJdkClasses = persisted<boolean>(root, "analysis.jdk-classes", true);
-export const analysisTransformers = persisted<string[]>(root, "analysis.transformers", ["script"]);
+export const analysisTransformers = persisted<string[]>(root, "analysis.transformers", []);
 export const interpHexRowBytes = persisted<number>(root, "interp.hex.row-bytes", 16);
 
 export const panes = persisted<PaneData[]>(root, "panes", [

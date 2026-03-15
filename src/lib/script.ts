@@ -67,6 +67,7 @@ export interface ProtoScript {
 export const scripts = writable<ProtoScript[]>([]);
 
 const wrapEntry = (e: Entry): ScriptEntry => {
+    // TODO: unwrapping transformations?
     return {
         _entry: e,
         get type() {

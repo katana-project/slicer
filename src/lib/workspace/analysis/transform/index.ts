@@ -1,36 +1,20 @@
-import type { Icon } from "$lib/components/icons";
 import { log } from "$lib/log";
-import { rootContext } from "$lib/script";
 import { analysisTransformers } from "$lib/state";
 import type { ClassEntry } from "$lib/workspace";
-import { AnalysisState, analyze } from "$lib/workspace/analysis";
-import { transformData } from "$lib/workspace/data";
+import { transformData, unwrapTransforms } from "$lib/workspace/data";
 import { get, writable, type Writable } from "svelte/store";
+import { internalEarlyTransformers, internalTransformers } from "./internal";
 import normalizationTransformers from "./norm";
 import readabilityTransformers from "./read";
+import { TransformationPoint, type Transformer } from "./types";
 
-export interface Transformer {
-    id: string;
-    group?: string;
-    icon?: Icon;
-
-    // hides it from the menu and makes it always enabled
-    internal?: boolean;
-
-    run(entry: ClassEntry, data: Uint8Array): Uint8Array | PromiseLike<Uint8Array>;
-}
+// transformers are responsible for keeping entry structures up-to-date, as the entry does not undergo additional analysis after transformation
 
 export const transformers: Writable<Transformer[]> = writable([
+    ...internalEarlyTransformers,
     ...readabilityTransformers,
     ...normalizationTransformers,
-    // script transforms should be processed last
-    {
-        id: "script",
-        internal: true,
-        async run(entry, data) {
-            return (await rootContext.dispatchEvent({ type: "preload", name: entry.name, data })).data;
-        },
-    },
+    ...internalTransformers,
 ]);
 
 export const enabled = (trf: Transformer): boolean => trf.internal || get(analysisTransformers).includes(trf.id);
@@ -46,13 +30,21 @@ export const toggle = (trf: Transformer, enabled: boolean) => {
     });
 };
 
-export const transform = async (entry: ClassEntry, data: Uint8Array): Promise<ClassEntry> => {
-    const enabledTrfs = Array.from(get(transformers).values()).filter(enabled);
+export const transform = async (
+    entry: ClassEntry,
+    point: TransformationPoint = TransformationPoint.LATE
+): Promise<ClassEntry> => {
+    const enabledTrfs = Array.from(get(transformers).values()).filter(
+        (trf) =>
+            enabled(trf) && ((trf.point ?? TransformationPoint.LATE) === point || trf.point === TransformationPoint.ANY)
+    );
 
-    const originalData = data;
+    const unwrappedData = unwrapTransforms(entry.data);
+    const originalData = await unwrappedData.bytes();
+    let data = originalData;
+
     const cloneEntry: ClassEntry = { ...entry, node: window.structuredClone(entry.node) };
-    for (let i = 0; i < enabledTrfs.length; i++) {
-        const transformer = enabledTrfs[i];
+    for (const transformer of enabledTrfs) {
         if (!transformer.internal) {
             log(`running transformer '${transformer.id}' on '${entry.name}'`);
         }
@@ -61,13 +53,23 @@ export const transform = async (entry: ClassEntry, data: Uint8Array): Promise<Cl
     }
 
     // create transformed entry only if a transformation happened
-    if (data !== originalData) {
-        cloneEntry.data = transformData(cloneEntry.data, data);
-        cloneEntry.state = AnalysisState.NONE;
-
-        await analyze(cloneEntry, AnalysisState.FULL);
+    // or if there was already a transformation that was unwrapped
+    if (data !== originalData || unwrappedData !== entry.data) {
+        cloneEntry.data = transformData(unwrappedData, data);
         return cloneEntry;
     }
 
     return entry;
 };
+
+export const transformInPlace = async (
+    entry: ClassEntry,
+    point: TransformationPoint = TransformationPoint.LATE
+): Promise<void> => {
+    const transformedEntry = await transform(entry, point);
+    if (transformedEntry !== entry) {
+        Object.assign(entry, transformedEntry);
+    }
+};
+
+export * from "./types";

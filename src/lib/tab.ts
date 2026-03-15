@@ -2,9 +2,10 @@ import { type Icon, type StyledIcon, tabIcon } from "$lib/components/icons";
 import { t } from "$lib/i18n";
 import { error } from "$lib/log";
 import { analysisTransformers, panes, workspaceEncoding } from "$lib/state";
-import { type Entry, EntryType, readDeferred } from "$lib/workspace";
+import { prettyInternalName } from "$lib/utils";
+import { type ClassEntry, type Entry, EntryType, readDeferred } from "$lib/workspace";
 import { AnalysisState } from "$lib/workspace/analysis";
-import { unwrapTransform } from "$lib/workspace/data";
+import { mappings } from "$lib/workspace/analysis/mapping";
 import { Box, Folders, LayoutList, ScrollText, Search, Settings, Sparkles } from "@lucide/svelte";
 import { derived, get, writable } from "svelte/store";
 
@@ -228,6 +229,12 @@ export const update = (tab: Tab): Tab => {
                 ) + 1;
         }
 
+        const nodeName =
+            tab.entry?.type === EntryType.CLASS ? (tab.entry as ClassEntry).node.thisClass.nameEntry?.string : null;
+
+        // update name based on entry, if possible
+        tab.name = nodeName ? prettyInternalName(nodeName, true) : tab.name;
+
         $tabs.set(tab.id, tab);
         return $tabs;
     });
@@ -235,13 +242,11 @@ export const update = (tab: Tab): Tab => {
 };
 
 export const refresh = async (tab: Tab, hard: boolean = false): Promise<Tab> => {
-    if (hard && tab.entry) {
-        tab.entry = await readDeferred({
-            ...tab.entry,
-            // unwrap any transforms, something may have touched the tab entry
-            data: unwrapTransform(tab.entry.data),
-            state: AnalysisState.NONE,
-        });
+    const entry = tab.entry;
+    if (hard && entry) {
+        // re-analysis will unwrap any late transformations
+        entry.state = AnalysisState.NONE;
+        tab.entry = await readDeferred(entry);
     }
 
     // try immediate update for the current tab
@@ -342,8 +347,8 @@ workspaceEncoding.subscribe(() => {
     refreshIf(isEncodingDependent).then();
 });
 
-// hard-refresh tabs on transformer change
-analysisTransformers.subscribe(() => {
+// hard-refresh tabs on transformer (state) change
+derived([analysisTransformers, mappings], (a) => a).subscribe(() => {
     refreshIf(({ entry }) => {
         return entry !== undefined && (entry.type === EntryType.CLASS || entry.type === EntryType.MEMBER);
     }, true).then();
@@ -377,6 +382,7 @@ export const open = async (entry: Entry, type: TabType = detectType(entry)): Pro
             tab = update({
                 id,
                 type,
+                // TODO: disambiguate tabs with the same name?
                 name: entry.shortName,
                 position: TabPosition.PRIMARY_CENTER,
                 index: null,

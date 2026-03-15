@@ -12,6 +12,8 @@ import {
     EntryType,
     type MemberEntry,
 } from "$lib/workspace";
+import { TransformationPoint, transformInPlace } from "$lib/workspace/analysis/transform";
+import { unwrapTransforms } from "$lib/workspace/data";
 import { FLAG_SKIP_ATTR_PARSE, FLAG_SLICE_BUFFER, type Node } from "@katana-project/asm";
 import { type Annotation, type AnnotationsAttribute, readAnnotations } from "@katana-project/asm/attr/annotation";
 import type { ClassEntry as ClassPoolEntry, RefEntry } from "@katana-project/asm/pool";
@@ -48,11 +50,17 @@ const analyzeClass = async (entry: Entry, skipAttr: boolean) => {
                 ) || member;
         } else {
             classEntry.type = EntryType.CLASS;
+        }
+
+        await transformInPlace(classEntry, TransformationPoint.EARLY);
+
+        // post-transform analysis
+        if (entry.type === EntryType.CLASS) {
             classEntry.entryPoints = analyzeEntryPoints(classEntry.node);
             classEntry.characteristics = analyzeCharacteristics(classEntry.node);
         }
     } catch (e) {
-        error(`failed to read class ${entry.name}`, e);
+        error(`failed to analyze class ${entry.name}`, e);
     }
 };
 
@@ -236,6 +244,9 @@ const analyzeCharacteristics = (node: Node): CharacteristicType[] => {
 export const analyze = async (entry: Entry, state: AnalysisState = AnalysisState.PARTIAL) => {
     if (entry.state === AnalysisState.FULL) return;
 
+    // unwrap all transforms before analysis to get the original data
+    entry.data = unwrapTransforms(entry.data);
+
     // full analysis does more expensive magic header detection
     // and reads class nodes in their entirety
     switch (state) {
@@ -269,36 +280,68 @@ export const analyze = async (entry: Entry, state: AnalysisState = AnalysisState
     entry.state = state;
 };
 
-let queue: Entry[] = [];
+const queue = new Set<Entry>();
 
-export const analyzeSchedule = (...entries: Entry[]) => queue.push(...entries);
+export const analyzeSchedule = (...entries: Entry[]) => {
+    entries.forEach((e) => queue.add(e));
+};
 
+let backgroundRunning = false;
+const backgroundCallbacks: (() => boolean)[] = [];
 export const analyzeBackground = async () => {
+    // schedule another run if one is already running, since something new was added to the queue
+    if (backgroundRunning) {
+        backgroundCallbacks.push(() => true);
+        return;
+    }
+
+    backgroundRunning = true;
+
     // snapshot queue
-    const $queue = queue.filter((e) => e.state === AnalysisState.NONE);
-    queue = [];
+    const $queue = Array.from(queue.values()).filter((e) => e.state === AnalysisState.NONE);
 
-    if (!get(analysisBackground) || $queue.length === 0) return;
+    queue.clear();
 
-    await recordProgress("task.analyze", null, async (task) => {
-        let completed = 0;
-        await Promise.all(
-            $queue.map(
-                rateLimit(async (entry) => {
-                    await analyze(entry);
+    if (get(analysisBackground) && $queue.length > 0) {
+        await recordProgress("task.analyze", null, async (task) => {
+            let completed = 0;
+            await Promise.all(
+                $queue.map(
+                    rateLimit(async (entry) => {
+                        await analyze(entry);
 
-                    completed++;
-                    task.desc.set(`${completed}/${$queue.length}`);
-                    task.progress?.set((completed / $queue.length) * 100);
-                }, workers.size * 2)
-            )
-        );
+                        completed++;
+                        task.desc.set(`${completed}/${$queue.length}`);
+                        task.progress?.set((completed / $queue.length) * 100);
+                    }, workers.size * 2)
+                )
+            );
 
-        task.desc.set(`${$queue.length}`);
-    });
+            task.desc.set(`${$queue.length}`);
+        });
 
-    // very hacky, but we need to trigger post-analysis updates to entries -> classes -> consumers
-    entries.update(($entries) => $entries);
+        // very hacky, but we need to trigger post-analysis updates to entries -> classes -> consumers
+        entries.update(($entries) => $entries);
+    }
+
+    backgroundRunning = false;
+    const wantsAgain = backgroundCallbacks.map((cb) => cb()).some((v) => v);
+    backgroundCallbacks.length = 0; // clear callbacks
+
+    if (wantsAgain) {
+        analyzeBackground().then();
+    }
+};
+
+export const waitForBackgroundAnalysis = (func: () => boolean) => {
+    if (!backgroundRunning) {
+        const wantsAgain = func();
+        if (wantsAgain) {
+            analyzeBackground().then();
+        }
+    } else {
+        backgroundCallbacks.push(func);
+    }
 };
 
 export { QueryType, SearchMode, type SearchQuery, type SearchResult };

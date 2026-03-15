@@ -3,7 +3,7 @@ import type { CodeAttribute } from "@katana-project/asm/attr";
 import type { LoadStoreInstruction } from "@katana-project/asm/insn";
 import { AttributeType, Modifier, Opcode } from "@katana-project/asm/spec";
 import { Binary, Paintbrush, ShieldCheck, Variable, Zap } from "@lucide/svelte";
-import type { Transformer } from "./";
+import type { Transformer } from "./types";
 
 const LOAD_OPCODES = new Set(Object.keys(Opcode).filter((o) => o.match(/^[ADFIL]LOAD(?:_[0-3])?$/)));
 const STORE_OPCODES = new Set(Object.keys(Opcode).filter((o) => o.match(/^[ADFIL]STORE(?:_[0-3])?$/)));
