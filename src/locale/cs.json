@@ -21,6 +21,7 @@
     "menu.file.add-url": "Přidat z URL",
     "menu.file.clear": "Vymazat vše",
     "menu.file.export-all": "Exportovat vše",
+    "menu.file.export-classes": "Export classes",
     "menu.file.export-all.raw": "Původní soubory",
     "menu.file.export-all.disasm": "Výstup disassembleru",
     "menu.file.close": "Zavřít",
