@@ -21,6 +21,7 @@
     "menu.file.add-url": "Add from URL",
     "menu.file.clear": "Clear all",
     "menu.file.export-all": "Export all",
+    "menu.file.export-classes": "Export classes",
     "menu.file.export-all.raw": "Raw",
     "menu.file.export-all.disasm": "Disassembled",
     "menu.file.close": "Close",

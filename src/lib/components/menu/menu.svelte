@@ -33,11 +33,9 @@
         MenubarTrigger,
     } from "$lib/components/ui/menubar";
     import {
-        Binary,
         BookOpen,
         Clipboard,
         Code,
-        Coffee,
         FileCode2,
         GitBranchPlus,
         Globe,
@@ -58,6 +56,7 @@
     import { modals } from "svelte-modals";
     import { mappings } from "$lib/workspace/analysis/mapping";
     import { mappingSet } from "$lib/workspace/analysis/mapping/data";
+    import ExportAllMenubarSubContent from "./export_all.svelte";
 
     interface Props {
         panes: PaneData[];
@@ -96,8 +95,6 @@
             await handler.export([entry!]);
         }
     };
-
-    const exportEntries = (disasm?: Disassembler) => handler.export(entries, disasm);
 
     const openPrefs = async () => {
         await handler.openUnscoped(tabDefs.find((d) => d.type === TabType.PREFS)!, TabPosition.PRIMARY_CENTER, false);
@@ -197,31 +194,18 @@
                 <MenubarItem disabled={entries.length === 0} onclick={() => modals.open(ClearDialog, { handler })}>
                     {$t("menu.file.clear")}
                 </MenubarItem>
+                <MenubarSeparator />
                 <MenubarSub>
                     <MenubarSubTrigger disabled={entries.length === 0}>
                         {$t("menu.file.export-all")}
                     </MenubarSubTrigger>
-                    <MenubarSubContent class="min-w-[12rem]" align="start">
-                        <MenubarItem class="justify-between" onclick={() => exportEntries()}>
-                            {$t("menu.file.export-all.raw")}
-                            <Binary size={16} />
-                        </MenubarItem>
-                        <MenubarSub>
-                            <MenubarSubTrigger disabled={classes.length === 0}>
-                                {$t("menu.file.export-all.disasm")}
-                            </MenubarSubTrigger>
-                            <MenubarSubContent class="min-w-[12rem]" align="start">
-                                {#each disasms as dism}
-                                    <MenubarItem class="justify-between" onclick={() => exportEntries(dism)}>
-                                        {dism.name || dism.id}
-                                        {#if dism.language() === "java"}
-                                            <Coffee size={16} class="text-red-500" />
-                                        {/if}
-                                    </MenubarItem>
-                                {/each}
-                            </MenubarSubContent>
-                        </MenubarSub>
-                    </MenubarSubContent>
+                    <ExportAllMenubarSubContent {entries} {classes} {disasms} {handler} />
+                </MenubarSub>
+                <MenubarSub>
+                    <MenubarSubTrigger disabled={classes.length === 0}>
+                        {$t("menu.file.export-classes")}
+                    </MenubarSubTrigger>
+                    <ExportAllMenubarSubContent {entries} {classes} {disasms} {handler} classesOnly />
                 </MenubarSub>
                 <MenubarSeparator />
                 <MenubarItem disabled={!tab?.entry} onclick={() => handler.close()}>

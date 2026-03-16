@@ -23,6 +23,7 @@ export interface LocaleData {
     "menu.file.add-url": string;
     "menu.file.clear": string;
     "menu.file.export-all": string;
+    "menu.file.export-classes": string;
     "menu.file.export-all.raw": string;
     "menu.file.export-all.disasm": string;
     "menu.file.close": string;

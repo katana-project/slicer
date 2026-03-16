@@ -138,6 +138,27 @@ export const memberEntry = (entry: ClassEntry, member: Member): MemberEntry => {
     };
 };
 
+export const aliasEntry = (entry: Entry, name: string): Entry => {
+    const slashIndex = name.lastIndexOf("/");
+    const dotIndex = name.lastIndexOf(".");
+
+    return {
+        ...entry,
+        name,
+        shortName: slashIndex !== -1 ? name.substring(slashIndex + 1) : name,
+        extension: dotIndex !== -1 ? name.substring(dotIndex + 1) : undefined,
+        data: {
+            ...entry.data,
+            name,
+        },
+    };
+};
+
+export const classAliasEntry = (entry: ClassEntry): Entry => {
+    const nodeName = entry.node.thisClass.nameEntry!.string;
+    return aliasEntry(entry, `${nodeName}.class`);
+};
+
 export const entries = writable<Map<string, Entry>>(new Map());
 
 // background analysis state updated, reanalyze
