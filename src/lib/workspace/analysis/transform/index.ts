@@ -1,4 +1,4 @@
-import { log } from "$lib/log";
+import { error, log } from "$lib/log";
 import { analysisTransformers } from "$lib/state";
 import type { ClassEntry } from "$lib/workspace";
 import { transformData, unwrapTransforms } from "$lib/workspace/data";
@@ -49,7 +49,15 @@ export const transform = async (
             log(`running transformer '${transformer.id}' on '${entry.name}'`);
         }
 
-        data = await transformer.run(cloneEntry, data);
+        try {
+            data = await transformer.run(cloneEntry, data);
+        } catch (e) {
+            error(`transformer '${transformer.id}' failed on '${entry.name}'`, e);
+
+            // discard all transformations and return original entry
+            // the clone may be in a dirty state and continuing on that is not safe
+            return entry;
+        }
     }
 
     // create transformed entry only if a transformation happened
