@@ -1,5 +1,6 @@
 <script lang="ts">
     import { Field, accessIcon } from "$lib/components/icons";
+    import RenameableText from "$lib/components/renameable_text.svelte";
     import { cn } from "$lib/components/utils";
     import { prettyJavaType } from "$lib/utils";
     import { t } from "$lib/i18n";
@@ -32,11 +33,6 @@
         commitRename,
         cancelRename,
     }: Props = $props();
-
-    const focusInput = (node: HTMLInputElement): void => {
-        node.focus();
-        node.select();
-    };
 </script>
 
 {#if filteredFieldData.length > 0}
@@ -54,31 +50,20 @@
                             <ModifierIcon class="size-2.5" />
                         {/if}
                     </div>
-                    {#if isRenamingField}
-                        <input
-                            use:focusInput
-                            class="min-w-0 flex-1 border-b border-primary bg-transparent font-mono text-xs outline-none"
-                            placeholder={$t("pane.structure.rename.placeholder")}
-                            bind:value={renameValue}
-                            onkeydown={(e) => { if (e.key === "Enter") commitRename(renameValue); if (e.key === "Escape") cancelRename(); }}
-                            onblur={() => commitRename(renameValue)}
-                        />
-                    {:else}
-                        <span class={cn("min-w-0 flex-1 truncate font-mono text-xs", fieldDst && "text-primary")}>
-                            {fieldDst ? `${fieldDst}: ${prettyJavaType(field.type, true)}` : field.signature}
-                        </span>
-                        <button
-                            class="text-muted-foreground ml-auto shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-                            onclick={(e) => {
-                                e.stopPropagation();
-                                startRename({ kind: "field", name: field.name, desc: fieldDesc }, fieldDst ?? field.name);
-                            }}
-                            title={$t("pane.structure.rename")}
-                        >
-                            <span class="sr-only">{$t("pane.structure.rename")}</span>
-                            <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z" /></svg>
-                        </button>
-                    {/if}
+                    <RenameableText
+                        editing={isRenamingField}
+                        bind:value={renameValue}
+                        display={fieldDst ? `${fieldDst}: ${prettyJavaType(field.type, true)}` : field.signature}
+                        placeholder={$t("pane.structure.rename.placeholder")}
+                        title={$t("pane.structure.rename")}
+                        textClass={cn("min-w-0 flex-1 truncate font-mono text-xs", fieldDst && "text-primary")}
+                        inputClass="min-w-0 flex-1 border-b border-primary bg-transparent font-mono text-xs outline-none"
+                        buttonClass="text-muted-foreground ml-auto shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                        stopPropagationOnStart={true}
+                        onStart={() => startRename({ kind: "field", name: field.name, desc: fieldDesc }, fieldDst ?? field.name)}
+                        onCommit={commitRename}
+                        onCancel={cancelRename}
+                    />
                 </div>
             </div>
         {/each}

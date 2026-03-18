@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { LayoutDashboard, Pencil } from "@lucide/svelte";
+    import { LayoutDashboard } from "@lucide/svelte";
+    import RenameableText from "$lib/components/renameable_text.svelte";
     import { Button } from "$lib/components/ui/button";
     import { cn } from "$lib/components/utils";
     import { prettyInternalName } from "$lib/utils";
@@ -47,11 +48,6 @@
         entryIcon,
     }: Props = $props();
 
-    const focusInput = (node: HTMLInputElement): void => {
-        node.focus();
-        node.select();
-    };
-
     const sourceInternalName = $derived(canonicalizeClassName(currentNode.thisClass.nameEntry!.string));
     const classDst = $derived($mappings.getOrNull(sourceInternalName)?.dst);
     const mappedPackageName = $derived(classDst ? classDst.split("/").slice(0, -1).join(".") : packageName);
@@ -63,52 +59,38 @@
         <div class="min-w-0 flex-1">
             {#if packageName}
                 <div class="group text-muted-foreground mb-2 flex items-center gap-1 text-xs">
-                    {#if renaming?.kind === "package"}
-                        <input
-                            use:focusInput
-                            class="min-w-0 flex-1 border-b border-primary bg-transparent text-xs outline-none"
-                            placeholder={$t("pane.structure.rename.placeholder")}
-                            bind:value={renameValue}
-                            onkeydown={(e) => { if (e.key === "Enter") commitRename(renameValue); if (e.key === "Escape") cancelRename(); }}
-                            onblur={() => commitRename(renameValue)}
-                        />
-                    {:else}
-                        <span class={cn("truncate", classDst && mappedPackageName !== packageName && "text-primary")} title={mappedPackageName ?? packageName}>
-                            {mappedPackageName}
-                        </span>
-                        <button
-                            class="text-muted-foreground hover:text-foreground hover:bg-muted shrink-0 rounded-sm p-0.5 opacity-0 transition-all group-hover:opacity-100"
-                            onclick={() => startRename({ kind: "package" }, mappedPackageName ?? packageName ?? "")}
-                            title={$t("pane.structure.rename")}
-                        >
-                            <Pencil class="size-3" />
-                        </button>
-                    {/if}
+                    <RenameableText
+                        editing={renaming?.kind === "package"}
+                        bind:value={renameValue}
+                        display={mappedPackageName ?? ""}
+                        placeholder={$t("pane.structure.rename.placeholder")}
+                        title={$t("pane.structure.rename")}
+                        textClass={cn("truncate", classDst && mappedPackageName !== packageName && "text-primary")}
+                        inputClass="min-w-0 flex-1 border-b border-primary bg-transparent text-xs outline-none"
+                        buttonClass="text-muted-foreground hover:text-foreground hover:bg-muted shrink-0 rounded-sm p-0.5 opacity-0 transition-all group-hover:opacity-100"
+                        iconClass="size-3"
+                        onStart={() => startRename({ kind: "package" }, mappedPackageName ?? packageName ?? "")}
+                        onCommit={commitRename}
+                        onCancel={cancelRename}
+                    />
                 </div>
             {/if}
             <div class={cn("group flex items-center gap-2")}>
                 {@render entryIcon?.()}
-                {#if renaming?.kind === "class"}
-                    <input
-                        use:focusInput
-                        class="min-w-0 flex-1 border-b border-primary bg-transparent text-sm font-medium outline-none"
-                        placeholder={$t("pane.structure.rename.placeholder")}
-                        bind:value={renameValue}
-                        onkeydown={(e) => { if (e.key === "Enter") commitRename(renameValue); if (e.key === "Escape") cancelRename(); }}
-                        onblur={() => commitRename(renameValue)}
-                    />
-                {:else}
-                    <span class={cn("truncate text-sm font-medium", classDst && "text-primary")}>
-                        {prettyInternalName(mappedSimpleName)}
-                    </span>
-                    <button
-                        class="text-muted-foreground shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-                        onclick={() => startRename({ kind: "class" }, mappedSimpleName)}
-                        title={$t("pane.structure.rename")}
-                    >
-                        <Pencil class="size-3.5" />
-                    </button>
-                {/if}
+                <RenameableText
+                    editing={renaming?.kind === "class"}
+                    bind:value={renameValue}
+                    display={prettyInternalName(mappedSimpleName)}
+                    placeholder={$t("pane.structure.rename.placeholder")}
+                    title={$t("pane.structure.rename")}
+                    textClass={cn("truncate text-sm font-medium", classDst && "text-primary")}
+                    inputClass="min-w-0 flex-1 border-b border-primary bg-transparent text-sm font-medium outline-none"
+                    buttonClass="text-muted-foreground shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                    iconClass="size-3.5"
+                    onStart={() => startRename({ kind: "class" }, mappedSimpleName)}
+                    onCommit={commitRename}
+                    onCancel={cancelRename}
+                />
             </div>
         </div>
         <Button

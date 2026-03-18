@@ -1,5 +1,6 @@
 <script lang="ts">
     import { ElementType, formatMod, escapeLiteral } from "@katana-project/asm/analysis/disasm";
+    import RenameableText from "$lib/components/renameable_text.svelte";
     import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$lib/components/ui/table";
     import {
         DropdownMenu,
@@ -13,13 +14,28 @@
     import { TabType } from "$lib/tab";
     import type { EventHandler } from "$lib/event";
     import { t } from "$lib/i18n";
+    import type { RenameTarget } from "./types";
+    import { canonicalizeDescriptor, mappedMethodName } from "$lib/components/pane/structure/model/rename";
 
     interface Props {
         entry: ClassEntry;
         handler: EventHandler;
+        renaming: RenameTarget | null;
+        renameValue: string;
+        startRename: (target: RenameTarget, current: string) => void;
+        commitRename: (value?: string) => void;
+        cancelRename: () => void;
     }
 
-    let { entry, handler }: Props = $props();
+    let {
+        entry,
+        handler,
+        renaming,
+        renameValue = $bindable(),
+        startRename,
+        commitRename,
+        cancelRename,
+    }: Props = $props();
     const node = $derived(entry.node);
 </script>
 
@@ -46,7 +62,30 @@
                         ({method.access})
                     </TableCell>
                     <TableCell class="break-anywhere font-mono tracking-tight whitespace-normal">
-                        {escapeLiteral(method.name.string)}
+                        {@const methodDesc = canonicalizeDescriptor(method.type.string)}
+                        {@const methodDst = mappedMethodName(node.thisClass.nameEntry!.string, method.name.string, method.type.string)}
+                        {@const isSpecialMethod = method.name.string === "<init>" || method.name.string === "<clinit>"}
+                        {@const isRenamingMethod = renaming?.kind === "method" && renaming.name === method.name.string && renaming.desc === methodDesc}
+                        <div class="group flex min-w-0 items-center gap-1">
+                            <RenameableText
+                                editing={isRenamingMethod}
+                                bind:value={renameValue}
+                                display={escapeLiteral(methodDst ?? method.name.string)}
+                                placeholder={$t("pane.structure.rename.placeholder")}
+                                title={$t("pane.structure.rename")}
+                                textClass={methodDst ? "text-primary" : ""}
+                                inputClass="min-w-0 flex-1 border-b border-primary bg-transparent font-mono text-xs outline-none"
+                                stopPropagationOnStart={true}
+                                showButton={!isSpecialMethod}
+                                onStart={() =>
+                                    startRename(
+                                        { kind: "method", name: method.name.string, desc: methodDesc },
+                                        methodDst ?? method.name.string
+                                    )}
+                                onCommit={commitRename}
+                                onCancel={cancelRename}
+                            />
+                        </div>
                     </TableCell>
                     <TableCell class="break-anywhere font-mono tracking-tight whitespace-normal">
                         {method.type.string}

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { accessIcon, classIcon } from "$lib/components/icons";
+    import RenameableText from "$lib/components/renameable_text.svelte";
     import { ContextMenu, ContextMenuTrigger } from "$lib/components/ui/context-menu";
     import { cn } from "$lib/components/utils";
     import { t } from "$lib/i18n";
@@ -34,11 +35,6 @@
         commitRename,
         cancelRename,
     }: Props = $props();
-
-    const focusInput = (node: HTMLInputElement): void => {
-        node.focus();
-        node.select();
-    };
 </script>
 
 {#if filteredInnerClassData.length > 0}
@@ -66,35 +62,29 @@
                                     <ModifierIcon class="size-2.5" />
                                 {/if}
                             </div>
-                            {#if isRenamingInner}
-                                <input
-                                    use:focusInput
-                                    class="min-w-0 flex-1 border-b border-primary bg-transparent font-mono text-xs outline-none"
-                                    placeholder={$t("pane.structure.rename.placeholder")}
+                            {#if innerClass.name}
+                                <RenameableText
+                                    editing={isRenamingInner}
                                     bind:value={renameValue}
-                                    onkeydown={(e) => { if (e.key === "Enter") commitRename(renameValue); if (e.key === "Escape") cancelRename(); }}
-                                    onblur={() => commitRename(renameValue)}
-                                />
-                            {:else if innerClass.name}
-                                <span class={cn("min-w-0 flex-1 truncate font-mono text-xs", innerDstSimple && "text-primary")}>
-                                    {innerDstSimple ?? innerClass.name}
-                                </span>
-                                {#if innerClass.entry && innerInternalName}
-                                    <button
-                                        class="text-muted-foreground ml-auto shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-                                        onclick={(e) => {
-                                            e.stopPropagation();
+                                    display={innerDstSimple ?? innerClass.name}
+                                    placeholder={$t("pane.structure.rename.placeholder")}
+                                    title={$t("pane.structure.rename")}
+                                    textClass={cn("min-w-0 flex-1 truncate font-mono text-xs", innerDstSimple && "text-primary")}
+                                    inputClass="min-w-0 flex-1 border-b border-primary bg-transparent font-mono text-xs outline-none"
+                                    buttonClass="text-muted-foreground ml-auto shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                                    stopPropagationOnStart={true}
+                                    showButton={!!(innerClass.entry && innerInternalName)}
+                                    onStart={() => {
+                                        if (innerClass.entry && innerInternalName) {
                                             startRename(
                                                 { kind: "inner", internalName: innerInternalName },
                                                 innerDstSimple ?? innerClass.name ?? ""
                                             );
-                                        }}
-                                        title={$t("pane.structure.rename")}
-                                    >
-                                        <span class="sr-only">{$t("pane.structure.rename")}</span>
-                                        <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z" /></svg>
-                                    </button>
-                                {/if}
+                                        }
+                                    }}
+                                    onCommit={commitRename}
+                                    onCancel={cancelRename}
+                                />
                             {:else}
                                 <span class="text-muted-foreground min-w-0 flex-1 truncate text-xs">
                                     {$t("pane.structure.inner-classes.anonymous")}
