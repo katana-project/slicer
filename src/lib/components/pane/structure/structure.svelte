@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Input } from "$lib/components/ui/input";
-    import { Search, LayoutDashboard, Pencil } from "@lucide/svelte";
+    import { Search, LayoutDashboard } from "@lucide/svelte";
     import { Field, Constructor, Method, AbstractMethod, accessIcon, classIcon } from "$lib/components/icons";
     import type { PaneProps } from "../";
     import { EntryType, type ClassEntry } from "$lib/workspace";
@@ -16,6 +16,7 @@
     import Summary from "./summary.svelte";
     import { Button } from "$lib/components/ui/button";
     import { get } from "svelte/store";
+    import RenameableText from "./renameable_text.svelte";
 
     let { handler, classes, entries }: PaneProps = $props();
 
@@ -32,11 +33,6 @@
 
     let renaming: RenameTarget | null = $state(null);
     let renameValue = $state("");
-
-    const focusInput = (node: HTMLInputElement): void => {
-        node.focus();
-        node.select();
-    };
 
     const startRename = (target: RenameTarget, current: string): void => {
         renaming = target;
@@ -193,9 +189,12 @@
         const field = klass.fields.get(srcName, srcDesc);
         field.dst = dst;
 
-        delete klass.fields.elements[`${name}:${desc}`];
-        if (srcDesc !== desc) {
-            delete klass.fields.elements[`${name}:${desc}`];
+        const canonicalKey = `${srcName}:${srcDesc}`;
+        const staleKeys = new Set<string>([`${name}:${desc}`, `${name}:${srcDesc}`]);
+        staleKeys.delete(canonicalKey);
+
+        for (const key of staleKeys) {
+            delete klass.fields.elements[key];
         }
     };
 
@@ -206,9 +205,12 @@
         const method = klass.methods.get(srcName, srcDesc);
         method.dst = dst;
 
-        delete klass.methods.elements[`${name}:${desc}`];
-        if (srcDesc !== desc) {
-            delete klass.methods.elements[`${name}:${desc}`];
+        const canonicalKey = `${srcName}:${srcDesc}`;
+        const staleKeys = new Set<string>([`${name}:${desc}`, `${name}:${srcDesc}`]);
+        staleKeys.delete(canonicalKey);
+
+        for (const key of staleKeys) {
+            delete klass.methods.elements[key];
         }
     };
 
@@ -216,14 +218,14 @@
         renaming = null;
     };
 
-    const commitRename = (): void => {
+    const commitRename = (committedValue?: string): void => {
         if (!renaming || !currentNode) {
             renaming = null;
             return;
         }
 
         const internalName = canonicalizeClassName(currentNode.thisClass.nameEntry!.string);
-        const trimmed = renameValue.trim();
+        const trimmed = (committedValue ?? renameValue).trim();
 
         mappings.update(($m) => {
             if (renaming!.kind === "package") {
@@ -324,54 +326,42 @@
                 <div class="min-w-0 flex-1">
                     {#if packageName}
                         <div class="group text-muted-foreground mb-2 flex items-center gap-1 text-xs">
-                            {#if renaming?.kind === "package"}
-                                <input
-                                    use:focusInput
-                                    class="min-w-0 flex-1 border-b border-primary bg-transparent text-xs outline-none"
-                                    placeholder={$t("pane.structure.rename.placeholder")}
-                                    bind:value={renameValue}
-                                    onkeydown={(e) => { if (e.key === "Enter") commitRename(); if (e.key === "Escape") cancelRename(); }}
-                                    onblur={commitRename}
-                                />
-                            {:else}
-                                <span class={cn("truncate", classDst && mappedPackageName !== packageName && "text-primary")} title={mappedPackageName ?? packageName}>
-                                    {mappedPackageName}
-                                </span>
-                                <button
-                                    class="text-muted-foreground hover:text-foreground hover:bg-muted shrink-0 rounded-sm p-0.5 opacity-0 transition-all group-hover:opacity-100"
-                                    onclick={() => startRename({ kind: "package" }, mappedPackageName ?? packageName ?? "")}
-                                    title={$t("pane.structure.rename")}
-                                >
-                                    <Pencil class="size-3" />
-                                </button>
-                            {/if}
+                            <RenameableText
+                                editing={renaming?.kind === "package"}
+                                bind:value={renameValue}
+                                display={mappedPackageName ?? packageName ?? ""}
+                                placeholder={$t("pane.structure.rename.placeholder")}
+                                renameTitle={$t("pane.structure.rename")}
+                                textClass={cn(
+                                    "truncate",
+                                    classDst && mappedPackageName !== packageName && "text-primary"
+                                )}
+                                inputClass="min-w-0 flex-1 border-b border-primary bg-transparent text-xs outline-none"
+                                buttonClass="text-muted-foreground hover:text-foreground hover:bg-muted shrink-0 rounded-sm p-0.5 opacity-0 transition-all group-hover:opacity-100"
+                                pencilClass="size-3"
+                                onStart={() => startRename({ kind: "package" }, mappedPackageName ?? packageName ?? "")}
+                                onCommit={commitRename}
+                                onCancel={cancelRename}
+                            />
                         </div>
                     {/if}
                     <div class={cn("group flex items-center gap-2")}>
                         <EntryIcon class={cn(iconClasses, "h-4 w-4 shrink-0")} />
-                        {#if renaming?.kind === "class"}
-                            <input
-                                use:focusInput
-                                class="min-w-0 flex-1 border-b border-primary bg-transparent text-sm font-medium outline-none"
-                                placeholder={$t("pane.structure.rename.placeholder")}
-                                bind:value={renameValue}
-                                onkeydown={(e) => { if (e.key === "Enter") commitRename(); if (e.key === "Escape") cancelRename(); }}
-                                onblur={commitRename}
-                            />
-                        {:else}
-                            <span class={cn("truncate text-sm font-medium", classDst && "text-primary")}>
-                                {prettyInternalName(mappedSimpleName)}
-                            </span>
-                            <button
-                                class="text-muted-foreground shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-                                onclick={() => {
-                                    startRename({ kind: "class" }, mappedSimpleName);
-                                }}
-                                title={$t("pane.structure.rename")}
-                            >
-                                <Pencil class="size-3.5" />
-                            </button>
-                        {/if}
+                        <RenameableText
+                            editing={renaming?.kind === "class"}
+                            bind:value={renameValue}
+                            display={prettyInternalName(mappedSimpleName)}
+                            placeholder={$t("pane.structure.rename.placeholder")}
+                            renameTitle={$t("pane.structure.rename")}
+                            textClass={cn("truncate text-sm font-medium", classDst && "text-primary")}
+                            inputClass="min-w-0 flex-1 border-b border-primary bg-transparent text-sm font-medium outline-none"
+                            buttonClass="text-muted-foreground shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                            onStart={() => {
+                                startRename({ kind: "class" }, mappedSimpleName);
+                            }}
+                            onCommit={commitRename}
+                            onCancel={cancelRename}
+                        />
                     </div>
                 </div>
                 <Button
@@ -464,27 +454,27 @@
                                             <ModifierIcon class="size-2.5" />
                                         {/if}
                                     </div>
-                                    {#if isRenamingField}
-                                        <input
-                                            use:focusInput
-                                            class="min-w-0 flex-1 border-b border-primary bg-transparent font-mono text-xs outline-none"
-                                            placeholder={$t("pane.structure.rename.placeholder")}
-                                            bind:value={renameValue}
-                                            onkeydown={(e) => { if (e.key === "Enter") commitRename(); if (e.key === "Escape") cancelRename(); }}
-                                            onblur={commitRename}
-                                        />
-                                    {:else}
-                                        <span class={cn("min-w-0 flex-1 truncate font-mono text-xs", fieldDst && "text-primary")}>
-                                            {fieldDst ? `${fieldDst}: ${prettyJavaType(field.type, true)}` : field.signature}
-                                        </span>
-                                        <button
-                                            class="text-muted-foreground ml-auto shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-                                            onclick={(e) => { e.stopPropagation(); startRename({ kind: "field", name: field.name, desc: fieldDesc }, fieldDst ?? field.name); }}
-                                            title={$t("pane.structure.rename")}
-                                        >
-                                            <Pencil class="size-3.5" />
-                                        </button>
-                                    {/if}
+                                    <RenameableText
+                                        editing={isRenamingField}
+                                        bind:value={renameValue}
+                                        display={fieldDst ? `${fieldDst}: ${prettyJavaType(field.type, true)}` : field.signature}
+                                        placeholder={$t("pane.structure.rename.placeholder")}
+                                        renameTitle={$t("pane.structure.rename")}
+                                        textClass={cn(
+                                            "min-w-0 flex-1 truncate font-mono text-xs",
+                                            fieldDst && "text-primary"
+                                        )}
+                                        inputClass="min-w-0 flex-1 border-b border-primary bg-transparent font-mono text-xs outline-none"
+                                        buttonClass="text-muted-foreground ml-auto shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                                        stopPropagationOnStart={true}
+                                        onStart={() =>
+                                            startRename(
+                                                { kind: "field", name: field.name, desc: fieldDesc },
+                                                fieldDst ?? field.name
+                                            )}
+                                        onCommit={commitRename}
+                                        onCancel={cancelRename}
+                                    />
                                 </div>
                             </div>
                         {/each}
@@ -597,27 +587,29 @@
                                                     <ModifierIcon class="size-2.5" />
                                                 {/if}
                                             </div>
-                                            {#if isRenamingMethod}
-                                                <input
-                                                    use:focusInput
-                                                    class="min-w-0 flex-1 border-b border-primary bg-transparent font-mono text-xs outline-none"
-                                                    placeholder={$t("pane.structure.rename.placeholder")}
-                                                    bind:value={renameValue}
-                                                    onkeydown={(e) => { if (e.key === "Enter") commitRename(); if (e.key === "Escape") cancelRename(); }}
-                                                    onblur={commitRename}
-                                                />
-                                            {:else}
-                                                <span class={cn("min-w-0 flex-1 truncate font-mono text-xs", methodDst && "text-primary")}>
-                                                    {methodDst ? methodDst + prettyMethodDesc(method.type, true) : method.signature}
-                                                </span>
-                                                <button
-                                                    class="text-muted-foreground ml-auto shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-                                                    onclick={(e) => { e.stopPropagation(); startRename({ kind: "method", name: method.name, desc: methodDesc }, methodDst ?? method.name); }}
-                                                    title={$t("pane.structure.rename")}
-                                                >
-                                                    <Pencil class="size-3.5" />
-                                                </button>
-                                            {/if}
+                                            <RenameableText
+                                                editing={isRenamingMethod}
+                                                bind:value={renameValue}
+                                                display={methodDst
+                                                    ? methodDst + prettyMethodDesc(method.type, true)
+                                                    : method.signature}
+                                                placeholder={$t("pane.structure.rename.placeholder")}
+                                                renameTitle={$t("pane.structure.rename")}
+                                                textClass={cn(
+                                                    "min-w-0 flex-1 truncate font-mono text-xs",
+                                                    methodDst && "text-primary"
+                                                )}
+                                                inputClass="min-w-0 flex-1 border-b border-primary bg-transparent font-mono text-xs outline-none"
+                                                buttonClass="text-muted-foreground ml-auto shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                                                stopPropagationOnStart={true}
+                                                onStart={() =>
+                                                    startRename(
+                                                        { kind: "method", name: method.name, desc: methodDesc },
+                                                        methodDst ?? method.name
+                                                    )}
+                                                onCommit={commitRename}
+                                                onCancel={cancelRename}
+                                            />
                                         </div>
                                     </div>
                                 </ContextMenuTrigger>
@@ -664,27 +656,41 @@
                                                 {/if}
                                             </div>
                                             {#if isRenamingInner}
-                                                <input
-                                                    use:focusInput
-                                                    class="min-w-0 flex-1 border-b border-primary bg-transparent font-mono text-xs outline-none"
-                                                    placeholder={$t("pane.structure.rename.placeholder")}
+                                                <RenameableText
+                                                    editing={true}
                                                     bind:value={renameValue}
-                                                    onkeydown={(e) => { if (e.key === "Enter") commitRename(); if (e.key === "Escape") cancelRename(); }}
-                                                    onblur={commitRename}
+                                                    display=""
+                                                    placeholder={$t("pane.structure.rename.placeholder")}
+                                                    renameTitle={$t("pane.structure.rename")}
+                                                    inputClass="min-w-0 flex-1 border-b border-primary bg-transparent font-mono text-xs outline-none"
+                                                    onCommit={commitRename}
+                                                    onCancel={cancelRename}
                                                 />
                                             {:else if innerClass.name}
-                                                <span class={cn("min-w-0 flex-1 truncate font-mono text-xs", innerDstSimple && "text-primary")}>
-                                                    {innerDstSimple ?? innerClass.name}
-                                                </span>
-                                                {#if innerClass.entry && innerInternalName}
-                                                    <button
-                                                        class="text-muted-foreground ml-auto shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-                                                        onclick={(e) => { e.stopPropagation(); startRename({ kind: "inner", internalName: innerInternalName }, innerDstSimple ?? innerClass.name ?? ""); }}
-                                                        title={$t("pane.structure.rename")}
-                                                    >
-                                                        <Pencil class="size-3.5" />
-                                                    </button>
-                                                {/if}
+                                                <RenameableText
+                                                    editing={false}
+                                                    bind:value={renameValue}
+                                                    display={innerDstSimple ?? innerClass.name}
+                                                    placeholder={$t("pane.structure.rename.placeholder")}
+                                                    renameTitle={$t("pane.structure.rename")}
+                                                    textClass={cn(
+                                                        "min-w-0 flex-1 truncate font-mono text-xs",
+                                                        innerDstSimple && "text-primary"
+                                                    )}
+                                                    showButton={!!(innerClass.entry && innerInternalName)}
+                                                    buttonClass="text-muted-foreground ml-auto shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                                                    stopPropagationOnStart={true}
+                                                    onStart={() => {
+                                                        if (innerInternalName) {
+                                                            startRename(
+                                                                { kind: "inner", internalName: innerInternalName },
+                                                                innerDstSimple ?? innerClass.name ?? ""
+                                                            );
+                                                        }
+                                                    }}
+                                                    onCommit={commitRename}
+                                                    onCancel={cancelRename}
+                                                />
                                             {:else}
                                                 <span class="text-muted-foreground min-w-0 flex-1 truncate text-xs">
                                                     {$t("pane.structure.inner-classes.anonymous")}
