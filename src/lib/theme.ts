@@ -1,5 +1,7 @@
 import { themeColor, themeRadius } from "$lib/state";
-import { derived } from "svelte/store";
+import { colorToHex } from "$lib/utils";
+import { mode } from "mode-watcher";
+import { derived, toStore } from "svelte/store";
 
 type ThemeVars = { primary: string; secondary: string } & Record<string, string>;
 
@@ -712,3 +714,14 @@ theme.subscribe(($theme) => {
 });
 
 themeRadius.subscribe(($themeRadius) => document.documentElement.style.setProperty("--radius", `${$themeRadius}rem`));
+
+// update meta color for PWAs
+derived([theme, toStore(() => mode.current)], (a) => a).subscribe(([$theme, $mode]) => {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+        meta.setAttribute(
+            "content",
+            colorToHex($mode === "light" ? $theme.cssVars.light.background : $theme.cssVars.dark.background)
+        );
+    }
+});

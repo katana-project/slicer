@@ -12,7 +12,6 @@
     import { entries as logEntries } from "$lib/log";
     import { all as disasms } from "$lib/disasm";
     import { root as rootKey, panes, urlRemote, urlScript, urlRemoteFile, urlRemoteMapping } from "$lib/state";
-    import { theme } from "$lib/theme";
     import { tasks } from "$lib/task";
     import { handler } from "$lib/event";
     import { register as registerShortcuts } from "$lib/shortcut";
@@ -21,7 +20,6 @@
     import { modals, Modals } from "svelte-modals";
     import { ScriptLoadShareDialog } from "$lib/components/dialog";
     import { overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
-    import { colorToHex } from "$lib/utils";
 
     // use internalId for dndzone item keys instead of id, since we want the pane headers to be reactive to tab state changes
     overrideItemIdKeyNameBeforeInitialisingDndZones("internalId");
@@ -77,14 +75,7 @@
     });
 </script>
 
-<ModeWatcher
-    themeStorageKey={`${rootKey}.theme`}
-    modeStorageKey={`${rootKey}.mode`}
-    themeColors={{
-        dark: `${colorToHex($theme.cssVars.dark.background)}`,
-        light: `${colorToHex($theme.cssVars.light.background)}`,
-    }}
-/>
+<ModeWatcher themeStorageKey={`${rootKey}.theme`} modeStorageKey={`${rootKey}.mode`} />
 <Toaster position="bottom-right" offset={{ bottom: "2rem", right: "0.5rem" }} richColors closeButton />
 <Menu
     bind:panes={$panes}
