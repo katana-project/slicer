@@ -21,6 +21,7 @@
     import { modals, Modals } from "svelte-modals";
     import { ScriptLoadShareDialog } from "$lib/components/dialog";
     import { overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
+    import { colorToHex } from "$lib/utils";
 
     // use internalId for dndzone item keys instead of id, since we want the pane headers to be reactive to tab state changes
     overrideItemIdKeyNameBeforeInitialisingDndZones("internalId");
@@ -80,8 +81,8 @@
     themeStorageKey={`${rootKey}.theme`}
     modeStorageKey={`${rootKey}.mode`}
     themeColors={{
-        dark: `${$theme.cssVars.dark.background}`,
-        light: `${$theme.cssVars.light.background}`,
+        dark: `${colorToHex($theme.cssVars.dark.background)}`,
+        light: `${colorToHex($theme.cssVars.light.background)}`,
     }}
 />
 <Toaster position="bottom-right" offset={{ bottom: "2rem", right: "0.5rem" }} richColors closeButton />

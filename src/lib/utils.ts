@@ -731,3 +731,39 @@ export const timestampFile = (date: Date = new Date()): string => {
 
     return `${year}_${month}_${day}-${hours}_${minutes}_${seconds}`;
 };
+
+/* colors */
+
+// https://css-tricks.com/converting-color-spaces-in-javascript/#rgb-to-hex
+const rgbToHex = (r: number, g: number, b: number): string => {
+    let r0 = r.toString(16);
+    let g0 = g.toString(16);
+    let b0 = b.toString(16);
+
+    if (r0.length == 1) r0 = `0${r0}`;
+    if (g0.length == 1) g0 = `0${g0}`;
+    if (b0.length == 1) b0 = `0${b0}`;
+
+    return `#${r0}${g0}${b0}`;
+};
+
+// https://stackoverflow.com/a/19366389
+export const colorToHex = (col: string): string => {
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = 1;
+
+    const ctx = canvas.getContext("2d")!;
+    ctx.fillStyle = "#000";
+    ctx.fillStyle = col;
+
+    const computed = ctx.fillStyle;
+    ctx.fillStyle = "#fff";
+    ctx.fillStyle = col;
+    if (computed !== ctx.fillStyle) {
+        return "#000"; // invalid color
+    }
+
+    ctx.fillRect(0, 0, 1, 1);
+    const rgba = ctx.getImageData(0, 0, 1, 1).data;
+    return rgbToHex(rgba[0], rgba[1], rgba[2]);
+};

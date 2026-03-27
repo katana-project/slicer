@@ -17,10 +17,12 @@ export const themes: Theme[] = [
             light: {
                 primary: "oklch(0.21 0.006 285.885)",
                 secondary: "oklch(0.97 0.001 106.424)",
+                background: "oklch(1 0 0)",
             },
             dark: {
                 primary: "oklch(0.92 0.004 286.32)",
                 secondary: "oklch(0.268 0.007 34.298)",
+                background: "oklch(0.141 0.005 285.823)",
             },
         },
     },
