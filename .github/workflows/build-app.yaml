@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform == 'darwin' && 'macos-latest' || 'ubuntu-latest' }}
     strategy:
       matrix:
         platform: [win32, darwin, linux]
