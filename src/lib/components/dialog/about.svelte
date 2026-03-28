@@ -12,6 +12,9 @@
             imageId = 0; // wrap around
         }
     };
+
+    const commit = import.meta.env.WORKERS_CI_COMMIT_SHA || import.meta.env.GITHUB_SHA || "0".repeat(40);
+    const branch = import.meta.env.WORKERS_CI_BRANCH || import.meta.env.GITHUB_REF_NAME || "unknown";
 </script>
 
 <Dialog bind:open={isOpen} onOpenChangeComplete={(open) => open || close()}>
@@ -32,13 +35,12 @@
                     {#if import.meta.env.DEV}
                         {$t("dialog.about.build.dev")}
                     {:else}
-                        {@const commit = import.meta.env.WORKERS_CI_COMMIT_SHA || "0".repeat(40)}
                         <!-- this is ugly, but I don't want a space before the comma -->
                         <a
                             href={`https://github.com/katana-project/slicer/commit/${commit}`}
                             target="_blank"
                             class="hover:text-blue-700 hover:underline">{commit.substring(0, 7)}</a
-                        >{$t("dialog.about.build.branch", import.meta.env.WORKERS_CI_BRANCH || "unknown")}
+                        >{$t("dialog.about.build.branch", branch)}
                     {/if}
                 </p>
                 <p class="mt-6 font-mono text-sm">
