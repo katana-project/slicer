@@ -1,0 +1,43 @@
+name: Build and package
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [win32, macos, linux]
+        arch: [x64, arm64]
+        exclude:
+          - platform: macos
+            arch: x64
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - name: Set up Wine and Mono
+        run: |
+          sudo apt install ca-certificates gnupg
+          sudo gpg --homedir /tmp --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+          sudo chmod +r /usr/share/keyrings/mono-official-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+          sudo apt-get update && sudo apt-get install -y wine mono-complete
+      - name: Build
+        run: corepack pnpm i && corepack pnpm build
+      - name: Package
+        run: cd app && corepack pnpm i && corepack pnpm make --platform ${{ matrix.platform }} --arch ${{ matrix.arch }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: slicer-${{ matrix.platform }}-${{ matrix.arch }}
+          path: "app/out/make/*"
