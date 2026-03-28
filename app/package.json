@@ -1,6 +1,7 @@
 {
-    "name": "app",
+    "name": "slicer",
     "productName": "slicer",
+    "description": "A modern Java reverse engineering tool.",
     "version": "0.0.0",
     "main": "src/index.js",
     "private": true,
@@ -33,7 +34,8 @@
         "electron": "^41.1.0"
     },
     "dependencies": {
+        "@fastify/static": "^9.0.0",
         "electron-squirrel-startup": "^1.0.1",
-        "express": "^5.2.1"
+        "fastify": "^5.8.4"
     }
 }
