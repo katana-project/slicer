@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [win32, macos, linux]
+        platform: [win32, darwin, linux]
         arch: [x64, arm64]
         exclude:
-          - platform: macos
+          - platform: darwin
             arch: x64
     steps:
       - name: Checkout code
