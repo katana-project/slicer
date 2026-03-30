@@ -1,4 +1,4 @@
-import { type MappedClass, mappingSet, type MappingSet } from "$lib/workspace/analysis/mapping/data";
+import { type MappedClass, mappingSet, type MappingSet, mergeAssociated } from "$lib/workspace/analysis/mapping/data";
 
 // https://github.com/MinecraftForge/SrgUtils/blob/master/src/main/java/net/minecraftforge/srgutils/InternalUtils.java#L260
 // https://github.com/MinecraftForge/SrgUtils/blob/master/src/main/java/net/minecraftforge/srgutils/InternalUtils.java#L194
@@ -28,18 +28,10 @@ const countLevel = (line: string): number => {
     return level;
 };
 
-export const read = (data: string, dst?: string): MappingSet => {
+const read0 = (data: string, dstIdx: number): MappingSet => {
     const lines = data.split("\n").filter((l) => l.trim() !== "" && !l.trim().startsWith("#"));
-
-    let dstIdx = 1;
     if (lines[0]?.startsWith("tsrg2")) {
-        const header = lines.shift()!.split(" ").slice(1);
-        if (dst) {
-            dstIdx = header.indexOf(dst);
-            if (dstIdx === -1) {
-                throw new Error(`Destination namespace "${dst}" not found in mapping file`);
-            }
-        }
+        lines.shift(); // skip header, we already know the dst index from readNamespaces
     }
 
     const mappings = mappingSet();
@@ -91,4 +83,30 @@ export const read = (data: string, dst?: string): MappingSet => {
     }
 
     return mappings;
+};
+
+export const read = (data: string, src?: string, dst?: string): MappingSet => {
+    const nses = readNamespaces(data);
+    if (nses.length === 0) {
+        // no header, assume it's a TSRG v1 file
+        return read0(data, 1);
+    }
+
+    const srcIdx = src ? nses.indexOf(src) : 0;
+    if (srcIdx === -1) {
+        throw new Error(`Source namespace "${src}" not found in mapping file`);
+    }
+
+    const dstIdx = dst ? nses.indexOf(dst) : 1;
+    if (dstIdx === -1) {
+        throw new Error(`Destination namespace "${dst}" not found in mapping file`);
+    }
+
+    if (srcIdx === 0) {
+        return read0(data, dstIdx);
+    }
+
+    const zeroToSrc = read0(data, srcIdx);
+    const zeroToDst = read0(data, dstIdx);
+    return mergeAssociated(zeroToSrc, zeroToDst);
 };

@@ -31,6 +31,7 @@
         }
     });
 
+    let src = $state("default-src");
     let dst = $state("default-dst");
     const loadMappings = async () => {
         if (!files || files.length === 0) {
@@ -38,7 +39,11 @@
         }
 
         isOpen = false;
-        await handler.loadMappings(fileData(files[0]), dst === "default-dst" ? undefined : dst);
+        await handler.loadMappings(
+            fileData(files[0]),
+            src === "default-src" ? undefined : src,
+            dst === "default-dst" ? undefined : dst
+        );
     };
 </script>
 
@@ -50,7 +55,7 @@
         </DialogHeader>
         <div class="grid gap-4 py-2">
             <div class="grid grid-cols-4 items-center gap-4">
-                <Label for="file" class="text-right">
+                <Label for="file" class="text-left leading-tight">
                     {$t("dialog.load-mappings.file")}
                 </Label>
                 <Input
@@ -63,7 +68,31 @@
                 />
             </div>
             <div class="grid grid-cols-4 items-center gap-4">
-                <Label for="dst-ns" class="text-right">{$t("dialog.load-mappings.dst-ns")}</Label>
+                <Label for="src-ns" class="text-left leading-tight">{$t("dialog.load-mappings.src-ns")}</Label>
+                <Select type="single" bind:value={src}>
+                    <SelectTrigger id="src-ns" class="col-span-3 w-full">
+                        {#if src !== "default-src"}
+                            {src}
+                        {:else}
+                            <span class="text-muted-foreground">
+                                {$t("dialog.load-mappings.src-ns.placeholder")}
+                            </span>
+                        {/if}
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="default-src">
+                            <span class="text-muted-foreground">
+                                {$t("dialog.load-mappings.src-ns.placeholder")}
+                            </span>
+                        </SelectItem>
+                        {#each nses as ns}
+                            <SelectItem value={ns}>{ns}</SelectItem>
+                        {/each}
+                    </SelectContent>
+                </Select>
+            </div>
+            <div class="grid grid-cols-4 items-center gap-4">
+                <Label for="dst-ns" class="text-left leading-tight">{$t("dialog.load-mappings.dst-ns")}</Label>
                 <Select type="single" bind:value={dst}>
                     <SelectTrigger id="dst-ns" class="col-span-3 w-full">
                         {#if dst !== "default-dst"}

@@ -346,7 +346,7 @@ export default {
             removeTab(tab);
         }
     },
-    async loadMappings(data?: Data, dst?: string): Promise<void> {
+    async loadMappings(data?: Data, src?: string, dst?: string): Promise<void> {
         if (!data) {
             if (!navigator.clipboard) {
                 toast.error(tl("toast.error.title.generic"), {
@@ -370,7 +370,7 @@ export default {
         try {
             const text = await data.text();
 
-            const newMappings = await workers.instance().task((w) => w.mappings(text, dst));
+            const newMappings = await workers.instance().task((w) => w.mappings(text, src, dst));
             mappings.update(($mappings) => {
                 $mappings.merge(newMappings);
                 return $mappings;

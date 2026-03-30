@@ -7,7 +7,7 @@ export interface Reader {
     hex(bytes: Uint8Array, rowBytes: number): Promise<string>;
     axml(bytes: Uint8Array): Promise<string>;
     hprof(blob: Blob): Promise<SlurpResult>;
-    mappings(data: string, dst?: string): Promise<MappingSet>;
+    mappings(data: string, src?: string, dst?: string): Promise<MappingSet>;
 }
 
 export const workers = createDefaultWorkerPool<Reader>(() => new ReaderWorker());

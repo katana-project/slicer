@@ -340,7 +340,8 @@ const mappingCtx: MappingContext = {
         return writeMappings(format as MappingType, get(mappings));
     },
     async load(data: string, dst?: string): Promise<void> {
-        const newMappings = await workers.instance().task((w) => w.mappings(data, dst));
+        // TODO: expose src namespace choice
+        const newMappings = await workers.instance().task((w) => w.mappings(data, undefined, dst));
         mappings.update(($mappings) => {
             $mappings.merge(newMappings);
             return $mappings;
