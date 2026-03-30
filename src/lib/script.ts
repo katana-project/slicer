@@ -9,6 +9,8 @@ import { createSource as createClassSource, createResources } from "$lib/disasm/
 import { tl } from "$lib/i18n";
 import type { Language } from "$lib/lang";
 import { error, warn } from "$lib/log";
+import { workers } from "$lib/reader";
+import type { MappingType } from "$lib/reader/mappings";
 import { analysisJdkClasses, scriptingScripts } from "$lib/state";
 import {
     current as currentTab,
@@ -32,7 +34,10 @@ import {
     remove as removeEntry,
 } from "$lib/workspace";
 import { AnalysisState, analyze } from "$lib/workspace/analysis";
-import { DataType, memoryData, type MemoryData } from "$lib/workspace/data";
+import { mappings } from "$lib/workspace/analysis/mapping";
+import { mappingSet } from "$lib/workspace/analysis/mapping/data";
+import { DataType, memoryData, type MemoryData, unwrapTransforms } from "$lib/workspace/data";
+import { write as writeMappings } from "$lib/writer/mappings";
 import type {
     DisassemblerContext,
     EditorContext,
@@ -40,10 +45,12 @@ import type {
     EventListener,
     EventMap,
     EventType,
+    MappingContext,
     Script,
     ScriptContext,
     Disassembler as ScriptDisassembler,
     Entry as ScriptEntry,
+    MappingType as ScriptMappingType,
     Tab as ScriptTab,
     WorkspaceContext,
 } from "@run-slicer/script";
@@ -67,7 +74,6 @@ export interface ProtoScript {
 export const scripts = writable<ProtoScript[]>([]);
 
 const wrapEntry = (e: Entry): ScriptEntry => {
-    // TODO: unwrapping transformations?
     return {
         _entry: e,
         get type() {
@@ -75,10 +81,10 @@ const wrapEntry = (e: Entry): ScriptEntry => {
         },
         name: e.name,
         bytes(): Promise<Uint8Array> {
-            return e.data.bytes();
+            return unwrapTransforms(e.data).bytes();
         },
         blob(): Promise<Blob> {
-            return e.data.blob();
+            return unwrapTransforms(e.data).blob();
         },
     } as ScriptEntry;
 };
@@ -322,6 +328,29 @@ const workspaceCtx: WorkspaceContext = {
     },
 };
 
+const mappingCtx: MappingContext = {
+    clear(): void {
+        if (this.size() === 0) {
+            return; // no-op
+        }
+
+        mappings.set(mappingSet());
+    },
+    export(format: ScriptMappingType): string {
+        return writeMappings(format as MappingType, get(mappings));
+    },
+    async load(data: string, dst?: string): Promise<void> {
+        const newMappings = await workers.instance().task((w) => w.mappings(data, dst));
+        mappings.update(($mappings) => {
+            $mappings.merge(newMappings);
+            return $mappings;
+        });
+    },
+    size(): number {
+        return get(mappings).size();
+    },
+};
+
 const createContext = (script: Script, parent: ScriptContext | null): ScriptContext => {
     const scriptListeners = new Map<EventType, EventListener<any>[]>();
 
@@ -331,6 +360,7 @@ const createContext = (script: Script, parent: ScriptContext | null): ScriptCont
         editor: editorCtx,
         disasm: disasmCtx,
         workspace: workspaceCtx,
+        mapping: mappingCtx,
         addEventListener<K extends EventType>(type: K, listener: EventListener<EventMap[K]>) {
             let listeners = scriptListeners.get(type);
             if (!listeners) {

@@ -60,8 +60,8 @@ importers:
         specifier: 0.1.2-0.6.0
         version: 0.1.2-0.6.0
       '@run-slicer/script':
-        specifier: ^0.12.0
-        version: 0.12.0
+        specifier: ^0.13.0
+        version: 0.13.0
       '@run-slicer/vf':
         specifier: 0.5.0-1.11.2
         version: 0.5.0-1.11.2
@@ -871,8 +871,8 @@ packages:
   '@run-slicer/procyon@0.1.2-0.6.0':
     resolution: {integrity: sha512-xPra0FuATHnjLYLXFUlmRYkfmIukCrl5Zv6iM8ajSTYFDgK85HVNpBAo23NQbp+cMU6QpvOEviwE8nRwGuS07Q==}
 
-  '@run-slicer/script@0.12.0':
-    resolution: {integrity: sha512-g53Lw3qOlgQYyHI5SJe0GKm8cm3mx87b8yMFflaS3bV22BsvwdKZEwzpntPqzjc9DSwQa2CbQtKE4nTqeuPjpw==}
+  '@run-slicer/script@0.13.0':
+    resolution: {integrity: sha512-hbe0/uKCRFOUgKWmVH6cHRiXsndP7QuX2peG689J9Nsu7JnWgijbmegeoT1+SSTX4+pF/lyyUuAO4ZLgHu9mUQ==}
 
   '@run-slicer/vf@0.5.0-1.11.2':
     resolution: {integrity: sha512-8+otfmuAuuEl1bo6LPp+qeR2TpY5pCccLrONK6/reJpCWdrU+g9++j4Eec1fqqv/DRX7nB79Xp9ZwaETR1mhXA==}
@@ -2261,7 +2261,7 @@ snapshots:
 
   '@run-slicer/procyon@0.1.2-0.6.0': {}
 
-  '@run-slicer/script@0.12.0': {}
+  '@run-slicer/script@0.13.0': {}
 
   '@run-slicer/vf@0.5.0-1.11.2': {}
 
