@@ -20,7 +20,7 @@ export interface EventHandler {
     export(entries?: Entry[], disasm?: Disassembler): Awaitable<void>;
     close(tab?: Tab): Awaitable<void>;
 
-    loadMappings(data?: Data, dst?: string): Awaitable<void>;
+    loadMappings(data?: Data, src?: string, dst?: string): Awaitable<void>;
     loadRemoteMappings(url: string): Awaitable<void>;
     exportMappings(format: MappingType, clipboard: boolean): Awaitable<void>;
 

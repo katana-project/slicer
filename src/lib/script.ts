@@ -339,8 +339,8 @@ const mappingCtx: MappingContext = {
     export(format: ScriptMappingType): string {
         return writeMappings(format as MappingType, get(mappings));
     },
-    async load(data: string, dst?: string): Promise<void> {
-        const newMappings = await workers.instance().task((w) => w.mappings(data, dst));
+    async load(data: string, src?: string, dst?: string): Promise<void> {
+        const newMappings = await workers.instance().task((w) => w.mappings(data, src, dst));
         mappings.update(($mappings) => {
             $mappings.merge(newMappings);
             return $mappings;

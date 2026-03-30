@@ -338,6 +338,8 @@ export interface LocaleData {
     "dialog.load-mappings.title": string;
     "dialog.load-mappings.desc": string;
     "dialog.load-mappings.file": string;
+    "dialog.load-mappings.src-ns": string;
+    "dialog.load-mappings.src-ns.placeholder": string;
     "dialog.load-mappings.dst-ns": string;
     "dialog.load-mappings.dst-ns.placeholder": string;
     "dialog.load-mappings.action.confirm": string;

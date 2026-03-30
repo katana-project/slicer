@@ -53,13 +53,13 @@ export const namespaces = (data: string): string[] => {
     return [];
 };
 
-export const read = (data: string, dst?: string): MappingSet => {
+export const read = (data: string, src?: string, dst?: string): MappingSet => {
     const type = detect(data);
     switch (type) {
         case MappingType.TINY_V1:
-            return readTinyV1(data, dst);
+            return readTinyV1(data, src, dst);
         case MappingType.TINY_V2:
-            return readTinyV2(data, dst);
+            return readTinyV2(data, src, dst);
         case MappingType.PROGUARD:
             return readProguard(data);
         case MappingType.SRG:
@@ -67,6 +67,6 @@ export const read = (data: string, dst?: string): MappingSet => {
         case MappingType.CSRG:
             return readCsrg(data);
         case MappingType.TSRG:
-            return readTsrg(data);
+            return readTsrg(data, src, dst);
     }
 };

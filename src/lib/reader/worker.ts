@@ -15,9 +15,9 @@ expose({
     async axml(bytes) {
         return axml(bytes);
     },
-    async mappings(data, dst) {
+    async mappings(data, src, dst) {
         // this will strip any functions, so it's not a full MappingSet,
         // but it should be good enough for most use cases, and it avoids the need to proxy the entire MappingSet object
-        return JSON.parse(JSON.stringify(mappings(data, dst)));
+        return JSON.parse(JSON.stringify(mappings(data, src, dst)));
     },
 } satisfies Reader);
