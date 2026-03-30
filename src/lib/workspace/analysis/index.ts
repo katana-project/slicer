@@ -2,7 +2,6 @@ import { error } from "$lib/log";
 import { analysisBackground } from "$lib/state";
 import { recordProgress } from "$lib/task";
 import { cancellable, type Cancellable, rateLimit } from "$lib/utils";
-import { createDefaultWorkerPool } from "$lib/worker";
 import {
     CharacteristicType,
     type ClassEntry,
@@ -20,8 +19,7 @@ import type { ClassEntry as ClassPoolEntry, RefEntry } from "@katana-project/asm
 import { AttributeType, ConstantType, Modifier } from "@katana-project/asm/spec";
 import { get } from "svelte/store";
 import { QueryType, SearchMode, type SearchQuery, type SearchResult } from "./search";
-import type { AnalysisWorker } from "./worker";
-import Worker from "./worker?worker";
+import { workers } from "./workers";
 
 export const enum AnalysisState {
     NONE,
@@ -29,7 +27,6 @@ export const enum AnalysisState {
     FULL,
 }
 
-export const workers = createDefaultWorkerPool<AnalysisWorker>(() => new Worker());
 const analyzeClass = async (entry: Entry, skipAttr: boolean) => {
     const buffer = await entry.data.bytes();
 
@@ -378,3 +375,5 @@ export const search = (
         })
     );
 };
+
+export * from "./workers";

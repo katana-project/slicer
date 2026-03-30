@@ -1,7 +1,7 @@
 import { type ClassEntry, classes, EntryType, type MemberEntry } from "$lib/workspace";
 import type { Member } from "@katana-project/asm";
 import { derived } from "svelte/store";
-import { workers } from "./";
+import { workers } from "./workers";
 
 export enum IGraphNodeType {
     CLASS = "class",

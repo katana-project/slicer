@@ -19,7 +19,7 @@ import {
     wildcard,
     type WildcardType,
 } from "@katana-project/asm/type";
-import { derived, get } from "svelte/store";
+import { get } from "svelte/store";
 import { TransformationPoint, type Transformer } from "./types";
 
 export const internalTransformers: Transformer[] = [
@@ -37,22 +37,59 @@ interface FlatRemapper extends Remapper {
     typeParameter(tp: TypeParameter): TypeParameter;
 }
 
-const remapper = derived(mappings, ($mappings): FlatRemapper | null => {
+const remapper = async (): Promise<FlatRemapper | null> => {
+    const $mappings = get(mappings);
     if ($mappings.size() === 0) {
         return null;
     }
 
+    // circular dependency, so we import this lazily
+    const { inheritanceGraph, WalkDirection } = await import("$lib/workspace/analysis/graph");
+    const $inheritanceGraph = get(inheritanceGraph);
+
     return {
         ref(owner: Type, name: string, type: Type): string {
-            const mappedOwner = $mappings.getOrNull(owner.value.slice(1, -1));
+            const ownerInternal = owner.value.slice(1, -1);
+            const mappedOwner = $mappings.getOrNull(ownerInternal);
             if (!mappedOwner) {
                 return name;
             }
 
-            const member =
+            let member =
                 type.kind === TypeKind.METHOD
                     ? mappedOwner.methods.getOrNull(name, type.value)
                     : mappedOwner.fields.getOrNull(name, type.value);
+
+            // if method is not found, attempt to find it in superclasses and interfaces
+            const iNode = $inheritanceGraph[ownerInternal];
+            if (!member && type.kind === TypeKind.METHOD && iNode) {
+                const descWithoutReturn = type.value.substring(0, type.value.lastIndexOf(")") + 1);
+                console.log(`trying for ${ownerInternal}`);
+
+                const visited = new Set<string>([ownerInternal]);
+                for (const node of iNode.walk(WalkDirection.UP, (n) => n)) {
+                    if (visited.has(node.name)) {
+                        continue;
+                    }
+                    visited.add(node.name);
+
+                    const mappedNode =
+                        $mappings.getOrNull(node.name) || $mappings.values().find((c) => c.dst === node.name);
+                    if (!mappedNode) {
+                        continue;
+                    }
+
+                    member =
+                        mappedNode.methods
+                            .values()
+                            .find((m) => m.src === name && m.srcDesc.startsWith(descWithoutReturn)) || null;
+
+                    if (member) {
+                        break;
+                    }
+                }
+            }
+
             if (member && member.dst) {
                 return member.dst;
             }
@@ -118,8 +155,8 @@ const remapper = derived(mappings, ($mappings): FlatRemapper | null => {
             }
             return tp;
         },
-    };
-});
+    } satisfies FlatRemapper;
+};
 
 export const internalEarlyTransformers: Transformer[] = [
     {
@@ -128,7 +165,7 @@ export const internalEarlyTransformers: Transformer[] = [
         point: TransformationPoint.ANY,
         async run(entry, data) {
             // if no mappings are loaded, skip remapping to avoid unnecessary processing
-            const $remapper = get(remapper);
+            const $remapper = await remapper();
             if (!$remapper) {
                 return data;
             }
