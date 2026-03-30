@@ -1,6 +1,5 @@
-import type { MappingSet } from "$lib/workspace/analysis/mapping/data";
+import { type MappingSet, remapType } from "$lib/workspace/analysis/mapping/data";
 import { type MethodType, parseType, TypeKind } from "@katana-project/asm/type";
-import { remapType } from "./internal";
 
 const fromInternalName = (name: string): string => {
     return name.replaceAll("/", ".");

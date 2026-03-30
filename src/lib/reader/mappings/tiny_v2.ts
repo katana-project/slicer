@@ -1,4 +1,4 @@
-import { type MappedClass, mappingSet, type MappingSet } from "$lib/workspace/analysis/mapping/data";
+import { type MappedClass, mappingSet, type MappingSet, mergeAssociated } from "$lib/workspace/analysis/mapping/data";
 
 // https://wiki.fabricmc.net/documentation:tiny2
 
@@ -27,19 +27,11 @@ const countLevel = (line: string): number => {
     return level;
 };
 
-// src is always the first one
-export const read = (data: string, dst?: string): MappingSet => {
+const read0 = (data: string, dstIdx: number): MappingSet => {
     const lines = data.split("\n");
     const header = lines.shift()?.split("\t") ?? [];
     if (header.shift() !== "tiny" || header.shift() !== "2") {
         throw new Error("Not a valid Tiny v2 mapping file");
-    }
-
-    header.shift(); // skip minor version
-
-    const dstIdx = dst ? header.indexOf(dst) : 1;
-    if (dstIdx === -1) {
-        throw new Error(`Destination namespace "${dst}" not found in mapping file`);
     }
 
     const mappings = mappingSet();
@@ -91,4 +83,26 @@ export const read = (data: string, dst?: string): MappingSet => {
     }
 
     return mappings;
+};
+
+export const read = (data: string, src?: string, dst?: string): MappingSet => {
+    const nses = readNamespaces(data);
+
+    const srcIdx = src ? nses.indexOf(src) : 0;
+    if (srcIdx === -1) {
+        throw new Error(`Source namespace "${src}" not found in mapping file`);
+    }
+
+    const dstIdx = dst ? nses.indexOf(dst) : 1;
+    if (dstIdx === -1) {
+        throw new Error(`Destination namespace "${dst}" not found in mapping file`);
+    }
+
+    if (srcIdx === 0) {
+        return read0(data, dstIdx);
+    }
+
+    const zeroToSrc = read0(data, srcIdx);
+    const zeroToDst = read0(data, dstIdx);
+    return mergeAssociated(zeroToSrc, zeroToDst);
 };

@@ -1,6 +1,5 @@
-import type { MappingSet } from "$lib/workspace/analysis/mapping/data";
+import { type MappingSet, remapType } from "$lib/workspace/analysis/mapping/data";
 import { parseType } from "@katana-project/asm/type";
-import { remapType } from "./internal";
 
 export const write = (mappingSet: MappingSet): string => {
     const lines: string[] = [];
