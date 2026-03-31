@@ -173,6 +173,7 @@
     "pane.image.zoom.reset": "Restablecer zoom",
     "pane.image.zoom.in": "Ampliar",
     "pane.image.zoom.out": "Alejar",
+    "pane.image.smoothing": "Toggle smoothing",
     "pane.dump.loading": "Leyendo...",
     "pane.dump.timestamp": "fecha:",
     "pane.dump.id-size": "tamaño del identificador:",
