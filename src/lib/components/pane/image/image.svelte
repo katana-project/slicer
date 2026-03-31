@@ -144,7 +144,7 @@
                 alt={entry.shortName}
                 class={cn(
                     "pointer-events-none h-[95%] w-[95%] object-contain will-change-transform",
-                    smoothing ? "image-rendering-auto" : "image-rendering-crisp-edges"
+                    smoothing ? "image-rendering-auto" : "image-rendering-pixelated"
                 )}
                 style="transform: translate({offsetX.current}px, {offsetY.current}px) scale({scale.current});"
                 onload={handleLoad}

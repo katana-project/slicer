@@ -42,8 +42,8 @@
     image-rendering: auto;
 }
 
-@utility image-rendering-crisp-edges {
-    image-rendering: crisp-edges;
+@utility image-rendering-pixelated {
+    image-rendering: pixelated;
 }
 
 /* indeterminate progress bar */
