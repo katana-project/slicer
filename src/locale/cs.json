@@ -173,6 +173,7 @@
     "pane.image.zoom.reset": "Resetovat zoom",
     "pane.image.zoom.in": "Přiblížit",
     "pane.image.zoom.out": "Oddálit",
+    "pane.image.smoothing": "Toggle smoothing",
     "pane.dump.loading": "Čtu...",
     "pane.dump.timestamp": "časové razítko:",
     "pane.dump.id-size": "velikost identifikátorů:",
