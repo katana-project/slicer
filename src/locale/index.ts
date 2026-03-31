@@ -175,6 +175,7 @@ export interface LocaleData {
     "pane.image.zoom.reset": string;
     "pane.image.zoom.in": string;
     "pane.image.zoom.out": string;
+    "pane.image.smoothing": string;
     "pane.dump.loading": string;
     "pane.dump.timestamp": string;
     "pane.dump.id-size": string;

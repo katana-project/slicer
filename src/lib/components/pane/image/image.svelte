@@ -5,10 +5,11 @@
     import { cubicOut } from "svelte/easing";
     import { onDestroy } from "svelte";
     import { humanSize } from "$lib/utils";
-    import { Fullscreen, ZoomIn, ZoomOut } from "@lucide/svelte";
+    import { Fullscreen, ImageUpscale, ZoomIn, ZoomOut } from "@lucide/svelte";
     import MenuButton from "./menu_button.svelte";
     import type { PaneProps } from "$lib/components/pane";
     import { t } from "$lib/i18n";
+    import { cn } from "$lib/components/utils";
 
     let { tab }: PaneProps = $props();
     const entry = $derived(tab.entry!);
@@ -92,6 +93,10 @@
         elem = e.target as HTMLImageElement;
     };
 
+    // disable smoothing for small images to preserve detail (especially pixel art)
+    // the max threshold is the area of a 128x128 image
+    let smoothing = $derived(elem ? elem.naturalHeight * elem.naturalWidth >= 16384 : true);
+
     const createURL = (blob: Blob) => {
         const url = URL.createObjectURL(blob);
         onDestroy(() => URL.revokeObjectURL(url));
@@ -109,6 +114,11 @@
                 <MenuButton icon={Fullscreen} label={$t("pane.image.zoom.reset")} onclick={reset} />
                 <MenuButton icon={ZoomIn} label={$t("pane.image.zoom.in")} onclick={() => rescale((s) => s + 0.5)} />
                 <MenuButton icon={ZoomOut} label={$t("pane.image.zoom.out")} onclick={() => rescale((s) => s - 0.5)} />
+                <MenuButton
+                    icon={ImageUpscale}
+                    label={$t("pane.image.smoothing")}
+                    onclick={() => (smoothing = !smoothing)}
+                />
             </div>
             <div class="text-xs">
                 {elem?.naturalWidth || 0}x{elem?.naturalHeight || 0}
@@ -132,7 +142,10 @@
             <img
                 src={createURL(blob)}
                 alt={entry.shortName}
-                class="pointer-events-none h-[95%] w-[95%] object-contain will-change-transform"
+                class={cn(
+                    "pointer-events-none h-[95%] w-[95%] object-contain will-change-transform",
+                    smoothing ? "image-rendering-auto" : "image-rendering-crisp-edges"
+                )}
                 style="transform: translate({offsetX.current}px, {offsetY.current}px) scale({scale.current});"
                 onload={handleLoad}
             />

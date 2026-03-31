@@ -38,6 +38,14 @@
     }
 }
 
+@utility image-rendering-auto {
+    image-rendering: auto;
+}
+
+@utility image-rendering-crisp-edges {
+    image-rendering: crisp-edges;
+}
+
 /* indeterminate progress bar */
 @theme {
     --animate-progress: progress 1s infinite linear;

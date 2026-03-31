@@ -173,6 +173,7 @@
     "pane.image.zoom.reset": "Reset zoom",
     "pane.image.zoom.in": "Zoom in",
     "pane.image.zoom.out": "Zoom out",
+    "pane.image.smoothing": "Toggle smoothing",
     "pane.dump.loading": "Reading...",
     "pane.dump.timestamp": "timestamp:",
     "pane.dump.id-size": "identifier size:",
