@@ -373,6 +373,7 @@ export interface LocaleData {
     "dialog.script.table.desc": string;
     "dialog.script.table.version": string;
     "dialog.script.table.unknown": string;
+    "dialog.script.load-fail": string;
     "dialog.script-delete.title": string;
     "dialog.script-delete.desc": string;
     "dialog.script-delete.action.cancel": string;

@@ -458,10 +458,8 @@ export default {
         } else if (data instanceof File) {
             const dataContent = await data.text();
             url = `data:text/javascript;base64,${window.btoa(dataContent)}`;
-        }
-
-        if (!url) {
-            return; // should never happen, but just in case
+        } else {
+            url = data;
         }
 
         const proto = await record("task.script.import", truncate(url, 120), () => readScript(url));

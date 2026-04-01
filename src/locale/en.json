@@ -371,6 +371,7 @@
     "dialog.script.table.desc": "Description",
     "dialog.script.table.version": "Version",
     "dialog.script.table.unknown": "<unknown>",
+    "dialog.script.load-fail": "Failed to load script source, check the console.",
     "dialog.script-delete.title": "Are you sure, absolutely sure?",
     "dialog.script-delete.desc": "This will permanently delete the <span class=\"italic\">{0}</span> script. <p class=\"mt-2 font-semibold\">This action cannot be undone.</p>",
     "dialog.script-delete.action.cancel": "Cancel",
