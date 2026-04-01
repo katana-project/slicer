@@ -435,8 +435,9 @@ export default {
             });
         }
     },
-    async addScript(url?: string, load?: boolean): Promise<void> {
-        if (!url) {
+    async addScript(data?: string | File, load?: boolean): Promise<void> {
+        let url: string | undefined;
+        if (!data) {
             if (!navigator.clipboard) {
                 toast.error(tl("toast.error.title.generic"), {
                     description: tl("toast.error.clipboard.unsupported"),
@@ -454,6 +455,13 @@ export default {
                 });
                 return;
             }
+        } else if (data instanceof File) {
+            const dataContent = await data.text();
+            url = `data:text/javascript;base64,${window.btoa(dataContent)}`;
+        }
+
+        if (!url) {
+            return; // should never happen, but just in case
         }
 
         const proto = await record("task.script.import", truncate(url, 120), () => readScript(url));

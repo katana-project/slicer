@@ -24,7 +24,7 @@ export interface EventHandler {
     loadRemoteMappings(url: string): Awaitable<void>;
     exportMappings(format: MappingType, clipboard: boolean): Awaitable<void>;
 
-    addScript(url?: string, load?: boolean): Awaitable<void>;
+    addScript(data?: string | File, load?: boolean): Awaitable<void>;
     loadScript(proto: ProtoScript): Awaitable<void>;
     unloadScript(proto: ProtoScript): Awaitable<void>;
     removeScript(proto: ProtoScript): Awaitable<void>;

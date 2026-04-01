@@ -16,6 +16,8 @@
         ExportMappingsDialog,
         LoadExternalDialog,
         ScriptLoadDialog,
+        LoadMappingsFileDialog,
+        ScriptLoadFileDialog,
         LoadMappingsDialog,
     } from "$lib/components/dialog";
     import {
@@ -313,10 +315,17 @@
                     <MenubarSubContent class="min-w-[12rem]" align="start">
                         <MenubarItem
                             class="justify-between"
-                            onclick={() => modals.open(LoadMappingsDialog, { handler })}
+                            onclick={() => modals.open(LoadMappingsFileDialog, { handler })}
                         >
                             {$t("menu.mapping.load.file")}
                             <FileInput size={16} />
+                        </MenubarItem>
+                        <MenubarItem
+                            class="justify-between"
+                            onclick={() => modals.open(LoadMappingsDialog, { handler })}
+                        >
+                            {$t("menu.mapping.load.url")}
+                            <Globe size={16} />
                         </MenubarItem>
                         <MenubarItem class="justify-between" onclick={() => handler.loadMappings()}>
                             {$t("menu.mapping.load.clipboard")}
@@ -353,6 +362,13 @@
                         {$t("menu.scripts.import")}
                     </MenubarSubTrigger>
                     <MenubarSubContent class="min-w-[12rem]" align="start">
+                        <MenubarItem
+                            class="justify-between"
+                            onclick={() => modals.open(ScriptLoadFileDialog, { handler })}
+                        >
+                            {$t("menu.scripts.import.file")}
+                            <FileInput size={16} />
+                        </MenubarItem>
                         <MenubarItem class="justify-between" onclick={() => modals.open(ScriptLoadDialog, { handler })}>
                             {$t("menu.scripts.import.url")}
                             <Globe size={16} />

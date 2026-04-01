@@ -391,6 +391,9 @@ export const fetchProgress = async (
     onProgress: (loaded: number, total: number) => void
 ): Promise<Blob> => {
     const res = await fetch(url);
+    if (!res.ok) {
+        throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`);
+    }
     if (!res.body) {
         return new Blob();
     }
