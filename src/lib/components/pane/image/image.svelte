@@ -5,11 +5,12 @@
     import { cubicOut } from "svelte/easing";
     import { onDestroy } from "svelte";
     import { humanSize } from "$lib/utils";
-    import { Fullscreen, ImageUpscale, ZoomIn, ZoomOut } from "@lucide/svelte";
+    import { Fullscreen, ImageMinus, ImageOff, ImagePlus, ZoomIn, ZoomOut } from "@lucide/svelte";
     import MenuButton from "./menu_button.svelte";
     import type { PaneProps } from "$lib/components/pane";
     import { t } from "$lib/i18n";
     import { cn } from "$lib/components/utils";
+    import { imageSmoothing } from "$lib/state";
 
     let { tab }: PaneProps = $props();
     const entry = $derived(tab.entry!);
@@ -95,7 +96,13 @@
 
     // disable smoothing for small images to preserve detail (especially pixel art)
     // the max threshold is the area of a 128x128 image
-    let smoothing = $derived(elem ? elem.naturalHeight * elem.naturalWidth >= 16384 : true);
+    let smoothing = $derived(
+        $imageSmoothing === "auto"
+            ? elem
+                ? elem.naturalHeight * elem.naturalWidth > 16384
+                : true
+            : $imageSmoothing === "on"
+    );
 
     const createURL = (blob: Blob) => {
         const url = URL.createObjectURL(blob);
@@ -114,10 +121,24 @@
                 <MenuButton icon={Fullscreen} label={$t("pane.image.zoom.reset")} onclick={reset} />
                 <MenuButton icon={ZoomIn} label={$t("pane.image.zoom.in")} onclick={() => rescale((s) => s + 0.5)} />
                 <MenuButton icon={ZoomOut} label={$t("pane.image.zoom.out")} onclick={() => rescale((s) => s - 0.5)} />
+                <Separator orientation="vertical" />
                 <MenuButton
-                    icon={ImageUpscale}
-                    label={$t("pane.image.smoothing")}
-                    onclick={() => (smoothing = !smoothing)}
+                    icon={ImagePlus}
+                    label={$t("pane.image.smoothing.on")}
+                    value="on"
+                    bind:group={$imageSmoothing}
+                />
+                <MenuButton
+                    icon={ImageMinus}
+                    label={$t("pane.image.smoothing.off")}
+                    value="off"
+                    bind:group={$imageSmoothing}
+                />
+                <MenuButton
+                    icon={ImageOff}
+                    label={$t("pane.image.smoothing.auto")}
+                    value="auto"
+                    bind:group={$imageSmoothing}
                 />
             </div>
             <div class="text-xs">

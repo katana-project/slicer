@@ -23,6 +23,7 @@ export interface TabData {
 
 export type ProjectMode = "file" | "package";
 export type DuplicateEntryHandling = "skip" | "overwrite" | "rename";
+export type ImageSmoothingMode = "auto" | "on" | "off";
 
 export const locale = persisted<string>(root, "locale", new Intl.Locale(navigator.language).language);
 export const themeColor = persisted<string>(root, "theme.color", "zinc");
@@ -42,6 +43,7 @@ export const scriptingScripts = persisted<ScriptData[]>(root, "scripting.scripts
 export const editorWrap = persisted<boolean>(root, "editor.wrap", true);
 export const editorTextSize = persisted<number>(root, "editor.text-size", 0.75);
 export const editorTextSizeSync = persisted<boolean>(root, "editor.text-size.sync", true);
+export const imageSmoothing = persisted<ImageSmoothingMode>(root, "image.smoothing", "auto");
 export const analysisBackground = persisted<boolean>(root, "analysis.background", true);
 export const analysisJdkClasses = persisted<boolean>(root, "analysis.jdk-classes", true);
 export const analysisTransformers = persisted<string[]>(root, "analysis.transformers", []);
