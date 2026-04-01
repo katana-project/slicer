@@ -13,7 +13,7 @@ import {
     EarthLock,
     File,
     FileArchive,
-    FileCode2,
+    FileCodeCorner,
     FileDigit,
     FilePen,
     FileText,
@@ -36,7 +36,7 @@ import {
     ScanText,
     Server,
     Sparkles,
-    Text,
+    TextAlignStart,
     TextQuote,
     Zap,
 } from "@lucide/svelte";
@@ -105,7 +105,7 @@ export const tabIcon = (tabType: TabType, entry: Entry): StyledIcon => {
         case TabType.GRAPH:
             return { icon: GitPullRequest, classes: ["text-muted-foreground"] };
         case TabType.CLASS:
-            return { icon: FileCode2, classes: ["text-red-500"] };
+            return { icon: FileCodeCorner, classes: ["text-red-500"] };
     }
 
     return entryIcon(entry);
@@ -113,6 +113,8 @@ export const tabIcon = (tabType: TabType, entry: Entry): StyledIcon => {
 
 export const entryIcon = (entry: Entry): StyledIcon => {
     switch (entry.type) {
+        case EntryType.ARCHIVE:
+            return { icon: FileArchive, classes: [] };
         case EntryType.MEMBER:
             return { icon: Parentheses, classes: ["text-red-500"] };
         case EntryType.CLASS: {
@@ -162,11 +164,10 @@ export const fileIcon = (label: string): StyledIcon => {
             case "yaml":
             case "yml":
                 return { icon: TextQuote, classes: ["text-green-500"] };
-            case "jar":
-                return { icon: FileArchive, classes: ["text-red-500"] };
             case "apk":
             case "xapk":
                 return { icon: Android };
+            case "jar":
             case "zip":
             case "tar":
             case "war":
@@ -175,6 +176,7 @@ export const fileIcon = (label: string): StyledIcon => {
             case "gz":
             case "rar":
             case "lzma":
+            case "mrpack":
                 return { icon: FileArchive, classes: [] };
             case "hprof":
                 return { icon: FileDigit, classes: [] };
@@ -184,7 +186,7 @@ export const fileIcon = (label: string): StyledIcon => {
             case "adoc":
                 return { icon: FileText, classes: [] };
             case "txt":
-                return { icon: Text, classes: [] };
+                return { icon: TextAlignStart, classes: [] };
         }
     }
 

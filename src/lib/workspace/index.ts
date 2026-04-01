@@ -215,7 +215,7 @@ export interface LoadResult {
     created: boolean;
 }
 
-export const ZIP_EXTENSIONS = new Set(["zip", "jar", "apk", "xapk", "war", "ear", "jmod"]);
+export const ZIP_EXTENSIONS = new Set(["zip", "jar", "apk", "xapk", "war", "ear", "jmod", "mrpack"]);
 
 const readZip = async (blob: Blob): Promise<Zip> => {
     const { readBlob } = await import("@katana-project/zip");
@@ -292,7 +292,23 @@ const load0 = async (entries: Map<string, Entry>, d: Data, parent?: Entry): Prom
         state: AnalysisState.NONE,
     };
 
-    if (entry.extension && ZIP_EXTENSIONS.has(entry.extension)) {
+    // this will not work for ZIP files with leading junk before the first header
+    // have a proper file extension for those, I guess?
+    const checkZipHeader = async (d: Data) => {
+        const blob = await d.blob();
+        const header = await blob.slice(0, 4).arrayBuffer();
+        const headerView = new Uint8Array(header);
+        // local file header signature: 50 4b 03 04
+        // central directory header signature: 50 4b 01 02
+        // end of central directory record signature: 50 4b 05 06
+        return (
+            headerView[0] === 0x50 && // P
+            headerView[1] === 0x4b && // K
+            (headerView[2] === 0x03 || headerView[2] === 0x01 || headerView[2] === 0x05) &&
+            (headerView[3] === 0x04 || headerView[3] === 0x02 || headerView[3] === 0x06)
+        );
+    };
+    if ((entry.extension && ZIP_EXTENSIONS.has(entry.extension)) || (await checkZipHeader(d))) {
         try {
             const archiveEntry = entry as ArchiveEntry;
 

@@ -23,7 +23,7 @@ export interface InterpretationOptions {
 const extensions = {
     [Interpretation.HEX]: [
         "bin", "tar", "gz", "rar", "zip", "7z", "jar", "apk", "xapk", "dex", "lzma", "dll", "so", "dylib", "exe", "kotlin_builtins",
-        "kotlin_metadata", "kotlin_module", "nbt", "ogg", "cer", "der", "crt",
+        "kotlin_metadata", "kotlin_module", "nbt", "ogg", "cer", "der", "crt", "mrpack"
     ],
 };
 
