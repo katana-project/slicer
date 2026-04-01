@@ -7,7 +7,7 @@
     import { VList } from "virtua/svelte";
     import { Button } from "$lib/components/ui/button";
     import { SearchCode, X } from "@lucide/svelte";
-    import { untrack } from "svelte";
+    import { onMount, untrack } from "svelte";
     import { groupBy } from "$lib/utils";
     import { toast } from "svelte-sonner";
     import { error } from "$lib/log";
@@ -85,12 +85,42 @@
             searching = false;
         }
     };
+
+    const applySelection = () => {
+        // if there's selected text when opening the search pane, use it as the initial query
+        const selection = window.getSelection();
+        if (selection) {
+            const selectedText = selection.toString();
+            if (selectedText.length > 0) {
+                value = selectedText;
+            }
+        }
+    };
+
+    let searchInput: HTMLInputElement | null = $state(null);
+    onMount(() => {
+        applySelection();
+        // focus the search input on mount
+        searchInput?.focus();
+
+        const handleShortcutRefocus = (e: KeyboardEvent) => {
+            // refocus the search input when pressing Ctrl+Shift+F or Cmd+Shift+F
+            if (e.key === "F" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                applySelection();
+                searchInput?.focus();
+            }
+        };
+        window.addEventListener("keydown", handleShortcutRefocus);
+        return () => window.removeEventListener("keydown", handleShortcutRefocus);
+    });
 </script>
 
 <div class="flex h-full w-full flex-col">
     <div class="flex w-full flex-row px-2 pt-2">
         <Dropdown bind:type bind:mode bind:ref disabled={searching} />
         <Input
+            bind:ref={searchInput}
             placeholder={$t("pane.search.placeholder")}
             type="text"
             bind:value
