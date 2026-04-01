@@ -22,6 +22,7 @@
     let newKey = $state("");
     let newValue = $state("");
 
+    let disasmOptionKeyInput: HTMLInputElement | null = $state(null);
     const addOption = () => {
         if (!newKey.trim()) {
             return;
@@ -37,6 +38,8 @@
 
         newKey = "";
         newValue = "";
+        // refocus the key input for faster entry of multiple options
+        disasmOptionKeyInput?.focus();
     };
 
     const removeOption = (key: string) => {
@@ -133,6 +136,7 @@
                 <CardFooter>
                     <div class="grid w-full grid-cols-[1fr_1fr_auto] items-center gap-2">
                         <Input
+                            bind:ref={disasmOptionKeyInput}
                             type="text"
                             bind:value={newKey}
                             placeholder={$t("pane.prefs.disasm.options.key")}
