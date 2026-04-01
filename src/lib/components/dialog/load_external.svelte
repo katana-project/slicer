@@ -51,6 +51,7 @@
                 class={cn("col-span-5", !invalid || "border-destructive ring-offset-destructive")}
                 bind:value
                 onchange={() => (invalid = false)}
+                onkeydown={(e) => e.key === "Enter" && loadFile()}
             />
         </div>
         <DialogFooter>

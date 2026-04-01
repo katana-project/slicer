@@ -132,8 +132,18 @@
                 <div class="bg-border h-px"></div>
                 <CardFooter>
                     <div class="grid w-full grid-cols-[1fr_1fr_auto] items-center gap-2">
-                        <Input type="text" bind:value={newKey} placeholder={$t("pane.prefs.disasm.options.key")} />
-                        <Input type="text" bind:value={newValue} placeholder={$t("pane.prefs.disasm.options.value")} />
+                        <Input
+                            type="text"
+                            bind:value={newKey}
+                            placeholder={$t("pane.prefs.disasm.options.key")}
+                            onkeydown={(e) => e.key === "Enter" && addOption()}
+                        />
+                        <Input
+                            type="text"
+                            bind:value={newValue}
+                            placeholder={$t("pane.prefs.disasm.options.value")}
+                            onkeydown={(e) => e.key === "Enter" && addOption()}
+                        />
                         <Button
                             size="icon"
                             onclick={addOption}

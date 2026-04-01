@@ -65,6 +65,7 @@
                     multiple={false}
                     accept=".txt,.tiny,.srg,.tsrg,.csrg"
                     bind:files
+                    onkeydown={(e) => e.key === "Enter" && loadMappings()}
                 />
             </div>
             <div class="grid grid-cols-4 items-center gap-4">

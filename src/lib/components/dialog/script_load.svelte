@@ -54,6 +54,7 @@
                     class={cn("col-span-3", !invalid || "border-destructive ring-offset-destructive")}
                     bind:value
                     onchange={() => (invalid = false)}
+                    onkeydown={(e) => e.key === "Enter" && loadScript()}
                 />
             </div>
             <div class="grid grid-cols-4 items-center gap-4">
