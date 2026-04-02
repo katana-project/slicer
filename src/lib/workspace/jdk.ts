@@ -3,6 +3,7 @@ import { error } from "$lib/log";
 import { record } from "$lib/task";
 import { refFromName } from "$lib/utils";
 import type { ExternalTypeReference } from "@katana-project/laser";
+import { openDB } from "idb";
 import { toast } from "svelte-sonner";
 
 // JDK indexes are produced by the ojdk utility (https://github.com/katana-project/ojdk)
@@ -27,7 +28,8 @@ const fetchIndex = async (url: string): Promise<RawDataIndex> => {
 };
 
 // use the OpenJDK 25 index globally
-const rawIndex = await fetchIndex("https://data.slicer.run/25");
+const JDK_VERSION = "25";
+const rawIndex = await fetchIndex(`https://data.slicer.run/${JDK_VERSION}`);
 
 type DataIndex = Map<string, string>; // [class name -> url]
 
@@ -44,17 +46,23 @@ const createIndex = ({ url, data }: RawDataIndex): DataIndex => {
 
 export const index = createIndex(rawIndex);
 
-// shouldn't be too big, the entire class library is around a hundred MB
-const cache = new Map<string, Uint8Array>();
+const CLASSES_STORE = `classes-${JDK_VERSION}`;
+const lazyDB = openDB("jdk-cache", 1, {
+    upgrade(db) {
+        db.createObjectStore(CLASSES_STORE);
+    },
+});
+
 export const findClass = async (name: string): Promise<Uint8Array | null> => {
+    const db = await lazyDB;
+    const cacheData = await db.get(CLASSES_STORE, name);
+    if (cacheData) {
+        return cacheData;
+    }
+
     const url = index.get(name);
     if (!url) {
         return null;
-    }
-
-    const cacheData = cache.get(name);
-    if (cacheData) {
-        return cacheData;
     }
 
     return await record("task.fetch", name, async () => {
@@ -64,8 +72,8 @@ export const findClass = async (name: string): Promise<Uint8Array | null> => {
             return null;
         }
 
-        const data = await res.bytes();
-        cache.set(name, data);
+        const data = new Uint8Array(await res.arrayBuffer());
+        await db.put(CLASSES_STORE, data, name);
         return data;
     });
 };

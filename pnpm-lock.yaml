@@ -86,6 +86,9 @@ importers:
       html-to-image:
         specifier: 1.11.11
         version: 1.11.11
+      idb:
+        specifier: ^8.0.3
+        version: 8.0.3
       queueable:
         specifier: ^5.3.2
         version: 5.3.2
@@ -1235,6 +1238,9 @@ packages:
 
   html-to-image@1.11.11:
     resolution: {integrity: sha512-9gux8QhvjRO/erSnDPv28noDZcPZmYE7e1vFsBLKLlRlKDSqNJYebj6Qz1TGd5lsRV+X+xYyjCKjuZdABinWjA==}
+
+  idb@8.0.3:
+    resolution: {integrity: sha512-LtwtVyVYO5BqRvcsKuB2iUMnHwPVByPCXFXOpuU96IZPPoPN6xjOGxZQ74pgSVVLQWtUOYgyeL4GE98BY5D3wg==}
 
   inline-style-parser@0.2.6:
     resolution: {integrity: sha512-gtGXVaBdl5mAes3rPcMedEBm12ibjt1kDMFfheul1wUAOVEJW60voNdMVzVkfLN06O7ZaD/rxhfKgtlgtTbMjg==}
@@ -2618,6 +2624,8 @@ snapshots:
   graceful-fs@4.2.11: {}
 
   html-to-image@1.11.11: {}
+
+  idb@8.0.3: {}
 
   inline-style-parser@0.2.6: {}
 

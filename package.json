@@ -40,6 +40,7 @@
         "comlink": "^4.4.2",
         "elkjs": "^0.11.0",
         "html-to-image": "1.11.11",
+        "idb": "^8.0.3",
         "queueable": "^5.3.2",
         "svelte-modals": "^2.0.1",
         "tailwind-merge": "^3.4.0",
