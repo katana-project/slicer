@@ -9,10 +9,11 @@
     import { Button } from "$lib/components/ui/button";
     import { Select, SelectContent, SelectItem, SelectTrigger } from "$lib/components/ui/select";
     import { Trash2, Plus } from "@lucide/svelte";
-    import { toolsDisasmOptions } from "$lib/state";
+    import { toolsDisasmOptions, toolsDisasmCache } from "$lib/state";
     import type { PaneProps } from "$lib/components/pane";
     import { Card, CardContent, CardFooter } from "$lib/components/ui/card";
     import { Table, TableBody, TableHead, TableHeader, TableCell, TableRow } from "$lib/components/ui/table";
+    import { Switch } from "$lib/components/ui/switch";
 
     let { disasms }: PaneProps = $props();
 
@@ -67,6 +68,10 @@
     </div>
 
     <Section id="disasm" labelKey="pane.prefs.section.disasm" small>
+        <div class="grid min-h-[2.5rem] grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
+            <Label for="disasmCache" textKey="pane.prefs.disasm.cache" descKey="pane.prefs.disasm.cache.desc" danger />
+            <Switch id="disasmCache" bind:checked={$toolsDisasmCache} />
+        </div>
         <div class="grid min-h-[2.5rem] grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
             <Label for="disasmSelect" textKey="pane.prefs.disasm.options" descKey="pane.prefs.disasm.options.desc" />
             <Select type="single" bind:value={selectedDisasm}>

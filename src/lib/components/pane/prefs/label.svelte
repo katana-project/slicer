@@ -3,14 +3,16 @@
     import { Label } from "$lib/components/ui/label";
     import { CircleQuestionMark } from "@lucide/svelte";
     import { t, type TranslationKey } from "$lib/i18n";
+    import { cn } from "$lib/components/utils";
 
     interface Props {
         for: string;
+        danger?: boolean;
         textKey: TranslationKey;
         descKey?: TranslationKey;
     }
 
-    let { for: forId, textKey, descKey }: Props = $props();
+    let { for: forId, danger, textKey, descKey }: Props = $props();
 </script>
 
 {#if descKey}
@@ -19,7 +21,7 @@
             <Label for={forId}>{$t(textKey)}</Label>
             <Tooltip>
                 <TooltipTrigger class="cursor-pointer">
-                    <CircleQuestionMark class="text-muted-foreground h-4 w-4" />
+                    <CircleQuestionMark class={cn("h-4 w-4", danger ? "text-destructive" : "text-muted-foreground")} />
                 </TooltipTrigger>
                 <TooltipContent side="right">
                     {@html $t(descKey)}

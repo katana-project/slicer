@@ -281,6 +281,8 @@
     "pane.prefs.analysis.background": "Background analysis",
     "pane.prefs.analysis.background.desc": "Whether analysis should run in the background or on-demand.",
     "pane.prefs.analysis.jdk-classes": "Fetch JDK classes",
+    "pane.prefs.disasm.cache": "Cache output",
+    "pane.prefs.disasm.cache.desc": "Whether to cache disassembly output for faster subsequent views at the cost of increased memory usage. <p class=\"mt-2 font-semibold\">Note: This may result in degraded output quality if changes to the workspace add additional context for the disassembler.</p>",
     "pane.prefs.disasm.options": "Options",
     "pane.prefs.disasm.options.desc": "Select a disassembler to configure its options.",
     "pane.prefs.disasm.options.placeholder": "Choose...",

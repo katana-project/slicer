@@ -283,6 +283,8 @@ export interface LocaleData {
     "pane.prefs.analysis.background": string;
     "pane.prefs.analysis.background.desc": string;
     "pane.prefs.analysis.jdk-classes": string;
+    "pane.prefs.disasm.cache": string;
+    "pane.prefs.disasm.cache.desc": string;
     "pane.prefs.disasm.options": string;
     "pane.prefs.disasm.options.desc": string;
     "pane.prefs.disasm.options.placeholder": string;

@@ -154,6 +154,11 @@ export interface Cancellable<T> extends PromiseLike<T> {
         onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null
     ): Cancellable<TResult1 | TResult2>;
 
+    flatMap<TResult1 = T, TResult2 = never>(
+        onfulfilled?: ((value: T) => Cancellable<TResult1>) | undefined | null,
+        onrejected?: ((reason: any) => Cancellable<TResult2>) | undefined | null
+    ): Cancellable<TResult1 | TResult2>;
+
     cancel(): void;
 }
 
@@ -178,6 +183,27 @@ export const cancellable = <T>(
             return cancellable((_, onCancel) => {
                 onCancel(() => this.cancel());
                 return this.then(onfulfilled, onrejected);
+            });
+        },
+        flatMap(onfulfilled, onrejected) {
+            return cancellable((_, onCancel) => {
+                onCancel(() => this.cancel());
+                return this.then(
+                    onfulfilled
+                        ? (value) => {
+                              const next = onfulfilled(value);
+                              onCancel(() => next.cancel());
+                              return next;
+                          }
+                        : undefined,
+                    onrejected
+                        ? (reason) => {
+                              const next = onrejected(reason);
+                              onCancel(() => next.cancel());
+                              return next;
+                          }
+                        : undefined
+                );
             });
         },
         then(onfulfilled, onrejected) {
@@ -218,11 +244,11 @@ export const uniqueBy = <T, K>(arr: T[], func: (e: T) => K): T[] => {
     A fast and simple 53-bit string hash function with decent collision resistance.
     Largely inspired by MurmurHash2/3, but with a focus on speed/simplicity.
 */
-export const cyrb53 = (str: string, seed: number = 0): number => {
+export const cyrb53 = (data: string | Uint8Array, seed: number = 0): number => {
     let h1 = 0xdeadbeef ^ seed,
         h2 = 0x41c6ce57 ^ seed;
-    for (let i = 0, ch; i < str.length; i++) {
-        ch = str.charCodeAt(i);
+    for (let i = 0, ch; i < data.length; i++) {
+        ch = typeof data === "string" ? data.charCodeAt(i) : data[i];
         h1 = Math.imul(h1 ^ ch, 2654435761);
         h2 = Math.imul(h2 ^ ch, 1597334677);
     }
