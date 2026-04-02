@@ -416,7 +416,23 @@ export const rootContext = createContext(
 const read0 = async (url: string): Promise<ProtoScript> => {
     const id = cyrb53(url).toString(16);
     try {
-        const script = (await import(/* @vite-ignore */ url)).default as Script;
+        let script: Script | null = null;
+        try {
+            script = (await import(/* @vite-ignore */ url)).default as Script;
+        } catch (e) {
+            if (e instanceof TypeError) {
+                // MIME type mismatch? try fetching as text and evaluating
+                const res = await fetch(url);
+                if (!res.ok) {
+                    throw new Error(`Failed to fetch script: ${res.status} ${res.statusText}`);
+                }
+
+                const dataUrl = `data:text/javascript;base64,${window.btoa(await res.text())}`;
+                script = (await import(/* @vite-ignore */ dataUrl)).default as Script;
+            } else {
+                throw e;
+            }
+        }
         if (!script || !script.load || !script.unload) {
             throw new Error("Invalid script, missing required properties");
         }
