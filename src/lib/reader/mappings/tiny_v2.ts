@@ -2,6 +2,25 @@ import { type MappedClass, mappingSet, type MappingSet, mergeAssociated } from "
 
 // https://wiki.fabricmc.net/documentation:tiny2
 
+const unescape = (str: string): string => {
+    return str.replace(/\\([\\nr0t])/g, (_, p1) => {
+        switch (p1) {
+            case "\\":
+                return "\\";
+            case "n":
+                return "\n";
+            case "r":
+                return "\r";
+            case "0":
+                return "\0";
+            case "t":
+                return "\t";
+            default:
+                return p1;
+        }
+    });
+};
+
 export const readNamespaces = (data: string): string[] => {
     const lines = data.split("\n", 1);
     const header = lines.shift()?.split("\t") ?? [];
@@ -11,7 +30,7 @@ export const readNamespaces = (data: string): string[] => {
 
     header.shift(); // skip minor version
 
-    return header;
+    return header.map(unescape);
 };
 
 const countLevel = (line: string): number => {
@@ -34,6 +53,16 @@ const read0 = (data: string, dstIdx: number): MappingSet => {
         throw new Error("Not a valid Tiny v2 mapping file");
     }
 
+    const properties = new Map<string, string>();
+    while (lines.length > 0 && countLevel(lines[0]) === 1) {
+        const line = lines.shift()!;
+        const columns = line.trim().split("\t");
+        properties.set(unescape(columns[0]), unescape(columns[1]));
+    }
+
+    const escapeNames = properties.has("escaped-names");
+    const possiblyUnescape = (str: string): string => (escapeNames ? unescape(str) : str);
+
     const mappings = mappingSet();
 
     let currentClass: MappedClass | null = null;
@@ -54,11 +83,11 @@ const read0 = (data: string, dstIdx: number): MappingSet => {
                     // comment, ignore
                     break;
                 }
-                currentClass = mappings.get(columns[0]);
+                currentClass = mappings.get(possiblyUnescape(columns[0]));
 
                 const dst = columns[dstIdx];
                 if (dst && dst.trim() !== "") {
-                    currentClass.dst = dst;
+                    currentClass.dst = possiblyUnescape(dst);
                 }
                 level = 1; // enter into members
                 break;
@@ -69,12 +98,15 @@ const read0 = (data: string, dstIdx: number): MappingSet => {
                     throw new Error(`Tried to read a member before reading a class (line ${i})`);
                 }
 
-                const desc = columns.shift()!;
-                const member = (type === "f" ? currentClass.fields : currentClass.methods).get(columns[0], desc);
+                const desc = possiblyUnescape(columns.shift()!);
+                const member = (type === "f" ? currentClass.fields : currentClass.methods).get(
+                    possiblyUnescape(columns[0]),
+                    desc
+                );
 
                 const dst = columns[dstIdx];
                 if (dst && dst.trim() !== "") {
-                    member.dst = dst;
+                    member.dst = possiblyUnescape(dst);
                 }
                 // level = 2; // members may have comments or local variable names, but we don't care about those for now, so we won't go deeper
                 break;
