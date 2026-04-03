@@ -18,7 +18,7 @@
     import ContextMenuLabel from "$lib/components/menu_label.svelte";
     import { t } from "$lib/i18n";
     import type { Icon as ScriptIcon } from "@run-slicer/script";
-    import ScriptIconComponent from "$lib/components/script_icon.svelte";
+    import IconComponent from "$lib/components/icon.svelte";
 
     interface Props {
         name?: string;
@@ -82,12 +82,7 @@
                 <div class="bg-primary pointer-events-none absolute inset-0 opacity-10"></div>
             {/if}
             {#if icon}
-                {#if "type" in icon}
-                    <ScriptIconComponent {icon} size={16} class="z-10 mr-1.5 min-w-4" />
-                {:else}
-                    {@const Icon = icon.icon}
-                    <Icon size={16} class={cn("z-10 mr-1.5 min-w-4", icon.classes)} />
-                {/if}
+                <IconComponent {icon} size={16} class="z-10 mr-1.5 min-w-4" />
             {/if}
             <span class="z-10 overflow-hidden text-sm break-keep text-ellipsis whitespace-nowrap">{name}</span>
             {#if pinned}

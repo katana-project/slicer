@@ -61,7 +61,7 @@
     import ExportAllMenubarSubContent from "./export_all.svelte";
     import InjectedScriptMenu from "./script/injected.svelte";
     import { ScriptState } from "$lib/script";
-    import ScriptIconComponent from "$lib/components/script_icon.svelte";
+    import IconComponent from "$lib/components/icon.svelte";
 
     interface Props {
         panes: PaneData[];
@@ -285,7 +285,7 @@
                     <MenubarItem class="justify-between" disabled={!tab?.entry} onclick={() => openEntry(decl.id)}>
                         {$t(`tab.${decl.id}`)}
                         {#if decl.icon}
-                            <ScriptIconComponent icon={decl.icon} size={16} class="ml-3" />
+                            <IconComponent icon={decl.icon} size={16} class="ml-3" />
                         {/if}
                     </MenubarItem>
                 {/each}

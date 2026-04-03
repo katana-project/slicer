@@ -15,7 +15,7 @@
     import type { Snippet } from "svelte";
     import { cn } from "$lib/components/utils";
     import { t } from "$lib/i18n";
-    import ScriptIconComponent from "$lib/components/script_icon.svelte";
+    import IconComponent from "$lib/components/icon.svelte";
 
     interface Props {
         position: TabPosition;
@@ -63,12 +63,7 @@
                                 await handler.openUnscoped(def, position, true);
                             }}
                         >
-                            {#if "type" in def.icon}
-                                <ScriptIconComponent icon={def.icon} />
-                            {:else}
-                                {@const Icon = def.icon}
-                                <Icon />
-                            {/if}
+                            <IconComponent icon={def.icon} />
                             {$t(`tab.${def.type}`)}
                         </CommandItem>
                     {/each}

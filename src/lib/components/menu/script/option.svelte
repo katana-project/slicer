@@ -13,7 +13,7 @@
     import type { CheckboxOption, GroupOption, Option, RadioOption } from "@run-slicer/script";
     import type { ProtoScript } from "$lib/script";
     import { t, type TranslationKey } from "$lib/i18n";
-    import ScriptIcon from "$lib/components/script_icon.svelte";
+    import IconComponent from "$lib/components/icon.svelte";
 
     interface Props {
         inset?: boolean;
@@ -65,14 +65,14 @@
     <MenubarItem {inset} class="justify-between" onclick={handleButton}>
         {label}
         {#if option.icon}
-            <ScriptIcon icon={option.icon} />
+            <IconComponent icon={option.icon} />
         {/if}
     </MenubarItem>
 {:else if option.type === "checkbox"}
     <MenubarCheckboxItem class="justify-between" checked={checkboxOption.checked} onCheckedChange={handleCheckbox}>
         {label}
         {#if option.icon}
-            <ScriptIcon icon={option.icon} />
+            <IconComponent icon={option.icon} />
         {/if}
     </MenubarCheckboxItem>
 {:else if option.type === "radio"}
