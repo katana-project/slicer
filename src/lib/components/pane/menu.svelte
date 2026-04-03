@@ -64,7 +64,7 @@
                             }}
                         >
                             <IconComponent icon={def.icon} />
-                            {$t(`tab.${def.type}`)}
+                            {$t(def.label || `tab.${def.type}`)}
                         </CommandItem>
                     {/each}
                 </CommandGroup>

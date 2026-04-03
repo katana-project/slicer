@@ -53,6 +53,7 @@ export interface Tab {
 
 export interface TabDefinition {
     type: TabTypeOrDynamic;
+    label?: string;
     icon: Icon | ScriptIcon;
 }
 
@@ -103,7 +104,7 @@ export const tabDefs = derived(dynamicTabDefs, ($scriptTabDefs) => {
     for (const [type, { decl }] of $scriptTabDefs.entries()) {
         if (decl.contextual) continue; // skip contextual tabs
 
-        defs.set(type, { type, icon: decl.icon });
+        defs.set(type, { type, label: decl.label, icon: decl.icon });
     }
 
     return Array.from(defs.values());
@@ -206,9 +207,9 @@ export const current = derived(tabs, ($tabs) => {
 derived([current, t], (a) => a).subscribe(([$current, $t]) => {
     // PWAs don't need the app name reiterated
     if (window.matchMedia("not (display-mode: browser)").matches) {
-        document.title = $current ? ($current.name ?? $t(`tab.${$current.type}`)) : "slicer";
+        document.title = $current ? $t($current.name || `tab.${$current.type}`) : "slicer";
     } else {
-        document.title = $current ? `${$current.name ?? $t(`tab.${$current.type}`)} | slicer` : "slicer";
+        document.title = $current ? `${$t($current.name || `tab.${$current.type}`)} | slicer` : "slicer";
     }
 });
 
@@ -394,8 +395,21 @@ const typesByExts = new Map(
     (Object.entries(extensions) as [TabType, string[]][]).flatMap(([k, v]) => v.map((ext) => [ext, k]))
 );
 
-export const detectType = (entry: Entry): TabType => {
-    return entry.extension ? typesByExts.get(entry.extension) || TabType.CODE : TabType.CODE;
+export const detectType = (entry: Entry): TabTypeOrDynamic => {
+    if (entry.extension) {
+        const wantedType = typesByExts.get(entry.extension);
+        if (wantedType) {
+            return wantedType;
+        }
+
+        for (const { decl } of get(dynamicTabDefs).values()) {
+            if (decl.preferredTypes?.includes(entry.extension)) {
+                return decl.id;
+            }
+        }
+    }
+
+    return TabType.CODE;
 };
 
 export const open = async (entry: Entry, type: TabTypeOrDynamic = detectType(entry)): Promise<Tab> => {

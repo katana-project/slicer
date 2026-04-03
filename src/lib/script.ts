@@ -22,7 +22,6 @@ import {
     type Tab,
     tabDefs,
     tabs,
-    TabType,
 } from "$lib/tab";
 import { cancellable, cyrb53 } from "$lib/utils";
 import {
@@ -105,7 +104,7 @@ const wrapTab = (t: Tab): ScriptTab => {
     return {
         type: t.type,
         id: t.id,
-        label: t.name ?? tl(`tab.${t.type}`),
+        label: tl(t.name || `tab.${t.type}`),
         get position() {
             return t.position;
         },
@@ -284,12 +283,7 @@ const createEditorCtx = (context: ScriptContext): EditorContext => {
         async add(type: string, entry?: ScriptEntry): Promise<ScriptTab> {
             const e = entry ? unwrapEntry(entry) : null;
             if (e) {
-                const tabType = Object.keys(TabType).includes(type) ? (type as TabType) : undefined;
-                if (!tabType) {
-                    warn("script wanted an invalid tab type, detecting a valid one for entry");
-                }
-
-                return wrapTab(await openTab(e, tabType));
+                return wrapTab(await openTab(e, type));
             }
 
             const def = get(tabDefs).find((d) => d.type === type);

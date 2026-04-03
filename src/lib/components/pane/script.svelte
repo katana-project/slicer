@@ -41,9 +41,9 @@
     {#if content}
         <div {@attach (el) => el.replaceWith(content.content)}></div>
     {:else}
-        <div class="flex flex-col h-full items-center justify-center gap-2">
+        <div class="flex h-full flex-col items-center justify-center gap-2">
             <p>{$t("pane.not-available.title")}</p>
-            <p class="text-sm text-muted-foreground">{$t("pane.not-available.subtitle")}</p>
+            <p class="text-muted-foreground text-sm">{$t("pane.not-available.subtitle")}</p>
         </div>
     {/if}
 {/await}

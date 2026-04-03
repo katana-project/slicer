@@ -147,7 +147,7 @@
             >
                 {#each localTabs as tab0 (tab0.internalId)}
                     <PaneHeaderItem
-                        name={tab0.name ?? $t(`tab.${tab0.type}`)}
+                        name={$t(tab0.name || `tab.${tab0.type}`)}
                         active={posCurrent?.id === tab0.id}
                         icon={tab0.icon}
                         closeable={tab0.closeable}
