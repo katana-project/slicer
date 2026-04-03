@@ -19,7 +19,7 @@ export const add = (lc: string, key: TranslationKey, value: string) => {
             // add a stub for the new locale if it doesn't exist in builtin locales, so that it can be selected
             locales.update(($locales) => {
                 if (!$locales.has(lc)) {
-                    $locales.set(lc, async () => ({} as LocaleData));
+                    $locales.set(lc, async () => ({}) as LocaleData);
                 }
                 return $locales;
             });

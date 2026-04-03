@@ -6,7 +6,7 @@ import {
     remove as removeDisasm,
 } from "$lib/disasm";
 import { createSource as createClassSource, createResources } from "$lib/disasm/source";
-import { tl, type TranslationKey, add as addTl, remove as removeTl } from "$lib/i18n";
+import { add as addTl, remove as removeTl, tl, type TranslationKey } from "$lib/i18n";
 import type { Language } from "$lib/lang";
 import { error, warn } from "$lib/log";
 import { workers } from "$lib/reader";
@@ -45,6 +45,7 @@ import type {
     EventListener,
     EventMap,
     EventType,
+    I18NContext,
     MappingContext,
     Script,
     ScriptContext,
@@ -52,9 +53,8 @@ import type {
     Entry as ScriptEntry,
     MappingType as ScriptMappingType,
     Tab as ScriptTab,
-    WorkspaceContext,
     TabDeclaration,
-    I18NContext,
+    WorkspaceContext,
 } from "@run-slicer/script";
 import { toast } from "svelte-sonner";
 import { get, writable } from "svelte/store";
@@ -250,10 +250,8 @@ const unwrapDisasm = (disasm: ScriptDisassembler): Disassembler => {
 };
 
 const editorCtx: EditorContext = {
-    register(declaration: TabDeclaration): void {
-    },
-    unregister(id: string): void {
-    },
+    register(declaration: TabDeclaration): void {},
+    unregister(id: string): void {},
     tabs(): ScriptTab[] {
         return Array.from(get(tabs).values()).map(wrapTab);
     },
@@ -294,7 +292,7 @@ const editorCtx: EditorContext = {
     },
     clear() {
         clearWs();
-    }
+    },
 };
 
 const disasmCtx: DisassemblerContext = {
@@ -434,6 +432,10 @@ export const rootContext = createContext(
     },
     null // parent
 );
+
+locale.subscribe(($locale) => {
+    rootContext.dispatchEvent({ type: "locale_change", locale: $locale });
+});
 
 const read0 = async (url: string): Promise<ProtoScript> => {
     const id = cyrb53(url).toString(16);
