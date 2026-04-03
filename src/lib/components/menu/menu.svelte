@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { t } from "$lib/i18n";
+    import { t, type TranslationKey } from "$lib/i18n";
     import { mode, userPrefersMode } from "mode-watcher";
     import { Separator } from "$lib/components/ui/separator";
     import { analysisTransformers, type PaneData, themeColor, themeRadius, workspaceEncoding } from "$lib/state";
@@ -59,6 +59,8 @@
     import { mappings } from "$lib/workspace/analysis/mapping";
     import { mappingSet } from "$lib/workspace/analysis/mapping/data";
     import ExportAllMenubarSubContent from "./export_all.svelte";
+    import InjectedScriptMenu from "./script/injected.svelte";
+    import { ScriptState } from "$lib/script";
 
     interface Props {
         panes: PaneData[];
@@ -104,6 +106,31 @@
     const openSearch = async () => {
         await handler.openUnscoped(tabDefs.find((d) => d.type === TabType.SEARCH)!, TabPosition.SECONDARY_RIGHT, false);
     };
+
+    const KNOWN_MENUS = new Set([
+        "menu.root",
+        "menu.file",
+        "menu.view",
+        "menu.analysis",
+        "menu.mapping",
+        "menu.scripts",
+    ]);
+
+    let extraTopLevelMenus = $derived.by(() => {
+        const extraMenus = new Set<TranslationKey>();
+        for (const proto of scripts) {
+            if (proto.state !== ScriptState.LOADED) continue;
+
+            const options = proto.script?.options ?? [];
+            for (const option of options) {
+                if (option.position && !KNOWN_MENUS.has(option.position)) {
+                    extraMenus.add(option.position as TranslationKey);
+                }
+            }
+        }
+
+        return Array.from(extraMenus.values());
+    });
 </script>
 
 <Menubar class="window-controls justify-between rounded-none border-b border-none px-2 lg:px-4">
@@ -177,6 +204,7 @@
                     {$t("menu.root.prefs")}
                     <Settings size={16} />
                 </MenubarItem>
+                <InjectedScriptMenu id="menu.root" protos={scripts} />
             </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
@@ -218,6 +246,7 @@
                     {$t("menu.file.export")}
                     <Shortcut key="e" modifier={Modifier.CTRL} />
                 </MenubarItem>
+                <InjectedScriptMenu id="menu.file" protos={scripts} />
             </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
@@ -260,6 +289,7 @@
                         </MenubarRadioGroup>
                     </MenubarSubContent>
                 </MenubarSub>
+                <InjectedScriptMenu id="menu.view" protos={scripts} />
             </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
@@ -301,6 +331,7 @@
                         {/each}
                     </MenubarSubContent>
                 </MenubarSub>
+                <InjectedScriptMenu id="menu.analysis" protos={scripts} />
             </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
@@ -350,6 +381,7 @@
                     {$t("menu.mapping.clear")}
                     <Trash size={16} />
                 </MenubarItem>
+                <InjectedScriptMenu id="menu.mapping" protos={scripts} />
             </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
@@ -393,8 +425,17 @@
                     {$t("menu.scripts.docs")}
                     <BookOpen size={16} />
                 </MenubarItem>
+                <InjectedScriptMenu id="menu.scripts" protos={scripts} />
             </MenubarContent>
         </MenubarMenu>
+        {#each extraTopLevelMenus as id (id)}
+            <MenubarMenu>
+                <MenubarTrigger class="relative">{$t(id)}</MenubarTrigger>
+                <MenubarContent align="start">
+                    <InjectedScriptMenu {id} protos={scripts} top />
+                </MenubarContent>
+            </MenubarMenu>
+        {/each}
     </div>
     <div class="flex flex-row">
         <PaneButton

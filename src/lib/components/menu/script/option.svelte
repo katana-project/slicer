@@ -5,12 +5,15 @@
         MenubarItem,
         MenubarRadioGroup,
         MenubarRadioItem,
+        MenubarSeparator,
         MenubarSub,
         MenubarSubContent,
         MenubarSubTrigger,
     } from "$lib/components/ui/menubar";
     import type { CheckboxOption, GroupOption, Option, RadioOption } from "@run-slicer/script";
     import type { ProtoScript } from "$lib/script";
+    import { t, type TranslationKey } from "$lib/i18n";
+    import ScriptIcon from "$lib/components/script_icon.svelte";
 
     interface Props {
         inset?: boolean;
@@ -19,6 +22,10 @@
     }
 
     let { inset, proto, option }: Props = $props();
+
+    const tlKey = (id: string, label?: string) => (label || id) as TranslationKey;
+
+    let label = $derived($t(tlKey(option.id, option.label)));
 
     const groupOption = $derived(option as GroupOption);
 
@@ -29,6 +36,7 @@
     const checkboxOption = $derived(option as CheckboxOption);
     const handleCheckbox = (checked: boolean | "indeterminate") => {
         // @ts-ignore
+        // noinspection JSConstantReassignment
         checkboxOption.checked = Boolean(checked);
         proto.context?.dispatchEvent({ type: "option_change", option });
     };
@@ -36,6 +44,7 @@
     const radioOption = $derived(option as RadioOption);
     const handleRadio = (value: string | undefined) => {
         // @ts-ignore
+        // noinspection JSConstantReassignment
         radioOption.selected = value!;
         proto.context?.dispatchEvent({ type: "option_change", option });
     };
@@ -45,7 +54,7 @@
     <!-- weird inset behavior/bug, false doesn't make the inset go away, but undefined does -->
     {@const hasCheckbox = groupOption.options.some((o) => o.type === "checkbox") ? true : undefined}
     <MenubarSub>
-        <MenubarSubTrigger {inset}>{option.label || option.id}</MenubarSubTrigger>
+        <MenubarSubTrigger {inset}>{label}</MenubarSubTrigger>
         <MenubarSubContent class="max-h-96 min-w-48 overflow-y-auto">
             {#each groupOption.options as subOption (subOption.id)}
                 <ScriptOption inset={hasCheckbox} {proto} option={subOption} />
@@ -53,20 +62,30 @@
         </MenubarSubContent>
     </MenubarSub>
 {:else if option.type === "button"}
-    <MenubarItem {inset} onclick={handleButton}>{option.label || option.id}</MenubarItem>
+    <MenubarItem {inset} class="justify-between" onclick={handleButton}>
+        {label}
+        {#if option.icon}
+            <ScriptIcon icon={option.icon} />
+        {/if}
+    </MenubarItem>
 {:else if option.type === "checkbox"}
-    <MenubarCheckboxItem checked={checkboxOption.checked} onCheckedChange={handleCheckbox}>
-        {option.label || option.id}
+    <MenubarCheckboxItem class="justify-between" checked={checkboxOption.checked} onCheckedChange={handleCheckbox}>
+        {label}
+        {#if option.icon}
+            <ScriptIcon icon={option.icon} />
+        {/if}
     </MenubarCheckboxItem>
 {:else if option.type === "radio"}
     <MenubarSub>
-        <MenubarSubTrigger {inset}>{option.label || option.id}</MenubarSubTrigger>
+        <MenubarSubTrigger {inset}>{label}</MenubarSubTrigger>
         <MenubarSubContent class="max-h-96 min-w-48 overflow-y-auto">
             <MenubarRadioGroup value={radioOption.selected} onValueChange={handleRadio}>
                 {#each radioOption.items as subOption (subOption.id)}
-                    <MenubarRadioItem value={subOption.id}>{subOption.label || subOption.id}</MenubarRadioItem>
+                    <MenubarRadioItem value={subOption.id}>{$t(tlKey(subOption.id, subOption.label))}</MenubarRadioItem>
                 {/each}
             </MenubarRadioGroup>
         </MenubarSubContent>
     </MenubarSub>
+{:else if option.type === "separator"}
+    <MenubarSeparator />
 {/if}
