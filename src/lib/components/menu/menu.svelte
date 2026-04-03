@@ -6,7 +6,7 @@
     import { type Entry, EntryType } from "$lib/workspace";
     import { encodings } from "$lib/workspace/encoding";
     import type { ProtoScript } from "$lib/script";
-    import { type Tab, tabDefs, TabPosition, TabType } from "$lib/tab";
+    import { dynamicTabDefs, type Tab, tabDefs, TabPosition, TabType, type TabTypeOrDynamic } from "$lib/tab";
     import { Modifier } from "$lib/shortcut";
     import Shortcut from "./shortcut.svelte";
     import ScriptMenu from "./script/menu.svelte";
@@ -61,6 +61,7 @@
     import ExportAllMenubarSubContent from "./export_all.svelte";
     import InjectedScriptMenu from "./script/injected.svelte";
     import { ScriptState } from "$lib/script";
+    import ScriptIconComponent from "$lib/components/script_icon.svelte";
 
     interface Props {
         panes: PaneData[];
@@ -92,7 +93,7 @@
 
     let entry = $derived(tab?.entry);
 
-    const openEntry = (tabType: TabType) => handler.open(entry!, tabType);
+    const openEntry = (tabType: TabTypeOrDynamic) => handler.open(entry!, tabType);
 
     const exportEntry = async () => {
         if (tab?.entry) {
@@ -101,10 +102,14 @@
     };
 
     const openPrefs = async () => {
-        await handler.openUnscoped(tabDefs.find((d) => d.type === TabType.PREFS)!, TabPosition.PRIMARY_CENTER, false);
+        await handler.openUnscoped($tabDefs.find((d) => d.type === TabType.PREFS)!, TabPosition.PRIMARY_CENTER, false);
     };
     const openSearch = async () => {
-        await handler.openUnscoped(tabDefs.find((d) => d.type === TabType.SEARCH)!, TabPosition.SECONDARY_RIGHT, false);
+        await handler.openUnscoped(
+            $tabDefs.find((d) => d.type === TabType.SEARCH)!,
+            TabPosition.SECONDARY_RIGHT,
+            false
+        );
     };
 
     const KNOWN_MENUS = new Set([
@@ -276,6 +281,14 @@
                     {$t("menu.view.graph")}
                     <GitBranchPlus size={16} />
                 </MenubarItem>
+                {#each $dynamicTabDefs.values().filter(({ decl }) => decl.contextual) as { decl } (decl.id)}
+                    <MenubarItem class="justify-between" disabled={!tab?.entry} onclick={() => openEntry(decl.id)}>
+                        {$t(`tab.${decl.id}`)}
+                        {#if decl.icon}
+                            <ScriptIconComponent icon={decl.icon} size={16} class="ml-3" />
+                        {/if}
+                    </MenubarItem>
+                {/each}
                 <MenubarSeparator />
                 <MenubarSub>
                     <MenubarSubTrigger>{$t("menu.view.encoding")}</MenubarSubTrigger>

@@ -1,7 +1,7 @@
 import type { Disassembler } from "$lib/disasm";
 import type { MappingType } from "$lib/reader/mappings";
 import type { ProtoScript } from "$lib/script";
-import type { Tab, TabDefinition, TabPosition, TabType } from "$lib/tab";
+import type { Tab, TabDefinition, TabPosition, TabType, TabTypeOrDynamic } from "$lib/tab";
 import type { Entry } from "$lib/workspace";
 import type { Data } from "$lib/workspace/data";
 import { writable } from "svelte/store";
@@ -14,7 +14,7 @@ export interface EventHandler {
     add(files?: File[]): Awaitable<void>;
     addRemote(url: string): Awaitable<void>;
     clear(): Awaitable<void>;
-    open(entry: Entry, tabType?: TabType): Awaitable<void>;
+    open(entry: Entry, tabType?: TabTypeOrDynamic): Awaitable<void>;
     openUnscoped(def: TabDefinition, position: TabPosition, move: boolean): Awaitable<void>;
     remove(entries: Entry[]): Awaitable<void>;
     export(entries?: Entry[], disasm?: Disassembler): Awaitable<void>;

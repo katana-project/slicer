@@ -15,6 +15,7 @@
     import type { Snippet } from "svelte";
     import { cn } from "$lib/components/utils";
     import { t } from "$lib/i18n";
+    import ScriptIconComponent from "$lib/components/script_icon.svelte";
 
     interface Props {
         position: TabPosition;
@@ -54,8 +55,7 @@
             <CommandList>
                 <CommandEmpty>{$t("pane.header.open.no-results")}</CommandEmpty>
                 <CommandGroup>
-                    {#each tabDefs as def}
-                        {@const Icon = def.icon}
+                    {#each $tabDefs as def}
                         <CommandItem
                             value={def.type}
                             onSelect={async () => {
@@ -63,7 +63,12 @@
                                 await handler.openUnscoped(def, position, true);
                             }}
                         >
-                            <Icon />
+                            {#if "type" in def.icon}
+                                <ScriptIconComponent icon={def.icon} />
+                            {:else}
+                                {@const Icon = def.icon}
+                                <Icon />
+                            {/if}
                             {$t(`tab.${def.type}`)}
                         </CommandItem>
                     {/each}

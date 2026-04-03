@@ -14,6 +14,7 @@ import type { MappingType } from "$lib/reader/mappings";
 import { analysisJdkClasses, locale, scriptingScripts } from "$lib/state";
 import {
     current as currentTab,
+    dynamicTabDefs,
     find as findTab,
     open as openTab,
     openUnscoped as openUnscopedTab,
@@ -75,7 +76,7 @@ export interface ProtoScript {
 
 export const scripts = writable<ProtoScript[]>([]);
 
-const wrapEntry = (e: Entry): ScriptEntry => {
+export const wrapEntry = (e: Entry): ScriptEntry => {
     return {
         _entry: e,
         get type() {
@@ -104,7 +105,7 @@ const wrapTab = (t: Tab): ScriptTab => {
     return {
         type: t.type,
         id: t.id,
-        label: t.name ?? tl(`tab.${t.type}`),
+        label: t.name ?? tl(`tab.${t.type}` as TranslationKey),
         get position() {
             return t.position;
         },
@@ -249,50 +250,62 @@ const unwrapDisasm = (disasm: ScriptDisassembler): Disassembler => {
     };
 };
 
-const editorCtx: EditorContext = {
-    register(declaration: TabDeclaration): void {},
-    unregister(id: string): void {},
-    tabs(): ScriptTab[] {
-        return Array.from(get(tabs).values()).map(wrapTab);
-    },
-    find(id: string): ScriptTab | null {
-        const tab = findTab(id);
-        return tab ? wrapTab(tab) : null;
-    },
-    current(): ScriptTab | null {
-        const tab = get(currentTab);
-        return tab ? wrapTab(tab) : null;
-    },
-    async refresh(id: string, hard: boolean = false) {
-        const tab = findTab(id);
-        if (tab) {
-            await refreshTab(tab, hard);
-        }
-    },
-    async add(type: string, entry?: ScriptEntry): Promise<ScriptTab> {
-        const e = entry ? unwrapEntry(entry) : null;
-        if (e) {
-            const tabType = Object.keys(TabType).includes(type) ? (type as TabType) : undefined;
-            if (!tabType) {
-                warn("script wanted an invalid tab type, detecting a valid one for entry");
+const createEditorCtx = (context: ScriptContext): EditorContext => {
+    return {
+        register(decl: TabDeclaration): void {
+            dynamicTabDefs.update(($scriptTabDefs) => {
+                $scriptTabDefs.set(decl.id, { context, decl });
+                return $scriptTabDefs;
+            });
+        },
+        unregister(id: string): void {
+            dynamicTabDefs.update(($scriptTabDefs) => {
+                $scriptTabDefs.delete(id);
+                return $scriptTabDefs;
+            });
+        },
+        tabs(): ScriptTab[] {
+            return Array.from(get(tabs).values()).map(wrapTab);
+        },
+        find(id: string): ScriptTab | null {
+            const tab = findTab(id);
+            return tab ? wrapTab(tab) : null;
+        },
+        current(): ScriptTab | null {
+            const tab = get(currentTab);
+            return tab ? wrapTab(tab) : null;
+        },
+        async refresh(id: string, hard: boolean = false) {
+            const tab = findTab(id);
+            if (tab) {
+                await refreshTab(tab, hard);
+            }
+        },
+        async add(type: string, entry?: ScriptEntry): Promise<ScriptTab> {
+            const e = entry ? unwrapEntry(entry) : null;
+            if (e) {
+                const tabType = Object.keys(TabType).includes(type) ? (type as TabType) : undefined;
+                if (!tabType) {
+                    warn("script wanted an invalid tab type, detecting a valid one for entry");
+                }
+
+                return wrapTab(await openTab(e, tabType));
             }
 
-            return wrapTab(await openTab(e, tabType));
-        }
+            const def = get(tabDefs).find((d) => d.type === type);
+            if (def) {
+                return wrapTab(await openUnscopedTab(def));
+            }
 
-        const def = tabDefs.find((d) => d.type === type);
-        if (def) {
-            return wrapTab(openUnscopedTab(def));
-        }
-
-        throw new Error("Invalid tab type");
-    },
-    remove(id: string) {
-        removeEntry(id);
-    },
-    clear() {
-        clearWs();
-    },
+            throw new Error("Invalid tab type");
+        },
+        remove(id: string) {
+            removeEntry(id);
+        },
+        clear() {
+            clearWs();
+        },
+    };
 };
 
 const disasmCtx: DisassemblerContext = {
@@ -372,11 +385,9 @@ const i18nCtx: I18NContext = {
 
 const createContext = (script: Script, parent: ScriptContext | null): ScriptContext => {
     const scriptListeners = new Map<EventType, EventListener<any>[]>();
-
-    return {
+    const context: Partial<ScriptContext> = {
         script,
         parent,
-        editor: editorCtx,
         disasm: disasmCtx,
         workspace: workspaceCtx,
         mapping: mappingCtx,
@@ -409,7 +420,7 @@ const createContext = (script: Script, parent: ScriptContext | null): ScriptCont
             const listeners = scriptListeners.get(event.type);
             if (listeners) {
                 for (const listener of listeners) {
-                    await listener(event, this);
+                    await listener(event, this as ScriptContext);
                 }
             }
 
@@ -422,6 +433,10 @@ const createContext = (script: Script, parent: ScriptContext | null): ScriptCont
             return event;
         },
     };
+    // @ts-ignore
+    context.editor = createEditorCtx(context as ScriptContext);
+
+    return context as ScriptContext;
 };
 
 export const rootContext = createContext(
