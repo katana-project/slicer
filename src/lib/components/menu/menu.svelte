@@ -282,7 +282,11 @@
                     <GitBranchPlus size={16} />
                 </MenubarItem>
                 {#each $dynamicTabDefs.values().filter(({ decl }) => decl.contextual) as { decl } (decl.id)}
-                    <MenubarItem class="justify-between" disabled={!tab?.entry} onclick={() => openEntry(decl.id)}>
+                    <MenubarItem
+                        class="justify-between"
+                        disabled={!tab?.entry || tab.type === decl.id}
+                        onclick={() => openEntry(decl.id)}
+                    >
                         {$t(decl.label)}
                         {#if decl.icon}
                             <IconComponent icon={decl.icon} size={16} class="ml-3" />
