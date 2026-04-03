@@ -38,7 +38,7 @@
     <AlertDialogContent>
         <AlertDialogHeader>
             <AlertDialogTitle>{$t("dialog.script-load-share.title")}</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogDescription class="wrap-anywhere">
                 {@html $t("dialog.script-load-share.desc", url, truncate(url, 120))}
             </AlertDialogDescription>
         </AlertDialogHeader>
