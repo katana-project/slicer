@@ -53,6 +53,8 @@ import type {
     MappingType as ScriptMappingType,
     Tab as ScriptTab,
     WorkspaceContext,
+    TabDeclaration,
+    I18NContext,
 } from "@run-slicer/script";
 import { toast } from "svelte-sonner";
 import { get, writable } from "svelte/store";
@@ -248,6 +250,10 @@ const unwrapDisasm = (disasm: ScriptDisassembler): Disassembler => {
 };
 
 const editorCtx: EditorContext = {
+    register(declaration: TabDeclaration): void {
+    },
+    unregister(id: string): void {
+    },
     tabs(): ScriptTab[] {
         return Array.from(get(tabs).values()).map(wrapTab);
     },
@@ -288,7 +294,7 @@ const editorCtx: EditorContext = {
     },
     clear() {
         clearWs();
-    },
+    }
 };
 
 const disasmCtx: DisassemblerContext = {
@@ -351,6 +357,17 @@ const mappingCtx: MappingContext = {
     },
 };
 
+const i18nCtx: I18NContext = {
+    locale: "",
+    add(locale: string, key: string, value: string): void {
+    },
+    remove(locale: string, key: string): void {
+    },
+    t(key: string, ...args: any[]): string {
+        return "";
+    },
+};
+
 const createContext = (script: Script, parent: ScriptContext | null): ScriptContext => {
     const scriptListeners = new Map<EventType, EventListener<any>[]>();
 
@@ -361,6 +378,7 @@ const createContext = (script: Script, parent: ScriptContext | null): ScriptCont
         disasm: disasmCtx,
         workspace: workspaceCtx,
         mapping: mappingCtx,
+        i18n: i18nCtx,
         addEventListener<K extends EventType>(type: K, listener: EventListener<EventMap[K]>) {
             let listeners = scriptListeners.get(type);
             if (!listeners) {
