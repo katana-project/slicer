@@ -6,12 +6,12 @@ import {
     remove as removeDisasm,
 } from "$lib/disasm";
 import { createSource as createClassSource, createResources } from "$lib/disasm/source";
-import { tl } from "$lib/i18n";
+import { tl, type TranslationKey, add as addTl, remove as removeTl } from "$lib/i18n";
 import type { Language } from "$lib/lang";
 import { error, warn } from "$lib/log";
 import { workers } from "$lib/reader";
 import type { MappingType } from "$lib/reader/mappings";
-import { analysisJdkClasses, scriptingScripts } from "$lib/state";
+import { analysisJdkClasses, locale, scriptingScripts } from "$lib/state";
 import {
     current as currentTab,
     find as findTab,
@@ -358,13 +358,17 @@ const mappingCtx: MappingContext = {
 };
 
 const i18nCtx: I18NContext = {
-    locale: "",
+    get locale(): string {
+        return get(locale);
+    },
     add(locale: string, key: string, value: string): void {
+        addTl(locale, key as TranslationKey, value);
     },
     remove(locale: string, key: string): void {
+        removeTl(locale, key as TranslationKey);
     },
     t(key: string, ...args: any[]): string {
-        return "";
+        return tl(key as TranslationKey, ...args);
     },
 };
 
