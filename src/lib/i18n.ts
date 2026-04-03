@@ -1,6 +1,7 @@
 import { locale } from "$lib/state";
 import { derived, get, writable, type Readable } from "svelte/store";
-import type { LocaleData } from "../locale";
+
+type LocaleData = Record<TranslationKey, string>;
 
 const builtinLocales = new Map(
     Object.entries(import.meta.glob("../locale/*.json", { import: "default" })).map(([path, resolver]) => {
@@ -10,7 +11,7 @@ const builtinLocales = new Map(
 
 export const locales = writable(new Map(builtinLocales));
 
-const customLocales = writable(new Map<string, Partial<LocaleData>>());
+const customLocales = writable(new Map<string, LocaleData>());
 export const add = (lc: string, key: TranslationKey, value: string) => {
     customLocales.update(($customLocales) => {
         if (!$customLocales.has(lc)) {
@@ -68,7 +69,7 @@ const localeData = derived<[typeof locale, typeof customLocales, typeof locales]
     }
 );
 
-export type TranslationKey = keyof LocaleData;
+export type TranslationKey = string;
 
 type TranslationFunc = (key: TranslationKey, ...args: any[]) => string;
 export const t = derived(localeData, ($localeData): TranslationFunc => {

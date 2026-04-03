@@ -1,5 +1,5 @@
 import { type Icon, type StyledIcon, tabIcon } from "$lib/components/icons";
-import { t, type TranslationKey } from "$lib/i18n";
+import { t } from "$lib/i18n";
 import { error } from "$lib/log";
 import { wrapEntry } from "$lib/script";
 import { analysisTransformers, panes, workspaceEncoding } from "$lib/state";
@@ -206,11 +206,9 @@ export const current = derived(tabs, ($tabs) => {
 derived([current, t], (a) => a).subscribe(([$current, $t]) => {
     // PWAs don't need the app name reiterated
     if (window.matchMedia("not (display-mode: browser)").matches) {
-        document.title = $current ? ($current.name ?? $t(`tab.${$current.type}` as TranslationKey)) : "slicer";
+        document.title = $current ? ($current.name ?? $t(`tab.${$current.type}`)) : "slicer";
     } else {
-        document.title = $current
-            ? `${$current.name ?? $t(`tab.${$current.type}` as TranslationKey)} | slicer`
-            : "slicer";
+        document.title = $current ? `${$current.name ?? $t(`tab.${$current.type}`)} | slicer` : "slicer";
     }
 });
 

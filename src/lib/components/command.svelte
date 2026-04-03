@@ -10,6 +10,7 @@
     import type { EventHandler } from "$lib/event";
     import { tabDefs, TabPosition } from "$lib/tab";
     import { prettyInternalName } from "$lib/utils";
+    import IconComponent from "$lib/components/icon.svelte";
 
     interface Props {
         entries: Entry[];
@@ -119,8 +120,7 @@
             {/if}
         {:else}
             <CommandGroup heading={$t("command.tabs")}>
-                {#each tabDefs as def}
-                    {@const Icon = def.icon}
+                {#each $tabDefs as def}
                     <CommandItem
                         value={def.type}
                         onSelect={async () => {
@@ -128,7 +128,7 @@
                             await handler.openUnscoped(def, TabPosition.PRIMARY_CENTER, false);
                         }}
                     >
-                        <Icon />
+                        <IconComponent icon={def.icon} />
                         {$t(`tab.${def.type}`)}
                     </CommandItem>
                 {/each}

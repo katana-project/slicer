@@ -105,7 +105,7 @@ const wrapTab = (t: Tab): ScriptTab => {
     return {
         type: t.type,
         id: t.id,
-        label: t.name ?? tl(`tab.${t.type}` as TranslationKey),
+        label: t.name ?? tl(`tab.${t.type}`),
         get position() {
             return t.position;
         },
@@ -372,14 +372,14 @@ const i18nCtx: I18NContext = {
     get locale(): string {
         return get(locale);
     },
-    add(locale: string, key: string, value: string): void {
-        addTl(locale, key as TranslationKey, value);
+    add(locale: string, key: TranslationKey, value: string): void {
+        addTl(locale, key, value);
     },
-    remove(locale: string, key: string): void {
-        removeTl(locale, key as TranslationKey);
+    remove(locale: string, key: TranslationKey): void {
+        removeTl(locale, key);
     },
-    t(key: string, ...args: any[]): string {
-        return tl(key as TranslationKey, ...args);
+    t(key: TranslationKey, ...args: any[]): string {
+        return tl(key, ...args);
     },
 };
 

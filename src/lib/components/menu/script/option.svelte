@@ -12,7 +12,7 @@
     } from "$lib/components/ui/menubar";
     import type { CheckboxOption, GroupOption, Option, RadioOption } from "@run-slicer/script";
     import type { ProtoScript } from "$lib/script";
-    import { t, type TranslationKey } from "$lib/i18n";
+    import { t } from "$lib/i18n";
     import IconComponent from "$lib/components/icon.svelte";
 
     interface Props {
@@ -23,9 +23,7 @@
 
     let { inset, proto, option }: Props = $props();
 
-    const tlKey = (id: string, label?: string) => (label || id) as TranslationKey;
-
-    let label = $derived($t(tlKey(option.id, option.label)));
+    let label = $derived($t(option.label || option.id));
 
     const groupOption = $derived(option as GroupOption);
 
@@ -81,7 +79,7 @@
         <MenubarSubContent class="max-h-96 min-w-48 overflow-y-auto">
             <MenubarRadioGroup value={radioOption.selected} onValueChange={handleRadio}>
                 {#each radioOption.items as subOption (subOption.id)}
-                    <MenubarRadioItem value={subOption.id}>{$t(tlKey(subOption.id, subOption.label))}</MenubarRadioItem>
+                    <MenubarRadioItem value={subOption.id}>{$t(subOption.label || subOption.id)}</MenubarRadioItem>
                 {/each}
             </MenubarRadioGroup>
         </MenubarSubContent>
