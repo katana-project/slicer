@@ -475,10 +475,9 @@ export const openUnscoped = async (
         const scriptDef = get(dynamicTabDefs).get(def.type);
         if (scriptDef) {
             const { context, decl } = scriptDef;
+
             const { label, icon: placementIcon } = await decl.place({ context, entry: null });
-            if (label) {
-                name = label;
-            }
+            name = label || decl.label;
             if (placementIcon) {
                 icon = placementIcon;
             }
