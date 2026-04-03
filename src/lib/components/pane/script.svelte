@@ -9,19 +9,30 @@
     let { tab }: PaneProps = $props();
 
     // find the script associated with this tab, if any
-    let { context, decl } = $derived($dynamicTabDefs.get(tab.type)!);
+    let def = $derived($dynamicTabDefs.get(tab.type)!);
+
+    let destroyCallback: (() => void) | null = null;
     let contentPromise = $derived(
         (async () => {
+            // @ts-ignore - destroyCallback is not `never`?
+            destroyCallback?.();
+            if (!def) {
+                return null;
+            }
+
+            const { context, decl } = def;
             const content = await decl.render({ context, entry: tab.entry ? wrapEntry(tab.entry) : null });
             if (content?.destroy) {
-                onDestroy(() => {
-                    content.destroy!();
-                });
+                destroyCallback = content.destroy;
             }
 
             return content;
         })()
     );
+
+    onDestroy(() => {
+        destroyCallback?.();
+    });
 </script>
 
 {#await contentPromise}
@@ -29,5 +40,10 @@
 {:then content}
     {#if content}
         <div {@attach (el) => el.replaceWith(content.content)}></div>
+    {:else}
+        <div class="flex flex-col h-full items-center justify-center gap-2">
+            <p>{$t("pane.not-available.title")}</p>
+            <p class="text-sm text-muted-foreground">{$t("pane.not-available.subtitle")}</p>
+        </div>
     {/if}
 {/await}
