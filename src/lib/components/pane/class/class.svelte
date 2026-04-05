@@ -16,11 +16,67 @@
     import { Button } from "$lib/components/ui/button";
     import type { PaneProps } from "$lib/components/pane";
     import { t } from "$lib/i18n";
+    import { mappings } from "$lib/workspace/analysis/mapping";
+    import {
+        canonicalizeClassName,
+        replaceClassPackage,
+        replaceClassSimpleName,
+        removeClassChainAliases,
+        setLatestFieldMapping,
+        setLatestMethodMapping,
+        splitInternalName,
+    } from "$lib/components/pane/structure/model/rename";
+    import type { RenameTarget } from "./types";
 
     let { tab, handler }: PaneProps = $props();
 
     const entry = $derived(tab.entry as ClassEntry | undefined);
     const node = $derived(entry?.node);
+
+    let renaming: RenameTarget | null = $state(null);
+    let renameValue = $state("");
+
+    const startRename = (target: RenameTarget, current: string): void => {
+        renaming = target;
+        renameValue = current;
+    };
+
+    const cancelRename = (): void => {
+        renaming = null;
+    };
+
+    const commitRename = (committedValue?: string): void => {
+        if (!renaming || !node) {
+            renaming = null;
+            return;
+        }
+
+        const internalName = canonicalizeClassName(node.thisClass.nameEntry!.string);
+        const trimmed = (committedValue ?? renameValue).trim();
+
+        mappings.update(($m) => {
+            if (renaming!.kind === "package") {
+                const cls = $m.get(internalName);
+                const nextName = replaceClassPackage(cls.dst ?? internalName, trimmed.replaceAll(".", "/"));
+                cls.dst = nextName === internalName ? undefined : nextName;
+                removeClassChainAliases(internalName);
+            } else if (renaming!.kind === "class") {
+                const cls = $m.get(internalName);
+                const [, srcSimple] = splitInternalName(internalName);
+                const nextName = replaceClassSimpleName(cls.dst ?? internalName, trimmed || srcSimple);
+                cls.dst = nextName === internalName ? undefined : nextName;
+                removeClassChainAliases(internalName);
+            } else if (renaming!.kind === "field") {
+                setLatestFieldMapping(internalName, renaming!.name, renaming!.desc, trimmed || undefined);
+            } else if (renaming!.kind === "method") {
+                setLatestMethodMapping(internalName, renaming!.name, renaming!.desc, trimmed || undefined);
+            }
+
+            return $m;
+        });
+
+        renaming = null;
+    };
 </script>
 
 {#if entry && node}
@@ -55,16 +111,38 @@
         </div>
         <!-- https://github.com/tailwindlabs/tailwindcss/pull/4873#issuecomment-987729814 -->
         <TabsContent value="overview" class="h-full min-h-0 w-full flex-col [&:not([hidden])]:flex">
-            <Overview {node} />
+            <Overview
+                {node}
+                {renaming}
+                bind:renameValue
+                {startRename}
+                {commitRename}
+                {cancelRename}
+            />
         </TabsContent>
         <TabsContent value="constant_pool" class="h-full min-h-0 w-full flex-col [&:not([hidden])]:flex">
             <Pool {node} />
         </TabsContent>
         <TabsContent value="fields" class="h-full min-h-0 w-full flex-col [&:not([hidden])]:flex">
-            <Fields {node} />
+            <Fields
+                {node}
+                {renaming}
+                bind:renameValue
+                {startRename}
+                {commitRename}
+                {cancelRename}
+            />
         </TabsContent>
         <TabsContent value="methods" class="h-full min-h-0 w-full flex-col [&:not([hidden])]:flex">
-            <Methods {entry} {handler} />
+            <Methods
+                {entry}
+                {handler}
+                {renaming}
+                bind:renameValue
+                {startRename}
+                {commitRename}
+                {cancelRename}
+            />
         </TabsContent>
     </Tabs>
 {:else}

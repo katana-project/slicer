@@ -1,14 +1,29 @@
 <script lang="ts">
     import type { Node } from "@katana-project/asm";
     import { ElementType, formatMod, escapeLiteral } from "@katana-project/asm/analysis/disasm";
+    import RenameableText from "$lib/components/renameable_text.svelte";
     import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$lib/components/ui/table";
     import { t } from "$lib/i18n";
+    import type { RenameTarget } from "./types";
+    import { canonicalizeDescriptor, mappedFieldName } from "$lib/components/pane/structure/model/rename";
 
     interface Props {
         node: Node;
+        renaming: RenameTarget | null;
+        renameValue: string;
+        startRename: (target: RenameTarget, current: string) => void;
+        commitRename: (value?: string) => void;
+        cancelRename: () => void;
     }
 
-    let { node }: Props = $props();
+    let {
+        node,
+        renaming,
+        renameValue = $bindable(),
+        startRename,
+        commitRename,
+        cancelRename,
+    }: Props = $props();
 </script>
 
 <Table>
@@ -36,7 +51,25 @@
                         {field.type.string}
                     </TableCell>
                     <TableCell class="break-anywhere font-mono tracking-tight whitespace-normal">
-                        {escapeLiteral(field.name.string)}
+                        {@const fieldDesc = canonicalizeDescriptor(field.type.string)}
+                        {@const fieldDst = mappedFieldName(node.thisClass.nameEntry!.string, field.name.string, field.type.string)}
+                        {@const isRenamingField = renaming?.kind === "field" && renaming.name === field.name.string && renaming.desc === fieldDesc}
+                        <div class="group flex min-w-0 items-center gap-1">
+                            <RenameableText
+                                editing={isRenamingField}
+                                bind:value={renameValue}
+                                display={escapeLiteral(fieldDst ?? field.name.string)}
+                                placeholder={$t("pane.structure.rename.placeholder")}
+                                title={$t("pane.structure.rename")}
+                                textClass={fieldDst ? "text-primary" : ""}
+                                inputClass="min-w-0 flex-1 border-b border-primary bg-transparent font-mono text-xs outline-none"
+                                stopPropagationOnStart={true}
+                                onStart={() =>
+                                    startRename({ kind: "field", name: field.name.string, desc: fieldDesc }, fieldDst ?? field.name.string)}
+                                onCommit={commitRename}
+                                onCancel={cancelRename}
+                            />
+                        </div>
                     </TableCell>
                 </TableRow>
             {/each}

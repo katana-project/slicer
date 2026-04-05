@@ -10,20 +10,36 @@
 <script lang="ts">
     import type { Node } from "@katana-project/asm";
     import { Table, TableCell, TableHead, TableRow } from "$lib/components/ui/table";
+    import RenameableText from "$lib/components/renameable_text.svelte";
     import { ElementType, formatMod } from "@katana-project/asm/analysis/disasm";
     import { AttributeType, Modifier } from "@katana-project/asm/spec";
+    import { mappings } from "$lib/workspace/analysis/mapping";
     import type {
         PermittedSubclassesAttribute,
         SignatureAttribute,
         SourceFileAttribute,
     } from "@katana-project/asm/attr";
     import { t } from "$lib/i18n";
+    import type { RenameTarget } from "./types";
+    import { canonicalizeClassName } from "$lib/components/pane/structure/model/rename";
 
     interface Props {
         node: Node;
+        renaming: RenameTarget | null;
+        renameValue: string;
+        startRename: (target: RenameTarget, current: string) => void;
+        commitRename: (value?: string) => void;
+        cancelRename: () => void;
     }
 
-    let { node }: Props = $props();
+    let {
+        node,
+        renaming,
+        renameValue = $bindable(),
+        startRename,
+        commitRename,
+        cancelRename,
+    }: Props = $props();
 
     const permittedSubclassesAttr = node.attrs.find((a) => a.type === AttributeType.PERMITTED_SUBCLASSES);
     const signatureAttr = node.attrs.find((a) => a.type === AttributeType.SIGNATURE);
@@ -43,6 +59,14 @@
         ) || [];
     const signature = (signatureAttr as SignatureAttribute)?.signatureEntry?.string;
     const sourceFile = (sourceFileAttr as SourceFileAttribute)?.sourceFileEntry?.string;
+
+    const packageName = $derived(name.split("/").slice(0, -1).join("."));
+    const simpleName = $derived(name.split("/").pop() ?? "");
+
+    const sourceInternalName = $derived(canonicalizeClassName(node.thisClass.nameEntry!.string));
+    const classDst = $derived($mappings.getOrNull(sourceInternalName)?.dst);
+    const mappedPackageName = $derived(classDst ? classDst.split("/").slice(0, -1).join(".") : packageName);
+    const mappedSimpleName = $derived(classDst ? classDst.split("/").pop() ?? simpleName : simpleName);
 </script>
 
 <Table>
@@ -79,7 +103,41 @@
     </TableRow>
     <TableRow>
         <TableHead>{$t("pane.class.overview.name")}</TableHead>
-        <TableCell class="break-anywhere font-mono tracking-tight whitespace-normal">{name}</TableCell>
+        <TableCell class="break-anywhere font-mono tracking-tight whitespace-normal">
+            <div class="group flex min-w-0 items-center gap-1">
+                <RenameableText
+                    editing={renaming?.kind === "class"}
+                    bind:value={renameValue}
+                    display={mappedSimpleName}
+                    placeholder={$t("pane.structure.rename.placeholder")}
+                    title={$t("pane.structure.rename")}
+                    textClass={classDst ? "text-primary" : ""}
+                    inputClass="min-w-0 flex-1 border-b border-primary bg-transparent text-sm font-medium outline-none"
+                    onStart={() => startRename({ kind: "class" }, mappedSimpleName)}
+                    onCommit={commitRename}
+                    onCancel={cancelRename}
+                />
+            </div>
+        </TableCell>
+    </TableRow>
+    <TableRow>
+        <TableHead>Package</TableHead>
+        <TableCell class="break-anywhere font-mono tracking-tight whitespace-normal">
+            <div class="group flex min-w-0 items-center gap-1">
+                <RenameableText
+                    editing={renaming?.kind === "package"}
+                    bind:value={renameValue}
+                    display={mappedPackageName || "<default>"}
+                    placeholder={$t("pane.structure.rename.placeholder")}
+                    title={$t("pane.structure.rename")}
+                    textClass={classDst && mappedPackageName !== packageName ? "text-primary" : ""}
+                    inputClass="min-w-0 flex-1 border-b border-primary bg-transparent text-sm outline-none"
+                    onStart={() => startRename({ kind: "package" }, mappedPackageName ?? packageName ?? "")}
+                    onCommit={commitRename}
+                    onCancel={cancelRename}
+                />
+            </div>
+        </TableCell>
     </TableRow>
     <TableRow>
         <TableHead>{$t("pane.class.overview.modifiers")}</TableHead>
