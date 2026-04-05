@@ -27,7 +27,7 @@
                 </span>
             </SelectTrigger>
             <SelectContent>
-                {#each locales.keys() as localeCode (localeCode)}
+                {#each $locales.keys() as localeCode (localeCode)}
                     <SelectItem value={localeCode} class="gap-2">
                         {@const name = tryOrNull(() => languageNames?.of(localeCode))}
                         <span>{flagEmoji(languageToCountry(localeCode))}</span>

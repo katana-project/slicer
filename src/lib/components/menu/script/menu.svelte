@@ -30,6 +30,8 @@
             await handler.unloadScript(proto);
         }
     };
+
+    let scriptOptions = $derived(script?.options?.filter((o) => !o.position) ?? []);
 </script>
 
 <MenubarSub>
@@ -55,9 +57,9 @@
             {$t("menu.scripts.script.delete")}
             <Trash2 size={16} />
         </MenubarItem>
-        {#if proto.state === ScriptState.LOADED && script?.options}
+        {#if proto.state === ScriptState.LOADED && scriptOptions.length > 0}
             <MenubarSeparator />
-            {#each script.options as option (option.id)}
+            {#each scriptOptions as option (option.id)}
                 <ScriptOption inset {proto} {option} />
             {/each}
         {/if}

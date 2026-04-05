@@ -16,7 +16,7 @@
 <script lang="ts">
     import { Code, Download, FileCode2, Gauge, GitBranchPlus, Image, Trash2 } from "@lucide/svelte";
     import { EntryType } from "$lib/workspace";
-    import { TabType } from "$lib/tab";
+    import { dynamicTabDefs, TabType } from "$lib/tab";
     import {
         ContextMenuContent,
         ContextMenuItem,
@@ -29,6 +29,7 @@
     import type { EventHandler } from "$lib/event";
     import { modals } from "svelte-modals";
     import { DeleteDialog } from "$lib/components/dialog";
+    import IconComponent from "$lib/components/icon.svelte";
 
     interface Props {
         node: Node;
@@ -77,6 +78,14 @@
                     {$t("pane.project.menu.open.dump")}
                     <Gauge size={16} />
                 </ContextMenuItem>
+                {#each $dynamicTabDefs.values().filter(({ decl }) => decl.contextual) as { decl } (decl.id)}
+                    <ContextMenuItem class="flex justify-between" onclick={() => handler.open(entry.value, decl.id)}>
+                        {$t(decl.label)}
+                        {#if decl.icon}
+                            <IconComponent icon={decl.icon} size={16} class="ml-3" />
+                        {/if}
+                    </ContextMenuItem>
+                {/each}
             </ContextMenuSubContent>
         </ContextMenuSub>
         <ContextMenuSeparator />

@@ -63,6 +63,8 @@
     "tab.dump": "Heap dump",
     "tab.search": "Search",
     "pane.loading": "Loading...",
+    "pane.not-available.title": "Can't open this tab",
+    "pane.not-available.subtitle": "This tab is no longer available, did you unload the script responsible for it?",
     "pane.empty.title": "Nothing here...",
     "pane.empty.subtitle": "Open a new tab or move an existing one here.",
     "pane.header.open.placeholder": "Select a tab...",

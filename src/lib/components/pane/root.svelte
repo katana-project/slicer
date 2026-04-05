@@ -3,6 +3,7 @@
     import type { PaneProps } from "./";
     import type { Component } from "svelte";
     import { t } from "$lib/i18n";
+    import ScriptTab from "./script.svelte";
 
     export const imports: Record<TabType, () => Promise<{ default: Component<PaneProps> }>> = {
         [TabType.PROJECT]: () => import("./tree/tree.svelte"),
@@ -25,10 +26,15 @@
     import { TabPosition } from "$lib/tab";
 
     let props: PaneProps = $props();
+    let importPromise = $derived(imports[props.tab.type as TabType]);
 </script>
 
-{#await imports[props.tab.type]()}
-    <Loading value={$t("pane.loading")} center={props.tab.position !== TabPosition.PRIMARY_CENTER} />
-{:then { default: PaneComponent }}
-    <PaneComponent {...props} />
-{/await}
+{#if importPromise}
+    {#await importPromise()}
+        <Loading value={$t("pane.loading")} center={props.tab.position !== TabPosition.PRIMARY_CENTER} />
+    {:then { default: PaneComponent }}
+        <PaneComponent {...props} />
+    {/await}
+{:else}
+    <ScriptTab {...props} />
+{/if}

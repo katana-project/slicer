@@ -1,12 +1,14 @@
 import { type Icon, type StyledIcon, tabIcon } from "$lib/components/icons";
 import { t } from "$lib/i18n";
 import { error } from "$lib/log";
+import { wrapEntry } from "$lib/script";
 import { analysisTransformers, panes, workspaceEncoding } from "$lib/state";
 import { prettyInternalName } from "$lib/utils";
 import { type ClassEntry, type Entry, EntryType, readDeferred } from "$lib/workspace";
 import { AnalysisState } from "$lib/workspace/analysis";
 import { mappings } from "$lib/workspace/analysis/mapping";
 import { Box, Folders, LayoutList, ScrollText, Search, Settings, Sparkles } from "@lucide/svelte";
+import type { ScriptContext, Icon as ScriptIcon, TabDeclaration } from "@run-slicer/script";
 import { derived, get, writable } from "svelte/store";
 
 export enum TabType {
@@ -24,6 +26,8 @@ export enum TabType {
     STRUCTURE = "structure",
 }
 
+export type TabTypeOrDynamic = TabType | string;
+
 export enum TabPosition {
     PRIMARY_CENTER = "primary_center",
     PRIMARY_BOTTOM = "primary_bottom",
@@ -33,14 +37,14 @@ export enum TabPosition {
 
 export interface Tab {
     id: string;
-    type: TabType;
+    type: TabTypeOrDynamic;
     name?: string;
     position: TabPosition;
     index: number | null;
     active?: boolean;
     closeable: boolean;
     pinned?: boolean;
-    icon?: StyledIcon;
+    icon?: StyledIcon | ScriptIcon;
     entry?: Entry;
 
     dirty?: boolean;
@@ -48,12 +52,19 @@ export interface Tab {
 }
 
 export interface TabDefinition {
-    type: TabType;
-    icon: Icon;
+    type: TabTypeOrDynamic;
+    label?: string;
+    icon: Icon | ScriptIcon;
 }
 
-// unscoped tab definitions
-export const tabDefs: TabDefinition[] = [
+interface DynamicTabDefinition {
+    context: ScriptContext;
+    decl: TabDeclaration;
+}
+
+export const dynamicTabDefs = writable<Map<string, DynamicTabDefinition>>(new Map());
+
+const defaultTabDefs: TabDefinition[] = [
     {
         type: TabType.PROJECT,
         icon: Folders,
@@ -84,7 +95,22 @@ export const tabDefs: TabDefinition[] = [
     },
 ];
 
-const typedDefs = new Map(tabDefs.map((d) => [d.type, d]));
+// unscoped tab definitions
+export const tabDefs = derived(dynamicTabDefs, ($scriptTabDefs) => {
+    const defs = new Map<string, TabDefinition>();
+    for (const def of defaultTabDefs) {
+        defs.set(def.type, def);
+    }
+    for (const [type, { decl }] of $scriptTabDefs.entries()) {
+        if (decl.contextual) continue; // skip contextual tabs
+
+        defs.set(type, { type, label: decl.label, icon: decl.icon });
+    }
+
+    return Array.from(defs.values());
+});
+
+const defaultTypedDefs = new Map(defaultTabDefs.map((d) => [d.type, d]));
 
 export const tabs = writable<Map<string, Tab>>(
     new Map(
@@ -94,7 +120,7 @@ export const tabs = writable<Map<string, Tab>>(
                     position,
                     tab,
                     index,
-                    def: typedDefs.get(tab.type),
+                    def: defaultTypedDefs.get(tab.type),
                 }))
             )
             .filter(({ def }) => def !== undefined)
@@ -111,7 +137,7 @@ export const tabs = writable<Map<string, Tab>>(
                     closeable: true,
                     pinned: tab.pinned,
                     icon: {
-                        icon: def!.icon,
+                        icon: def!.icon as Icon,
                         classes: ["text-muted-foreground"],
                     },
                     internalId: {},
@@ -123,8 +149,13 @@ export const tabs = writable<Map<string, Tab>>(
 // save opened unscoped tabs' position for returning sessions
 tabs.subscribe(($tabs) => {
     const candidates = Array.from($tabs.values())
-        .filter((t) => typedDefs.has(t.type))
-        .map((t) => ({ type: t.type, position: t.position, active: Boolean(t.active), pinned: Boolean(t.pinned) }));
+        .filter((t) => defaultTypedDefs.has(t.type))
+        .map((t) => ({
+            type: t.type as TabType,
+            position: t.position,
+            active: Boolean(t.active),
+            pinned: Boolean(t.pinned),
+        }));
 
     // re-add Welcome tab after pinned section, if not present
     if (!candidates.some((t) => t.type === TabType.WELCOME)) {
@@ -176,9 +207,9 @@ export const current = derived(tabs, ($tabs) => {
 derived([current, t], (a) => a).subscribe(([$current, $t]) => {
     // PWAs don't need the app name reiterated
     if (window.matchMedia("not (display-mode: browser)").matches) {
-        document.title = $current ? ($current.name ?? $t(`tab.${$current.type}`)) : "slicer";
+        document.title = $current ? $t($current.name || `tab.${$current.type}`) : "slicer";
     } else {
-        document.title = $current ? `${$current.name ?? $t(`tab.${$current.type}`)} | slicer` : "slicer";
+        document.title = $current ? `${$t($current.name || `tab.${$current.type}`)} | slicer` : "slicer";
     }
 });
 
@@ -364,11 +395,24 @@ const typesByExts = new Map(
     (Object.entries(extensions) as [TabType, string[]][]).flatMap(([k, v]) => v.map((ext) => [ext, k]))
 );
 
-export const detectType = (entry: Entry): TabType => {
-    return entry.extension ? typesByExts.get(entry.extension) || TabType.CODE : TabType.CODE;
+export const detectType = (entry: Entry): TabTypeOrDynamic => {
+    if (entry.extension) {
+        const wantedType = typesByExts.get(entry.extension);
+        if (wantedType) {
+            return wantedType;
+        }
+
+        for (const { decl } of get(dynamicTabDefs).values()) {
+            if (decl.preferredTypes?.includes(entry.extension)) {
+                return decl.id;
+            }
+        }
+    }
+
+    return TabType.CODE;
 };
 
-export const open = async (entry: Entry, type: TabType = detectType(entry)): Promise<Tab> => {
+export const open = async (entry: Entry, type: TabTypeOrDynamic = detectType(entry)): Promise<Tab> => {
     if (entry.type === EntryType.MEMBER && type === TabType.CLASS) {
         entry = entry.parent!; // unwrap to parent class
     }
@@ -379,16 +423,34 @@ export const open = async (entry: Entry, type: TabType = detectType(entry)): Pro
     if (!tab) {
         // tab doesn't exist, create
         try {
+            let name = entry.shortName,
+                icon: StyledIcon | ScriptIcon = tabIcon(type as TabType, entry);
+            const scriptDef = get(dynamicTabDefs).get(type);
+            if (scriptDef) {
+                const { context, decl } = scriptDef;
+                if (decl.icon) {
+                    icon = decl.icon;
+                }
+
+                const { label, icon: placementIcon } = await decl.place({ context, entry: wrapEntry(entry) });
+                if (label) {
+                    name = label;
+                }
+                if (placementIcon) {
+                    icon = placementIcon;
+                }
+            }
+
             tab = update({
                 id,
                 type,
                 // TODO: disambiguate tabs with the same name?
-                name: entry.shortName,
+                name,
                 position: TabPosition.PRIMARY_CENTER,
                 index: null,
                 closeable: true,
                 entry: await readDeferred(entry),
-                icon: tabIcon(type, entry),
+                icon,
             });
         } catch (e) {
             error(`failed to read entry ${entry.name}`, e);
@@ -402,16 +464,33 @@ export const open = async (entry: Entry, type: TabType = detectType(entry)): Pro
 };
 
 // specified position is used only if the tab is not already open
-export const openUnscoped = (def: TabDefinition, position: TabPosition = TabPosition.PRIMARY_CENTER): Tab => {
+export const openUnscoped = async (
+    def: TabDefinition,
+    position: TabPosition = TabPosition.PRIMARY_CENTER
+): Promise<Tab> => {
     let tab = Array.from(get(tabs).values()).find((t) => t.type === def.type);
     if (!tab) {
+        let name: string | undefined,
+            icon: Icon | ScriptIcon = def.icon;
+        const scriptDef = get(dynamicTabDefs).get(def.type);
+        if (scriptDef) {
+            const { context, decl } = scriptDef;
+
+            const { label, icon: placementIcon } = await decl.place({ context, entry: null });
+            name = label || decl.label;
+            if (placementIcon) {
+                icon = placementIcon;
+            }
+        }
+
         tab = update({
             id: `${def.type}:slicer`,
             type: def.type,
+            name,
             position,
             index: null,
             closeable: true,
-            icon: { icon: def.icon, classes: ["text-muted-foreground"] },
+            icon: "type" in icon ? icon : { icon, classes: ["text-muted-foreground"] },
         });
     }
 

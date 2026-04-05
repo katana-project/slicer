@@ -49,7 +49,7 @@ export const register = (): DestroyCallback => {
         listen("e", Modifier.CTRL, () => get(handler).export()),
         listen("f", Modifier.CTRL | Modifier.SHIFT, async () => {
             await get(handler).openUnscoped(
-                tabDefs.find((d) => d.type === TabType.SEARCH)!,
+                get(tabDefs).find((d) => d.type === TabType.SEARCH)!,
                 TabPosition.SECONDARY_RIGHT,
                 false
             );

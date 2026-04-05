@@ -6,14 +6,15 @@ import {
     remove as removeDisasm,
 } from "$lib/disasm";
 import { createSource as createClassSource, createResources } from "$lib/disasm/source";
-import { tl } from "$lib/i18n";
+import { add as addTl, remove as removeTl, tl, type TranslationKey } from "$lib/i18n";
 import type { Language } from "$lib/lang";
 import { error, warn } from "$lib/log";
 import { workers } from "$lib/reader";
 import type { MappingType } from "$lib/reader/mappings";
-import { analysisJdkClasses, scriptingScripts } from "$lib/state";
+import { analysisJdkClasses, locale, scriptingScripts } from "$lib/state";
 import {
     current as currentTab,
+    dynamicTabDefs,
     find as findTab,
     open as openTab,
     openUnscoped as openUnscopedTab,
@@ -21,7 +22,6 @@ import {
     type Tab,
     tabDefs,
     tabs,
-    TabType,
 } from "$lib/tab";
 import { cancellable, cyrb53 } from "$lib/utils";
 import {
@@ -45,6 +45,7 @@ import type {
     EventListener,
     EventMap,
     EventType,
+    I18NContext,
     MappingContext,
     Script,
     ScriptContext,
@@ -52,6 +53,7 @@ import type {
     Entry as ScriptEntry,
     MappingType as ScriptMappingType,
     Tab as ScriptTab,
+    TabDeclaration,
     WorkspaceContext,
 } from "@run-slicer/script";
 import { toast } from "svelte-sonner";
@@ -73,7 +75,7 @@ export interface ProtoScript {
 
 export const scripts = writable<ProtoScript[]>([]);
 
-const wrapEntry = (e: Entry): ScriptEntry => {
+export const wrapEntry = (e: Entry): ScriptEntry => {
     return {
         _entry: e,
         get type() {
@@ -102,7 +104,7 @@ const wrapTab = (t: Tab): ScriptTab => {
     return {
         type: t.type,
         id: t.id,
-        label: t.name ?? tl(`tab.${t.type}`),
+        label: tl(t.name || `tab.${t.type}`),
         get position() {
             return t.position;
         },
@@ -247,48 +249,57 @@ const unwrapDisasm = (disasm: ScriptDisassembler): Disassembler => {
     };
 };
 
-const editorCtx: EditorContext = {
-    tabs(): ScriptTab[] {
-        return Array.from(get(tabs).values()).map(wrapTab);
-    },
-    find(id: string): ScriptTab | null {
-        const tab = findTab(id);
-        return tab ? wrapTab(tab) : null;
-    },
-    current(): ScriptTab | null {
-        const tab = get(currentTab);
-        return tab ? wrapTab(tab) : null;
-    },
-    async refresh(id: string, hard: boolean = false) {
-        const tab = findTab(id);
-        if (tab) {
-            await refreshTab(tab, hard);
-        }
-    },
-    async add(type: string, entry?: ScriptEntry): Promise<ScriptTab> {
-        const e = entry ? unwrapEntry(entry) : null;
-        if (e) {
-            const tabType = Object.keys(TabType).includes(type) ? (type as TabType) : undefined;
-            if (!tabType) {
-                warn("script wanted an invalid tab type, detecting a valid one for entry");
+const createEditorCtx = (context: ScriptContext): EditorContext => {
+    return {
+        register(decl: TabDeclaration): void {
+            dynamicTabDefs.update(($scriptTabDefs) => {
+                $scriptTabDefs.set(decl.id, { context, decl });
+                return $scriptTabDefs;
+            });
+        },
+        unregister(id: string): void {
+            dynamicTabDefs.update(($scriptTabDefs) => {
+                $scriptTabDefs.delete(id);
+                return $scriptTabDefs;
+            });
+        },
+        tabs(): ScriptTab[] {
+            return Array.from(get(tabs).values()).map(wrapTab);
+        },
+        find(id: string): ScriptTab | null {
+            const tab = findTab(id);
+            return tab ? wrapTab(tab) : null;
+        },
+        current(): ScriptTab | null {
+            const tab = get(currentTab);
+            return tab ? wrapTab(tab) : null;
+        },
+        async refresh(id: string, hard: boolean = false) {
+            const tab = findTab(id);
+            if (tab) {
+                await refreshTab(tab, hard);
+            }
+        },
+        async add(type: string, entry?: ScriptEntry): Promise<ScriptTab> {
+            const e = entry ? unwrapEntry(entry) : null;
+            if (e) {
+                return wrapTab(await openTab(e, type));
             }
 
-            return wrapTab(await openTab(e, tabType));
-        }
+            const def = get(tabDefs).find((d) => d.type === type);
+            if (def) {
+                return wrapTab(await openUnscopedTab(def));
+            }
 
-        const def = tabDefs.find((d) => d.type === type);
-        if (def) {
-            return wrapTab(openUnscopedTab(def));
-        }
-
-        throw new Error("Invalid tab type");
-    },
-    remove(id: string) {
-        removeEntry(id);
-    },
-    clear() {
-        clearWs();
-    },
+            throw new Error("Invalid tab type");
+        },
+        remove(id: string) {
+            removeEntry(id);
+        },
+        clear() {
+            clearWs();
+        },
+    };
 };
 
 const disasmCtx: DisassemblerContext = {
@@ -351,16 +362,30 @@ const mappingCtx: MappingContext = {
     },
 };
 
+const i18nCtx: I18NContext = {
+    get locale(): string {
+        return get(locale);
+    },
+    add(locale: string, key: TranslationKey, value: string): void {
+        addTl(locale, key, value);
+    },
+    remove(locale: string, key: TranslationKey): void {
+        removeTl(locale, key);
+    },
+    t(key: TranslationKey, ...args: any[]): string {
+        return tl(key, ...args);
+    },
+};
+
 const createContext = (script: Script, parent: ScriptContext | null): ScriptContext => {
     const scriptListeners = new Map<EventType, EventListener<any>[]>();
-
-    return {
+    const context: Partial<ScriptContext> = {
         script,
         parent,
-        editor: editorCtx,
         disasm: disasmCtx,
         workspace: workspaceCtx,
         mapping: mappingCtx,
+        i18n: i18nCtx,
         addEventListener<K extends EventType>(type: K, listener: EventListener<EventMap[K]>) {
             let listeners = scriptListeners.get(type);
             if (!listeners) {
@@ -389,7 +414,7 @@ const createContext = (script: Script, parent: ScriptContext | null): ScriptCont
             const listeners = scriptListeners.get(event.type);
             if (listeners) {
                 for (const listener of listeners) {
-                    await listener(event, this);
+                    await listener(event, this as ScriptContext);
                 }
             }
 
@@ -402,6 +427,10 @@ const createContext = (script: Script, parent: ScriptContext | null): ScriptCont
             return event;
         },
     };
+    // @ts-ignore
+    context.editor = createEditorCtx(context as ScriptContext);
+
+    return context as ScriptContext;
 };
 
 export const rootContext = createContext(
@@ -412,6 +441,10 @@ export const rootContext = createContext(
     },
     null // parent
 );
+
+locale.subscribe(($locale) => {
+    rootContext.dispatchEvent({ type: "locale_change", locale: $locale });
+});
 
 const read0 = async (url: string): Promise<ProtoScript> => {
     const id = cyrb53(url).toString(16);

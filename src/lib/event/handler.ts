@@ -23,7 +23,7 @@ import {
     type TabDefinition,
     TabPosition,
     tabs,
-    TabType,
+    type TabTypeOrDynamic,
     updatePane,
 } from "$lib/tab";
 import {
@@ -215,7 +215,7 @@ export default {
         const [created, skipped] = partition(result, (r) => r.created);
         await toastAdd(created, skipped, time);
     },
-    async open(entry: Entry, tabType: TabType = detectTabType(entry)): Promise<void> {
+    async open(entry: Entry, tabType: TabTypeOrDynamic = detectTabType(entry)): Promise<void> {
         try {
             await openTab(entry, tabType);
         } catch (e) {
@@ -224,8 +224,8 @@ export default {
             });
         }
     },
-    openUnscoped(def: TabDefinition, position: TabPosition, move: boolean): void {
-        const tab = openUnscopedTab(def, position);
+    async openUnscoped(def: TabDefinition, position: TabPosition, move: boolean): Promise<void> {
+        const tab = await openUnscopedTab(def, position);
         if (move) {
             moveTab(tab, position);
         }
