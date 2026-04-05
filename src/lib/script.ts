@@ -450,8 +450,15 @@ const read0 = async (url: string): Promise<ProtoScript> => {
 };
 
 export const read = async (url: string): Promise<ProtoScript> => {
-    const script = await read0(url);
+    let script = await read0(url);
     scripts.update(($scripts) => {
+        const existing = $scripts.find((s) => s.id === script.id);
+        if (existing) {
+            // already have this script, use existing reference instead of new one
+            script = existing;
+            return $scripts;
+        }
+
         $scripts.push(script);
         return $scripts;
     });
