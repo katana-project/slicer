@@ -6,8 +6,8 @@
         ContextMenuSub,
         ContextMenuSubContent,
         ContextMenuSubTrigger,
+        ContextMenuLabel,
     } from "$lib/components/ui/context-menu";
-    import ContextMenuLabel from "$lib/components/menu_label.svelte";
     import { getViewportForBounds, useSvelteFlow } from "@xyflow/svelte";
     import { toJpeg, toPng, toSvg } from "html-to-image";
     import { downloadUrl, prettyMethodDesc } from "$lib/utils";

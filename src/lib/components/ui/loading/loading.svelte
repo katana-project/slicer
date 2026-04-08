@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte";
     import { fade } from "svelte/transition";
-    import { cn } from "./utils";
+    import { cn } from "$lib/components/utils";
 
     interface Props {
         value?: string | null;

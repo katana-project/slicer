@@ -15,7 +15,6 @@
     } from "@xyflow/svelte";
     import { Select, SelectContent, SelectItem, SelectTrigger } from "$lib/components/ui/select";
     import { ContextMenu, ContextMenuTrigger } from "$lib/components/ui/context-menu";
-    import Loading from "$lib/components/loading.svelte";
     import ControlFlowNode from "./nodes/control_flow.svelte";
     import HierarchyNode from "./nodes/hierarchy.svelte";
     import CallNode from "./nodes/call.svelte";
@@ -28,6 +27,7 @@
     import { createCallGraph, inheritanceGraph, type InheritanceGraph } from "$lib/workspace/analysis/graph";
     import { cn } from "$lib/components/utils";
     import { Button } from "$lib/components/ui/button";
+    import { Loading } from "$lib/components/ui/loading";
 
     let { tab, handler, classes }: PaneProps = $props();
     const entry = $derived(tab.entry!);
@@ -132,12 +132,12 @@
             <FlowMenu {parentElem} {node} {member} />
         </ContextMenu>
     </SvelteFlowProvider>
-    <div class="absolute bottom-0 z-20 m-[15px] flex flex-row">
+    <div class="absolute bottom-0 z-20 m-3.75 flex flex-row">
         {#if entry.type !== EntryType.MEMBER}
             <Select type="single" bind:value={methodIndex}>
                 <SelectTrigger
                     class={cn(
-                        "bg-card! h-7 max-w-[425px] text-xs whitespace-nowrap [&_svg]:ml-2 [&_svg]:h-4 [&_svg]:w-4",
+                        "bg-card! h-7 max-w-106.25 text-xs whitespace-nowrap [&_svg]:ml-2 [&_svg]:h-4 [&_svg]:w-4",
                         graphType !== GraphType.HIERARCHY && "rounded-r-none border-r-0"
                     )}
                 >

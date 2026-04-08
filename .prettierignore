@@ -1,11 +1,6 @@
 # lock files
 pnpm-lock.yaml
 
-# shadcn-svelte
-components.json
-/src/lib/components/ui
-/src/lib/components/utils.ts
-
 # generated files
 /src/locale/index.ts
 crowdin.yml

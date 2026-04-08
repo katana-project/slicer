@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Loading from "$lib/components/loading.svelte";
     import { Separator } from "$lib/components/ui/separator";
     import { Tween } from "svelte/motion";
     import { cubicOut } from "svelte/easing";
@@ -11,6 +10,7 @@
     import { t } from "$lib/i18n";
     import { cn } from "$lib/components/utils";
     import { imageSmoothing } from "$lib/state";
+    import { Loading } from "$lib/components/ui/loading";
 
     let { tab }: PaneProps = $props();
     const entry = $derived(tab.entry!);

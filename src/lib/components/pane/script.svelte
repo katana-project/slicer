@@ -2,9 +2,9 @@
     import type { PaneProps } from "./";
     import { dynamicTabDefs, TabPosition } from "$lib/tab";
     import { wrapEntry } from "$lib/script";
-    import Loading from "$lib/components/loading.svelte";
     import { t } from "$lib/i18n";
     import { onDestroy } from "svelte";
+    import { Loading } from "$lib/components/ui/loading";
 
     let { tab }: PaneProps = $props();
 

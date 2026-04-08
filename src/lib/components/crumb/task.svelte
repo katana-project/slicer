@@ -1,7 +1,7 @@
 <script lang="ts">
     import { t } from "$lib/i18n";
-    import Progress from "$lib/components/progress.svelte";
     import type { Task } from "$lib/task";
+    import { Progress } from "$lib/components/ui/progress";
 
     interface Props {
         task: Task;

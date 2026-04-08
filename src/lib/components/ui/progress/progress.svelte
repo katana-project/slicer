@@ -1,4 +1,3 @@
-<!-- modification: indeterminate state (https://github.com/shadcn-ui/ui/issues/700#issuecomment-2221528928) -->
 <script lang="ts">
     import { Progress as ProgressPrimitive, type WithoutChildrenOrChild } from "bits-ui";
     import { cn } from "$lib/components/utils";

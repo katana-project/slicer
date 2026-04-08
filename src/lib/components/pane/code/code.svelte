@@ -1,6 +1,5 @@
 <script lang="ts">
     import { classRefs, EntryType } from "$lib/workspace";
-    import Loading from "$lib/components/loading.svelte";
     import { load as loadLanguage } from "$lib/lang";
     import { canInterpret, detectInterpretation, detectLanguage, Interpretation, read } from "./";
     import CodeEditor from "$lib/components/editor/editor.svelte";
@@ -33,6 +32,7 @@
     import { jdkRefs } from "$lib/workspace/jdk";
     import { typeResolver } from "./resolver";
     import { Compartment } from "@codemirror/state";
+    import { Loading } from "$lib/components/ui/loading";
 
     let { tab, disasms, handler, classes }: PaneProps = $props();
     const entry = $derived(tab.entry!);

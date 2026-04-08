@@ -1,7 +1,11 @@
 <script lang="ts">
     import { Code, GitBranchPlus } from "@lucide/svelte";
-    import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from "$lib/components/ui/context-menu";
-    import ContextMenuLabel from "$lib/components/menu_label.svelte";
+    import {
+        ContextMenuContent,
+        ContextMenuItem,
+        ContextMenuSeparator,
+        ContextMenuLabel,
+    } from "$lib/components/ui/context-menu";
     import type { EventHandler } from "$lib/event";
     import { TabType } from "$lib/tab";
     import type { Entry } from "$lib/workspace";

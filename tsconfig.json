@@ -15,7 +15,6 @@
         "allowJs": false,
         "checkJs": false,
         "isolatedModules": true,
-        "baseUrl": ".",
         "paths": {
             "$lib": ["./src/lib"],
             "$lib/*": ["./src/lib/*"]

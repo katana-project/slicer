@@ -4,8 +4,8 @@
     import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$lib/components/ui/table";
     import type { ModalProps } from "svelte-modals";
     import { t } from "$lib/i18n";
-    import Loading from "$lib/components/loading.svelte";
     import { error } from "$lib/log";
+    import { Loading } from "$lib/components/ui/loading";
 
     interface Props extends ModalProps {
         proto: ProtoScript;

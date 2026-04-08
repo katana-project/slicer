@@ -1,6 +1,5 @@
 <script lang="ts">
     import { workers } from "$lib/reader";
-    import Loading from "$lib/components/loading.svelte";
     import { Separator } from "$lib/components/ui/separator";
     import { error } from "$lib/log";
     import { FileQuestionMark } from "@lucide/svelte";
@@ -9,6 +8,7 @@
     import type { PaneProps } from "$lib/components/pane";
     import { t } from "$lib/i18n";
     import { onDestroy } from "svelte";
+    import { Loading } from "$lib/components/ui/loading";
 
     let { tab }: PaneProps = $props();
     const entry = $derived(tab.entry!);

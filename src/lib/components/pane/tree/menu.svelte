@@ -24,8 +24,8 @@
         ContextMenuSub,
         ContextMenuSubContent,
         ContextMenuSubTrigger,
+        ContextMenuLabel,
     } from "$lib/components/ui/context-menu";
-    import ContextMenuLabel from "$lib/components/menu_label.svelte";
     import type { EventHandler } from "$lib/event";
     import { modals } from "svelte-modals";
     import { DeleteDialog } from "$lib/components/dialog";

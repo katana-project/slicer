@@ -12,10 +12,10 @@
         ContextMenuContent,
         ContextMenuItem,
         ContextMenuSeparator,
+        ContextMenuLabel,
     } from "$lib/components/ui/context-menu";
     import { Modifier } from "$lib/shortcut";
     import Shortcut from "$lib/components/menu/shortcut.svelte";
-    import ContextMenuLabel from "$lib/components/menu_label.svelte";
     import { t } from "$lib/i18n";
     import type { Icon as ScriptIcon } from "@run-slicer/script";
     import IconComponent from "$lib/components/icon.svelte";

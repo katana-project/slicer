@@ -9,8 +9,8 @@
         ContextMenuSub,
         ContextMenuSubContent,
         ContextMenuSubTrigger,
+        ContextMenuLabel,
     } from "$lib/components/ui/context-menu";
-    import ContextMenuLabel from "$lib/components/menu_label.svelte";
     import { Binary, CaseSensitive, Code, CornerDownRight, TextSearch, TextWrap, Workflow } from "@lucide/svelte";
     import { type Language, toExtension } from "$lib/lang";
     import { Interpretation } from "./";
@@ -18,12 +18,12 @@
     import { t } from "$lib/i18n";
     import type { EditorView } from "@codemirror/view";
     import { prettyInternalName } from "$lib/utils";
-    import FloatingModal from "$lib/components/floating_modal.svelte";
     import UsagesContent from "./usages.svelte";
     import type { TypeReferenceResolver } from "@katana-project/laser";
     import { resolveType } from "./resolver";
     import HierarchyContent from "./hierarchy.svelte";
     import { inheritanceGraph } from "$lib/workspace/analysis/graph";
+    import { FloatingModal } from "$lib/components/ui/floating-modal";
 
     interface Props {
         view: EditorView | null;

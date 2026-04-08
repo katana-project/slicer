@@ -22,8 +22,8 @@
 </script>
 
 <script lang="ts">
-    import Loading from "$lib/components/loading.svelte";
     import { TabPosition } from "$lib/tab";
+    import { Loading } from "$lib/components/ui/loading";
 
     let props: PaneProps = $props();
     let importPromise = $derived(imports[props.tab.type as TabType]);
