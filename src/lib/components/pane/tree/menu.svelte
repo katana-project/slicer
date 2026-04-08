@@ -14,7 +14,7 @@
 </script>
 
 <script lang="ts">
-    import { Code, Download, FileCode2, Gauge, GitBranchPlus, Image, Trash2 } from "@lucide/svelte";
+    import { Code, Download, FileCodeCorner, Gauge, GitBranchPlus, Image, Trash2 } from "@lucide/svelte";
     import { EntryType } from "$lib/workspace";
     import { dynamicTabDefs, TabType } from "$lib/tab";
     import {
@@ -68,7 +68,7 @@
                         onclick={() => handler.open(entry.value, TabType.CLASS)}
                     >
                         {$t("pane.project.menu.open.class")}
-                        <FileCode2 size={16} />
+                        <FileCodeCorner size={16} />
                     </ContextMenuItem>
                 {/if}
                 <ContextMenuItem

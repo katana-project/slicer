@@ -38,7 +38,7 @@
         BookOpen,
         Clipboard,
         Code,
-        FileCode2,
+        FileCodeCorner,
         GitBranchPlus,
         Globe,
         Info,
@@ -154,7 +154,7 @@
                 <MenubarSeparator />
                 <MenubarSub>
                     <MenubarSubTrigger>{$t("menu.root.theme")}</MenubarSubTrigger>
-                    <MenubarSubContent class="min-w-[12rem]" align="start">
+                    <MenubarSubContent class="min-w-48" align="start">
                         <MenubarSub>
                             <MenubarSubTrigger inset>{$t("menu.root.theme.color")}</MenubarSubTrigger>
                             <MenubarSubContent align="start">
@@ -271,7 +271,7 @@
                     onclick={() => openEntry(TabType.CLASS)}
                 >
                     {$t("menu.view.class")}
-                    <FileCode2 size={16} />
+                    <FileCodeCorner size={16} />
                 </MenubarItem>
                 <MenubarItem
                     class="justify-between"
@@ -296,7 +296,7 @@
                 <MenubarSeparator />
                 <MenubarSub>
                     <MenubarSubTrigger>{$t("menu.view.encoding")}</MenubarSubTrigger>
-                    <MenubarSubContent class="min-w-[12rem]" align="start">
+                    <MenubarSubContent class="min-w-48" align="start">
                         <MenubarRadioGroup bind:value={$workspaceEncoding}>
                             {#each Object.values(encodings) as encoding}
                                 <MenubarRadioItem value={encoding.id} class="justify-between">
@@ -321,7 +321,7 @@
                     <MenubarSubTrigger disabled={!transformers.some((t) => !t.internal)}>
                         {$t("menu.analysis.transformers")}
                     </MenubarSubTrigger>
-                    <MenubarSubContent class="min-w-[12rem]" align="start">
+                    <MenubarSubContent class="min-w-48" align="start">
                         {@const groups = groupBy(
                             transformers.filter((t) => !t.internal),
                             (t) => t.group
@@ -331,7 +331,7 @@
                                 <MenubarSubTrigger>
                                     {$t(`transformer.group.${group ?? "general"}`)}
                                 </MenubarSubTrigger>
-                                <MenubarSubContent class="min-w-[12rem]" align="start">
+                                <MenubarSubContent class="min-w-48" align="start">
                                     {#each trfs as trf (trf.id)}
                                         {@const Icon = trf.icon}
                                         <MenubarCheckboxItem
@@ -360,7 +360,7 @@
                     <MenubarSubTrigger>
                         {$t("menu.mapping.load")}
                     </MenubarSubTrigger>
-                    <MenubarSubContent class="min-w-[12rem]" align="start">
+                    <MenubarSubContent class="min-w-48" align="start">
                         <MenubarItem
                             class="justify-between"
                             onclick={() => modals.open(LoadMappingsFileDialog, { handler })}
@@ -410,7 +410,7 @@
                     <MenubarSubTrigger>
                         {$t("menu.scripts.import")}
                     </MenubarSubTrigger>
-                    <MenubarSubContent class="min-w-[12rem]" align="start">
+                    <MenubarSubContent class="min-w-48" align="start">
                         <MenubarItem
                             class="justify-between"
                             onclick={() => modals.open(ScriptLoadFileDialog, { handler })}
@@ -479,6 +479,7 @@
 
 <style>
     /* PWA title bar */
+    /* noinspection CssInvalidMediaFeature */
     @media (display-mode: window-controls-overlay) {
         :global(.window-controls) {
             position: sticky;

@@ -155,14 +155,14 @@
         {#if interpType === Interpretation.CLASS}
             <Select type="single" bind:value={disasmId}>
                 <SelectTrigger
-                    class="!bg-card h-7 rounded-r-none border-r-0 text-xs [&_svg]:ml-2 [&_svg]:h-4 [&_svg]:w-4"
+                    class="bg-card! h-7 rounded-r-none border-r-0 text-xs [&_svg]:ml-2 [&_svg]:h-4 [&_svg]:w-4"
                 >
                     <span class="text-muted-foreground mr-2">
                         {$t("pane.code.disasm")}
                     </span>
                     <span class="tracking-tight">{disasm.name || disasm.id}</span>
                 </SelectTrigger>
-                <SelectContent class="max-h-[240px] w-full overflow-scroll" side="top" align="end">
+                <SelectContent class="max-h-60 w-full overflow-scroll" side="top" align="end">
                     {#each usableDisasms as dism (dism.id)}
                         <SelectItem value={dism.id} label={dism.id} class="justify-between text-xs tracking-tight">
                             <span>{dism.name || dism.id}</span>
@@ -177,7 +177,7 @@
                 <Button
                     variant="outline"
                     size="icon"
-                    class={cn("!bg-card", interpType === Interpretation.CLASS && "rounded-l-none")}
+                    class={cn("bg-card!", interpType === Interpretation.CLASS && "rounded-l-none")}
                 >
                     <SquareCode />
                 </Button>

@@ -25,7 +25,7 @@
     };
 </script>
 
-<MenubarSubContent class="min-w-[12rem]" align="start">
+<MenubarSubContent class="min-w-48" align="start">
     <MenubarItem class="justify-between" onclick={() => exportEntries()}>
         {$t("menu.file.export-all.raw")}
         <Binary size={16} />
@@ -34,7 +34,7 @@
         <MenubarSubTrigger disabled={classes.length === 0}>
             {$t("menu.file.export-all.disasm")}
         </MenubarSubTrigger>
-        <MenubarSubContent class="min-w-[12rem]" align="start">
+        <MenubarSubContent class="min-w-48" align="start">
             {#each disasms as dism}
                 <MenubarItem class="justify-between" onclick={() => exportEntries(dism)}>
                     {dism.name || dism.id}

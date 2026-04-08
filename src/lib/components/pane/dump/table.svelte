@@ -23,8 +23,8 @@
     import { createSvelteTable, FlexRender, renderComponent } from "$lib/components/ui/data-table";
     import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "$lib/components/ui/table";
     import type { HTMLAttributes } from "svelte/elements";
-    import TableHeaderComponent from "./table-header.svelte";
-    import TableCellComponent from "./table-cell.svelte";
+    import TableHeaderComponent from "./table_header.svelte";
+    import TableCellComponent from "./table_cell.svelte";
     import {
         type ColumnDef,
         type PaginationState,

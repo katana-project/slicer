@@ -137,7 +137,7 @@
             <Select type="single" bind:value={methodIndex}>
                 <SelectTrigger
                     class={cn(
-                        "!bg-card h-7 max-w-[425px] text-xs whitespace-nowrap [&_svg]:ml-2 [&_svg]:h-4 [&_svg]:w-4",
+                        "bg-card! h-7 max-w-[425px] text-xs whitespace-nowrap [&_svg]:ml-2 [&_svg]:h-4 [&_svg]:w-4",
                         graphType !== GraphType.HIERARCHY && "rounded-r-none border-r-0"
                     )}
                 >
@@ -152,7 +152,7 @@
                         </span>
                     </div>
                 </SelectTrigger>
-                <SelectContent class="max-h-[240px] w-full overflow-scroll" side="top" align="start">
+                <SelectContent class="max-h-60 w-full overflow-scroll" side="top" align="start">
                     <SelectItem
                         value="-1"
                         label={$t("pane.graph.method.none")}
@@ -173,7 +173,7 @@
             <Button
                 variant="outline"
                 size="icon"
-                class={cn("!bg-card", entry.type !== EntryType.MEMBER && "rounded-l-none")}
+                class={cn("bg-card!", entry.type !== EntryType.MEMBER && "rounded-l-none")}
                 onclick={() => (graphType = graphType === GraphType.CALL ? GraphType.CONTROL_FLOW : GraphType.CALL)}
                 title={$t(graphType === GraphType.CALL ? "pane.graph.calls.hide" : "pane.graph.calls.show")}
                 aria-label={$t(graphType === GraphType.CALL ? "pane.graph.calls.hide" : "pane.graph.calls.show")}

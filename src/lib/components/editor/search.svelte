@@ -105,10 +105,11 @@
         }
     };
 
-    // CodeMirror only focuses when it's already open, so we need to focus the input ourselves for the first time
     let inputElem: HTMLInputElement | null = $state(null);
     $effect(() => {
         if (inputElem) {
+            // mark the input as focusable for CodeMirror
+            inputElem.setAttribute("main-field", "true");
             inputElem.focus();
         }
     });
@@ -122,7 +123,6 @@
             bind:value={search}
             onkeydown={handleKeyDown}
             class="h-7 max-w-80 text-xs"
-            main-field
             bind:ref={inputElem}
         />
         <Toggle

@@ -2,7 +2,7 @@
     import { TabType } from "$lib/tab";
     import type { ClassEntry } from "$lib/workspace";
     import { Tabs, TabsList, TabsContent, TabsTrigger } from "$lib/components/ui/tabs";
-    import { Code, Ellipsis, FileQuestion, GitBranchPlus } from "@lucide/svelte";
+    import { Code, Ellipsis, FileQuestionMark, GitBranchPlus } from "@lucide/svelte";
     import Pool from "./pool.svelte";
     import Fields from "./fields.svelte";
     import Methods from "./methods.svelte";
@@ -69,7 +69,7 @@
     </Tabs>
 {:else}
     <div class="flex h-full w-full flex-col items-center justify-center">
-        <FileQuestion class="mb-4 animate-bounce text-red-600" size={128} />
+        <FileQuestionMark class="mb-4 animate-bounce text-red-600" size={128} />
         <p class="mb-1 text-2xl font-semibold">{$t("pane.class.fail.title")}</p>
         <p class="text-muted-foreground mb-32 text-sm">{$t("pane.class.fail.subtitle")}</p>
     </div>

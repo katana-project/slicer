@@ -26,5 +26,5 @@
         }
     }}
 >
-    <IconComponent size={14} class="hover:text-muted-foreground min-w-[14px]" />
+    <IconComponent size={14} class="hover:text-muted-foreground min-w-3.5" />
 </button>

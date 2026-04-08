@@ -2,9 +2,10 @@
     import type { SearchResult } from "$lib/workspace/analysis";
     import type { EventHandler } from "$lib/event";
     import { ContextMenu, ContextMenuTrigger } from "$lib/components/ui/context-menu";
-    import { Coffee } from "@lucide/svelte";
     import Result from "./result.svelte";
     import ResultMenu from "./menu.svelte";
+    import { entryIcon } from "$lib/components/icons";
+    import { cn } from "$lib/components/utils";
 
     interface Props {
         name: string;
@@ -18,6 +19,7 @@
 
 <ContextMenu>
     <ContextMenuTrigger>
+        {@const { icon: Icon, classes } = entryIcon(entry)}
         <div
             role="button"
             tabindex="-1"
@@ -25,7 +27,7 @@
             onclick={() => handler.open(entry)}
             onkeydown={() => handler.open(entry)}
         >
-            <Coffee size={16} class="min-w-[16px] text-red-500" />
+            <Icon class={cn("size-4 min-w-4", classes)} />
             <span class="text-muted-foreground overflow-x-hidden pl-2 text-ellipsis" title={name}>{name}</span>
         </div>
     </ContextMenuTrigger>

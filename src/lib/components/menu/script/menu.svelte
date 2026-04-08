@@ -51,7 +51,8 @@
         </MenubarItem>
         <MenubarItem
             inset
-            class="data-highlighted:bg-destructive data-highlighted:text-primary-foreground justify-between"
+            class="justify-between"
+            variant="destructive"
             onclick={() => modals.open(ScriptDeleteDialog, { proto, handler })}
         >
             {$t("menu.scripts.script.delete")}

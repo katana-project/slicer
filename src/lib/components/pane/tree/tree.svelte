@@ -186,7 +186,7 @@
             {$t(`pane.project.mode.${$projectMode}`)}
         </span>
     </SelectTrigger>
-    <SelectContent side="top" align="center" class="[&>*]:min-w-[calc(var(--bits-select-anchor-width)-16px)]">
+    <SelectContent side="top" align="center" class="*:min-w-[calc(var(--bits-select-anchor-width)-16px)]">
         <SelectItem value="file" label={$t("pane.project.mode.file")} class="text-xs">
             {$t("pane.project.mode.file")}
         </SelectItem>

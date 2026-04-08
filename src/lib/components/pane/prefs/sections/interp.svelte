@@ -58,7 +58,7 @@
         <CircleAlert />
         <AlertTitle>{$t("pane.prefs.workspace.interp.alert")}</AlertTitle>
     </Alert>
-    <div class="grid min-h-[2.5rem] grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
+    <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
         <Label
             for="bytesPerRow"
             textKey="pane.prefs.workspace.interp.bytes-per-row"
@@ -68,11 +68,11 @@
     </div>
 
     <Section id="disasm" labelKey="pane.prefs.section.disasm" small>
-        <div class="grid min-h-[2.5rem] grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
+        <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
             <Label for="disasmCache" textKey="pane.prefs.disasm.cache" descKey="pane.prefs.disasm.cache.desc" danger />
             <Switch id="disasmCache" bind:checked={$toolsDisasmCache} />
         </div>
-        <div class="grid min-h-[2.5rem] grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
+        <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
             <Label for="disasmSelect" textKey="pane.prefs.disasm.options" descKey="pane.prefs.disasm.options.desc" />
             <Select type="single" bind:value={selectedDisasm}>
                 <SelectTrigger id="disasmSelect" class="w-48">

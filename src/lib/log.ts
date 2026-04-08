@@ -1,5 +1,4 @@
-import { loggingMaxEntries } from "$lib/state";
-import { get, writable } from "svelte/store";
+import { writable } from "svelte/store";
 
 export const enum LogLevel {
     INFO = "info",
@@ -13,6 +12,7 @@ export interface LogEntry {
     error?: any;
 }
 
+const MAX_ENTRIES = 1000;
 export const entries = writable<LogEntry[]>([]);
 
 type LogFunc = (...vals: any[]) => void;
@@ -40,7 +40,7 @@ const log0 = (level: LogLevel, message: string, error?: any) => {
         message = message.replaceAll("\n", " ");
         entries.update(($entries) => {
             $entries.push({ level, message, error });
-            if ($entries.length > get(loggingMaxEntries)) {
+            if ($entries.length > MAX_ENTRIES) {
                 $entries.shift(); // pop first
             }
 

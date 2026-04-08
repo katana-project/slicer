@@ -57,12 +57,12 @@
     {#if sortedNodes}
         {@const ExpandedIcon = expanded ? ChevronDown : ChevronRight}
         <button class="highlight flex w-full py-[0.2rem]" onclick={() => (expanded = !expanded)}>
-            <ExpandedIcon size={14} class="text-muted-foreground my-auto mr-1 min-w-[14px]" />
+            <ExpandedIcon size={14} class="text-muted-foreground my-auto mr-1 min-w-3.5" />
             {#if data.entry}
-                <FileIcon size={16} class={cn("my-auto mr-1 min-w-[16px]", classes)} />
+                <FileIcon size={16} class={cn("my-auto mr-1 min-w-4", classes)} />
             {:else}
                 {@const FolderIcon = mode === "package" && data.package ? FolderDot : Folder}
-                <FolderIcon size={16} class="fill-muted my-auto mr-1 min-w-[16px]" />
+                <FolderIcon size={16} class="fill-muted my-auto mr-1 min-w-4" />
             {/if}
             <span class="text-sm">{data.label}</span>
         </button>
@@ -79,7 +79,7 @@
         {/if}
     {:else}
         <button class="highlight flex w-full py-[0.2rem]" ondblclick={() => onopen?.(data)}>
-            <FileIcon size={16} class={cn("my-auto mr-1 min-w-[16px]", classes)} />
+            <FileIcon size={16} class={cn("my-auto mr-1 min-w-4", classes)} />
             <span class="text-sm">{data.label}</span>
         </button>
     {/if}

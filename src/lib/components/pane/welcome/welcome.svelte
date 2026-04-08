@@ -1,6 +1,6 @@
 <script lang="ts">
     import { mode, userPrefersMode } from "mode-watcher";
-    import { FilePlus2, Folder, Moon, Settings, Sun, BookText, ScrollText } from "@lucide/svelte";
+    import { FilePlusCorner, Folder, Moon, Settings, Sun, BookText, ScrollText } from "@lucide/svelte";
     import { ToggleGroup, ToggleGroupItem } from "$lib/components/ui/toggle-group";
     import { Button } from "$lib/components/ui/button";
     import type { PaneProps } from "$lib/components/pane";
@@ -29,24 +29,24 @@
             <div>
                 <h2 class="text-muted-foreground text-lg font-medium">{$t("pane.welcome.get-started")}</h2>
                 <div class="flex flex-col items-start">
-                    <Button variant="link" class="h-8 !p-0" onclick={() => handler.load()}>
+                    <Button variant="link" class="h-8 p-0!" onclick={() => handler.load()}>
                         <Folder />
                         {$t("pane.welcome.get-started.open")}
                     </Button>
-                    <Button variant="link" class="h-8 !p-0" onclick={() => handler.add()}>
-                        <FilePlus2 />
+                    <Button variant="link" class="h-8 p-0!" onclick={() => handler.add()}>
+                        <FilePlusCorner />
                         {$t("pane.welcome.get-started.add")}
                     </Button>
                 </div>
                 <h2 class="text-muted-foreground pt-4 text-lg font-medium">{$t("pane.welcome.help")}</h2>
                 <div class="flex flex-col items-start">
-                    <Button variant="link" class="h-8 !p-0" onclick={() => window.open("https://docs.slicer.run")}>
+                    <Button variant="link" class="h-8 p-0!" onclick={() => window.open("https://docs.slicer.run")}>
                         <BookText />
                         {$t("pane.welcome.help.docs")}
                     </Button>
                     <Button
                         variant="link"
-                        class="h-8 !p-0"
+                        class="h-8 p-0!"
                         onclick={() => window.open("https://github.com/katana-project/slicer")}
                     >
                         <GitHub />
@@ -54,7 +54,7 @@
                     </Button>
                     <Button
                         variant="link"
-                        class="h-8 !p-0"
+                        class="h-8 p-0!"
                         onclick={() => window.open("https://docs.oracle.com/javase/specs/jvms/se21/html/index.html")}
                     >
                         <ScrollText />

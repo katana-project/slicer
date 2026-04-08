@@ -39,7 +39,6 @@ export const workspaceArchiveDuplicateHandling = persisted<DuplicateEntryHandlin
 export const toolsDisasm = persisted<string>(root, "tools.disasm", "vf" /* vf.id ($lib/disasm/builtin) */);
 export const toolsDisasmCache = persisted<boolean>(root, "tools.disasm.cache", false);
 export const toolsDisasmOptions = persisted<Record<string, DisassemblerOptions>>(root, "tools.disasm.options", {});
-export const loggingMaxEntries = persisted<number>(root, "logging.max-entries", 150);
 export const scriptingScripts = persisted<ScriptData[]>(root, "scripting.scripts", []);
 export const editorWrap = persisted<boolean>(root, "editor.wrap", true);
 export const editorTextSize = persisted<number>(root, "editor.text-size", 0.75);

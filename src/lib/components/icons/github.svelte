@@ -14,5 +14,4 @@
     ] as IconNode;
 </script>
 
-<!-- from Lucide, copied to bypass brand icon deprecation -->
 <Icon name="github" {...props} {iconNode} />

@@ -13,6 +13,7 @@
     let { fields, methods, open } = $derived(data.node);
 </script>
 
+<!-- mind the padding/margin/font sizing, these are values that affect the graph layout in graph.ts -->
 <Handle type="target" position={Position.Top} />
 <button
     title={prettyInternalName(data.node.name)}
