@@ -141,6 +141,7 @@
                     dropTargetStyle: {},
                     dropAnimationDisabled: true,
                     centreDraggedOnCursor: true,
+                    useCursorForDetection: true,
                 }}
                 onconsider={(e) => (localTabs = e.detail.items)}
                 onfinalize={finalizeMove}

@@ -151,6 +151,7 @@
     </div>
     <div class="relative h-full w-full">
         <div
+            role="img"
             class="absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center overflow-hidden select-none"
             onwheel={(e) => rescale((s) => s * (1.0 - e.deltaY / 250) /* smoothing */)}
             onpointerup={handlePointerUp}

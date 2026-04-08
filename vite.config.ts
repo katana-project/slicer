@@ -8,9 +8,14 @@ export default defineConfig({
     plugins: [tailwindcss(), svelte()],
     build: {
         sourcemap: "hidden",
-    },
-    esbuild: {
-        legalComments: "none",
+        rolldownOptions: {
+            checks: {
+                pluginTimings: false,
+            },
+            output: {
+                comments: false,
+            },
+        },
     },
     optimizeDeps: {
         // Vite doesn't like WASM fetches
