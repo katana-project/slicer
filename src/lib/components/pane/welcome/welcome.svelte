@@ -1,6 +1,6 @@
 <script lang="ts">
     import { mode, userPrefersMode } from "mode-watcher";
-    import { FilePlusCorner, Folder, Moon, Settings, Sun, BookText, ScrollText } from "@lucide/svelte";
+    import { FilePlusCorner, Folder, Moon, Settings, Sun, BookText, ScrollText, Heart } from "@lucide/svelte";
     import { ToggleGroup, ToggleGroupItem } from "$lib/components/ui/toggle-group";
     import { Button } from "$lib/components/ui/button";
     import type { PaneProps } from "$lib/components/pane";
@@ -47,6 +47,14 @@
                     <Button
                         variant="link"
                         class="h-8 p-0!"
+                        onclick={() => window.open("https://docs.oracle.com/javase/specs/jvms/se21/html/index.html")}
+                    >
+                        <ScrollText />
+                        {$t("pane.welcome.help.jvms")}
+                    </Button>
+                    <Button
+                        variant="link"
+                        class="h-8 p-0!"
                         onclick={() => window.open("https://github.com/katana-project/slicer")}
                     >
                         <GitHub />
@@ -54,11 +62,11 @@
                     </Button>
                     <Button
                         variant="link"
-                        class="h-8 p-0!"
-                        onclick={() => window.open("https://docs.oracle.com/javase/specs/jvms/se21/html/index.html")}
+                        class="h-8 p-0! text-pink-300"
+                        onclick={() => window.open("https://ko-fi.com/zlataovce")}
                     >
-                        <ScrollText />
-                        {$t("pane.welcome.help.jvms")}
+                        <Heart class="text-pink-700" />
+                        {$t("pane.welcome.help.sponsor")}
                     </Button>
                 </div>
             </div>

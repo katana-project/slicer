@@ -84,6 +84,7 @@
     "pane.welcome.help.docs": "Read the docs",
     "pane.welcome.help.contribute": "Contribute",
     "pane.welcome.help.jvms": "View the JVMS",
+    "pane.welcome.help.sponsor": "Sponsor",
     "pane.welcome.customize": "Customize",
     "pane.welcome.customize.theme.system": "Toggle system-preferred theme",
     "pane.welcome.customize.theme.dark": "Toggle dark theme",
