@@ -162,12 +162,8 @@
         </div>
     {:else}
         <VList data={resultsByEntry} class="flex h-full w-full flex-col" getKey={(_, i) => i}>
-            {#snippet children(data)}
-                {#if data}
-                    <!-- I'm not sure why but it's undefined when you clear entries -->
-                    {@const [entryName, entryResults] = data}
-                    <ResultGroup name={entryName} results={entryResults} {handler} />
-                {/if}
+            {#snippet children([entryName, entryResults])}
+                <ResultGroup name={entryName} results={entryResults} {handler} />
             {/snippet}
         </VList>
     {/if}

@@ -57,36 +57,34 @@
     </div>
 
     <div class="min-h-0 flex-1">
-        {#if usages.length > 0}
-            <VList data={Array.from(grouped.entries())} getKey={(_, i) => i} class="h-full overflow-x-hidden p-1">
-                {#snippet children([name, usages])}
-                    {@const { icon: Icon, classes: iconClasses } = entryIcon(usages[0].entry)}
+        <VList data={Array.from(grouped.entries())} getKey={(_, i) => i} class="h-full overflow-x-hidden p-1">
+            {#snippet children([name, usages])}
+                {@const { icon: Icon, classes: iconClasses } = entryIcon(usages[0].entry)}
 
-                    <div class="flex items-center gap-2 px-2 py-1 text-sm font-medium">
-                        <Icon class={cn(iconClasses, "h-4 w-4 shrink-0")} />
-                        <span class="text-foreground">{name}</span>
-                        <span class="text-muted-foreground text-xs">({usages.length})</span>
-                    </div>
+                <div class="flex items-center gap-2 px-2 py-1 text-sm font-medium">
+                    <Icon class={cn(iconClasses, "h-4 w-4 shrink-0")} />
+                    <span class="text-foreground">{name}</span>
+                    <span class="text-muted-foreground text-xs">({usages.length})</span>
+                </div>
 
-                    {#each usages as usage}
-                        {@const entry =
-                            usage.member?.type?.string?.charAt(0) === "("
-                                ? memberEntry(usage.entry, usage.member)
-                                : usage.entry}
-                        <button
-                            ondblclick={() => {
-                                open = false;
-                                handler.open(entry);
-                            }}
-                            class="hover:bg-accent/50 focus:bg-accent ml-6 flex w-[calc(100%-2rem)] flex-col gap-1 rounded-sm px-2 py-1 text-left transition-colors"
-                        >
-                            <code class="text-foreground truncate font-mono text-xs">
-                                {usage.value}
-                            </code>
-                        </button>
-                    {/each}
-                {/snippet}
-            </VList>
-        {/if}
+                {#each usages as usage}
+                    {@const entry =
+                        usage.member?.type?.string?.charAt(0) === "("
+                            ? memberEntry(usage.entry, usage.member)
+                            : usage.entry}
+                    <button
+                        ondblclick={() => {
+                            open = false;
+                            handler.open(entry);
+                        }}
+                        class="hover:bg-accent/50 focus:bg-accent ml-6 flex w-[calc(100%-2rem)] flex-col gap-1 rounded-sm px-2 py-1 text-left transition-colors"
+                    >
+                        <code class="text-foreground truncate font-mono text-xs">
+                            {usage.value}
+                        </code>
+                    </button>
+                {/each}
+            {/snippet}
+        </VList>
     </div>
 </div>
