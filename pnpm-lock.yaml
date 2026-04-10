@@ -124,8 +124,8 @@ importers:
         specifier: ^25.5.2
         version: 25.5.2
       bits-ui:
-        specifier: 2.17.3
-        version: 2.17.3(@internationalized/date@3.12.0)(svelte@5.55.2)
+        specifier: 2.15.4
+        version: 2.15.4(@internationalized/date@3.12.0)(svelte@5.55.2)
       mode-watcher:
         specifier: ^1.1.0
         version: 1.1.0(svelte@5.55.2)
@@ -940,8 +940,8 @@ packages:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
     engines: {node: '>= 0.4'}
 
-  bits-ui@2.17.3:
-    resolution: {integrity: sha512-Bef41uY9U2jaBJHPhcPvmBNkGec5Wx2z6eioDsTmsaR2vH4QoaOcPi75gzCG3+/2TNr6v/qBwzgWNPYCxNtrEA==}
+  bits-ui@2.15.4:
+    resolution: {integrity: sha512-7H9YUfp03KOk1LVDh8wPYSRPxlZgG/GRWLNSA8QC73/8Z8ytun+DWJhIuibyFyz7A0cP/RANVcB4iDrbY8q+Og==}
     engines: {node: '>=20'}
     peerDependencies:
       '@internationalized/date': ^3.8.1
@@ -2197,7 +2197,7 @@ snapshots:
 
   axobject-query@4.1.0: {}
 
-  bits-ui@2.17.3(@internationalized/date@3.12.0)(svelte@5.55.2):
+  bits-ui@2.15.4(@internationalized/date@3.12.0)(svelte@5.55.2):
     dependencies:
       '@floating-ui/core': 1.7.5
       '@floating-ui/dom': 1.7.6
