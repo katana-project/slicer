@@ -9,7 +9,8 @@
         "start": "electron-forge start",
         "package": "electron-forge package",
         "make": "electron-forge make",
-        "publish": "electron-forge publish"
+        "publish": "electron-forge publish",
+        "prepare": "cp -r ../dist ./src/dist"
     },
     "author": {
         "name": "Matouš Kučera",
