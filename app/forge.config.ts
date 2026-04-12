@@ -8,7 +8,6 @@ const config: ForgeConfig = {
         appBundleId: "org.katana-project.slicer",
         appCategoryType: "public.app-category.developer-tools",
         appCopyright: `Copyright (c) 2024-${new Date().getFullYear()} katana-project contributors`,
-        appVersion: process.env.GITHUB_SHA?.substring(0, 7) || "dev",
     },
     rebuildConfig: {},
     makers: [
