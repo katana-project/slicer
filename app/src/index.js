@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, dialog, BrowserWindow, ipcMain } = require("electron");
 const path = require("node:path");
 const fastify = require("fastify");
 const fastifyStatic = require("@fastify/static");
@@ -20,6 +20,20 @@ const createWindow = async () => {
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
         },
+    });
+    mainWindow.webContents.on("will-prevent-unload", (event) => {
+        const choice = dialog.showMessageBoxSync(mainWindow, {
+            type: "question",
+            buttons: ["Cancel", "Close"],
+            title: "Do you want to close slicer?",
+            message: "You have entries open in the workspace, these will be closed if you exit now.",
+            defaultId: 1,
+            cancelId: 0,
+        });
+        const leave = choice === 1;
+        if (leave) {
+            event.preventDefault();
+        }
     });
 
     await mainWindow.loadURL(`http://localhost:${PORT}`);
