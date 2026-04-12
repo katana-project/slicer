@@ -31,8 +31,20 @@ jobs:
         run: pnpm i && pnpm build
       - name: Package
         run: cd app && pnpm i && pnpm make --platform ${{ matrix.platform }} --arch ${{ matrix.arch }}
-      - name: Upload artifact
-        uses: actions/upload-artifact@v6
+      - name: Upload artifact (ZIP)
+        uses: actions/upload-artifact@v7
         with:
-          name: slicer-${{ matrix.platform }}-${{ matrix.arch }}
-          path: "app/out/make/*"
+          path: "app/out/make/zip/${{ matrix.platform }}/${{ matrix.arch }}/slicer-${{ matrix.platform }}-${{ matrix.arch }}-*.zip"
+          archive: false
+      - name: Upload artifact (DMG)
+        if: matrix.platform == 'darwin'
+        uses: actions/upload-artifact@v7
+        with:
+          path: "app/out/make/slicer-*-${{ matrix.arch }}.dmg"
+          archive: false
+      - name: Upload artifact (EXE)
+        if: matrix.platform == 'win32'
+        uses: actions/upload-artifact@v7
+        with:
+          name: "slicer-squirrel-${{ matrix.platform }}-${{ matrix.arch }}"
+          path: "app/out/make/squirrel.windows/${{ matrix.arch }}/*"
