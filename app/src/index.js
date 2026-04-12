@@ -27,6 +27,7 @@ const createWindow = async () => {
     await mainWindow.webContents.executeJavaScript(`
     const themeColorMeta = document.querySelector('meta[name="theme-color"]');
     if (themeColorMeta) {
+        window.electronAPI.setThemeColor(themeColorMeta.content);
         new MutationObserver((mutations) => {
             for (const mutation of mutations) {
                 if (mutation.attributeName === "content") {

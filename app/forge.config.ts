@@ -5,7 +5,10 @@ import { FuseV1Options, FuseVersion } from "@electron/fuses";
 const config: ForgeConfig = {
     packagerConfig: {
         asar: true,
-        derefSymlinks: true,
+        appBundleId: "org.katana-project.slicer",
+        appCategoryType: "public.app-category.developer-tools",
+        appCopyright: `Copyright (c) 2024-${new Date().getFullYear()} katana-project contributors`,
+        appVersion: process.env.GITHUB_SHA?.substring(0, 7) || "dev",
     },
     rebuildConfig: {},
     makers: [
