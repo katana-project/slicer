@@ -29,40 +29,44 @@
             <div>
                 <h2 class="text-muted-foreground text-lg font-medium">{$t("pane.welcome.get-started")}</h2>
                 <div class="flex flex-col items-start">
-                    <Button variant="link" class="h-8 p-0!" onclick={() => handler.load()}>
-                        <Folder />
+                    <Button variant="link" class="text-accent-foreground h-8 p-0!" onclick={() => handler.load()}>
+                        <Folder class="text-primary" />
                         {$t("pane.welcome.get-started.open")}
                     </Button>
-                    <Button variant="link" class="h-8 p-0!" onclick={() => handler.add()}>
-                        <FilePlusCorner />
+                    <Button variant="link" class="text-accent-foreground h-8 p-0!" onclick={() => handler.add()}>
+                        <FilePlusCorner class="text-primary" />
                         {$t("pane.welcome.get-started.add")}
                     </Button>
                 </div>
                 <h2 class="text-muted-foreground pt-4 text-lg font-medium">{$t("pane.welcome.help")}</h2>
                 <div class="flex flex-col items-start">
-                    <Button variant="link" class="h-8 p-0!" onclick={() => window.open("https://docs.slicer.run")}>
-                        <BookText />
+                    <Button
+                        variant="link"
+                        class="text-accent-foreground h-8 p-0!"
+                        onclick={() => window.open("https://docs.slicer.run")}
+                    >
+                        <BookText class="text-primary" />
                         {$t("pane.welcome.help.docs")}
                     </Button>
                     <Button
                         variant="link"
-                        class="h-8 p-0!"
+                        class="text-accent-foreground h-8 p-0!"
                         onclick={() => window.open("https://docs.oracle.com/javase/specs/jvms/se21/html/index.html")}
                     >
-                        <ScrollText />
+                        <ScrollText class="text-primary" />
                         {$t("pane.welcome.help.jvms")}
                     </Button>
                     <Button
                         variant="link"
-                        class="h-8 p-0!"
+                        class="text-accent-foreground h-8 p-0!"
                         onclick={() => window.open("https://github.com/katana-project/slicer")}
                     >
-                        <GitHub />
+                        <GitHub class="text-primary" />
                         {$t("pane.welcome.help.contribute")}
                     </Button>
                     <Button
                         variant="link"
-                        class="h-8 p-0! text-pink-300"
+                        class="text-sponsor-pink h-8 p-0!"
                         onclick={() => window.open("https://ko-fi.com/zlataovce")}
                     >
                         <Heart class="text-pink-700" />
