@@ -9,6 +9,7 @@ import type { BootstrapMethodsAttribute, CodeAttribute } from "@katana-project/a
 import { AttributeType } from "@katana-project/asm/spec";
 import type { Edge, MarkerType, Node } from "@xyflow/svelte";
 import ELK, { type ElkNode } from "elkjs/lib/elk-api";
+import ELKWorkerURL from "elkjs/lib/elk-worker.js?url";
 
 export enum GraphType {
     CONTROL_FLOW = "control-flow",
@@ -73,7 +74,7 @@ const hierarchyLayoutOptions = {
     "elk.direction": "UP",
 };
 
-const elk = new ELK({ workerFactory: () => new Worker(new URL("elkjs/lib/elk-worker.js", import.meta.url)) });
+const elk = new ELK({ workerUrl: ELKWorkerURL });
 
 export const computeControlFlowGraph = async (
     node: ClassNode,
