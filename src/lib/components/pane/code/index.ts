@@ -10,6 +10,7 @@ export enum Interpretation {
     HEX = "hex",
     CLASS = "class",
     BINARY_XML = "binary-xml",
+    KTPROTO = "ktproto",
 }
 
 export interface InterpretationOptions {
@@ -22,9 +23,10 @@ export interface InterpretationOptions {
 // prettier-ignore
 const extensions = {
     [Interpretation.HEX]: [
-        "bin", "tar", "gz", "rar", "zip", "7z", "jar", "apk", "xapk", "dex", "lzma", "dll", "so", "dylib", "exe", "kotlin_builtins",
-        "kotlin_metadata", "kotlin_module", "nbt", "ogg", "cer", "der", "crt", "mrpack"
+        "bin", "tar", "gz", "rar", "zip", "7z", "jar", "apk", "xapk", "dex", "lzma", "dll", "so", "dylib", "exe",
+        "kotlin_metadata", "nbt", "ogg", "cer", "der", "crt", "mrpack"
     ],
+    [Interpretation.KTPROTO]: ["kotlin_module", "kotlin_builtins"],
 };
 
 const typesByExts = new Map(
@@ -47,6 +49,8 @@ export const canInterpret = (entry: Entry, type: Interpretation): boolean => {
             return entry.type === EntryType.CLASS || entry.type === EntryType.MEMBER;
         case Interpretation.BINARY_XML:
             return entry.type === EntryType.BINARY_XML;
+        case Interpretation.KTPROTO:
+            return !!entry.extension && extensions[Interpretation.KTPROTO].includes(entry.extension);
     }
 
     return true;
@@ -60,6 +64,8 @@ export const detectLanguage = (entry: Entry, disasm: Disassembler, options: Inte
             return "hex";
         case Interpretation.BINARY_XML:
             return "xml";
+        case Interpretation.KTPROTO:
+            return "json";
     }
 
     return entry.extension ? fromExtension(entry.extension) : "plaintext";
@@ -84,6 +90,24 @@ export const read = (entry: Entry, disasm: Disassembler, options: Interpretation
                 } catch (e) {
                     error("failed to interpret entry as binary XML", e);
                     return `<!-- Failed to parse. (${e!.toString()}) -->`;
+                }
+            });
+        }
+        case Interpretation.KTPROTO: {
+            return workers.instance().cancellable(async (w) => {
+                try {
+                    switch (entry.extension) {
+                        case "kotlin_builtins":
+                            return await w.ktprotoBuiltins(await entry.data.bytes());
+                        case "kotlin_module":
+                            return await w.ktprotoModule(await entry.data.bytes());
+                    }
+
+                    // shouldn't happen
+                    return `// Unrecognized Kotlin protobuf type: ${entry.extension}`;
+                } catch (e) {
+                    error("failed to interpret entry as Kotlin protobuf", e);
+                    return `// Failed to parse. (${e!.toString()})`;
                 }
             });
         }
