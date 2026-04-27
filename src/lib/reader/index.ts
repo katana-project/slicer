@@ -8,6 +8,8 @@ export interface Reader {
     axml(bytes: Uint8Array): Promise<string>;
     hprof(blob: Blob): Promise<SlurpResult>;
     mappings(data: string, src?: string, dst?: string): Promise<MappingSet>;
+    ktprotoModule(bytes: Uint8Array): Promise<string>;
+    ktprotoBuiltins(bytes: Uint8Array): Promise<string>;
 }
 
 export const workers = createDefaultWorkerPool<Reader>(() => new ReaderWorker());

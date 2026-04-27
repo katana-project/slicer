@@ -11,7 +11,7 @@
     height={size}
     width={size}
     viewBox="0 0 128 128"
-    class={cn("lucide lucide-icon", className)}
+    class={cn("lucide lucide-icon lucide-kotlin", className)}
 >
     <defs>
         <linearGradient

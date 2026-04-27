@@ -10,7 +10,8 @@
         "build": "vite build",
         "preview": "vite preview",
         "check": "svelte-check --tsconfig ./tsconfig.json",
-        "format": "prettier . --write"
+        "format": "prettier . --write",
+        "generate:ktproto": "cd src/lib/reader/ktproto && pbjs -t static-module -w es6 -o ktproto.js -p . core/metadata.jvm/src/jvm_module.proto --no-create --no-encode --no-delimited --no-verify --no-service && pbts -o ktproto.d.ts ktproto.js"
     },
     "dependencies": {
         "@codemirror/commands": "^6.10.3",
@@ -40,6 +41,7 @@
         "elkjs": "^0.11.1",
         "html-to-image": "1.11.11",
         "idb": "^8.0.3",
+        "protobufjs": "^8.0.1",
         "queueable": "^5.3.2",
         "svelte-modals": "^2.0.1",
         "tailwind-merge": "^3.5.0",
@@ -60,6 +62,7 @@
         "prettier-plugin-organize-imports": "^4.3.0",
         "prettier-plugin-svelte": "^3.5.1",
         "prettier-plugin-tailwindcss": "^0.7.2",
+        "protobufjs-cli": "^2.0.1",
         "svelte": "^5.55.2",
         "svelte-check": "^4.4.6",
         "svelte-dnd-action": "^0.9.69",
