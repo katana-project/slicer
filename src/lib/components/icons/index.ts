@@ -56,7 +56,10 @@ import PrivateMember from "./java/private-member.svelte";
 import ProtectedMember from "./java/protected-member.svelte";
 import PublicMember from "./java/public-member.svelte";
 import Record from "./java/record.svelte";
+import JavaScript from "./javascript.svelte";
 import Kotlin from "./kotlin.svelte";
+import TOML from "./toml.svelte";
+import TypeScript from "./typescript.svelte";
 
 export type Icon = Component<IconProps>;
 
@@ -147,6 +150,8 @@ export const fileIcon = (label: string): StyledIcon => {
             case "kts":
                 return { icon: Kotlin };
             case "json":
+            case "jsonc":
+            case "json5":
                 return { icon: Braces, classes: ["text-green-500"] };
             case "jpg":
             case "jpeg":
@@ -164,6 +169,8 @@ export const fileIcon = (label: string): StyledIcon => {
             case "yaml":
             case "yml":
                 return { icon: TextQuote, classes: ["text-green-500"] };
+            case "toml":
+                return { icon: TOML };
             case "apk":
             case "xapk":
                 return { icon: Android };
@@ -187,6 +194,14 @@ export const fileIcon = (label: string): StyledIcon => {
                 return { icon: FileText, classes: [] };
             case "txt":
                 return { icon: TextAlignStart, classes: [] };
+            case "js":
+            case "mjs":
+            case "cjs":
+            case "jsx":
+                return { icon: JavaScript };
+            case "ts":
+            case "tsx":
+                return { icon: TypeScript };
         }
     }
 
@@ -257,10 +272,13 @@ export {
     Field,
     GitHub,
     Interface,
+    JavaScript,
     Kotlin,
     Method,
     PrivateMember,
     ProtectedMember,
     PublicMember,
     Record,
+    TOML,
+    TypeScript,
 };

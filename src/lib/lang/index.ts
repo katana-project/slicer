@@ -1,6 +1,18 @@
 import type { LanguageSupport } from "@codemirror/language";
 
-export type Language = "java" | "kotlin" | "xml" | "json" | "yaml" | "properties" | "hex" | "jasm" | "plaintext";
+export type Language =
+    | "java"
+    | "kotlin"
+    | "xml"
+    | "json"
+    | "js"
+    | "ts"
+    | "yaml"
+    | "properties"
+    | "toml"
+    | "hex"
+    | "jasm"
+    | "plaintext";
 
 export const load = async (lang: Language): Promise<LanguageSupport | null> => {
     switch (lang) {
@@ -9,7 +21,10 @@ export const load = async (lang: Language): Promise<LanguageSupport | null> => {
         case "xml":
             return (await import("@codemirror/lang-xml")).xml();
         case "json":
-            return (await import("@codemirror/lang-json")).json();
+        case "js":
+            return (await import("@codemirror/lang-javascript")).javascript({ jsx: true });
+        case "ts":
+            return (await import("@codemirror/lang-javascript")).javascript({ typescript: true, jsx: true });
         case "yaml":
             return (await import("@codemirror/lang-yaml")).yaml();
         case "kotlin":
@@ -20,6 +35,8 @@ export const load = async (lang: Language): Promise<LanguageSupport | null> => {
             return (await import("./parser/hex")).hex();
         case "jasm":
             return (await import("./parser/jasm")).jasm();
+        case "toml":
+            return (await import("./parser/toml")).toml();
     }
 
     return null;
@@ -53,12 +70,24 @@ export const fromExtension = (ext: string): Language => {
         case "svg":
             return "xml";
         case "json":
+        case "jsonc":
+        case "json5":
             return "json";
         case "yaml":
         case "yml":
             return "yaml";
         case "properties":
             return "properties";
+        case "toml":
+            return "toml";
+        case "js":
+        case "mjs":
+        case "cjs":
+        case "jsx":
+            return "js";
+        case "ts":
+        case "tsx":
+            return "ts";
     }
 
     return "plaintext";
