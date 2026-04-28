@@ -11,7 +11,7 @@
         "preview": "vite preview",
         "check": "svelte-check --tsconfig ./tsconfig.json",
         "format": "prettier . --write",
-        "generate:ktproto": "cd src/lib/reader/ktproto && pbjs -t static-module -w es6 -o ktproto.js -p . core/metadata.jvm/src/jvm_module.proto --no-create --no-encode --no-delimited --no-verify --no-service && pbts -o ktproto.d.ts ktproto.js"
+        "generate:ktproto": "cd src/lib/reader/ktproto && pbjs -t static-module -w es6 -o ktproto.js -p . core/metadata.jvm/src/jvm_module.proto --no-create --no-encode --no-verify --no-service && pbts -o ktproto.d.ts ktproto.js"
     },
     "dependencies": {
         "@codemirror/commands": "^6.10.3",
