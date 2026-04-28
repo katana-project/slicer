@@ -210,6 +210,22 @@ export const org = $root.org = (() => {
                         };
 
                         /**
+                         * Decodes a Module message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof org.jetbrains.kotlin.metadata.jvm.Module
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {org.jetbrains.kotlin.metadata.jvm.Module} Module
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        Module.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+
+                        /**
                          * Creates a Module message from a plain object. Also converts values to their respective internal types.
                          * @function fromObject
                          * @memberof org.jetbrains.kotlin.metadata.jvm.Module
@@ -544,6 +560,22 @@ export const org = $root.org = (() => {
                         };
 
                         /**
+                         * Decodes a PackageParts message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof org.jetbrains.kotlin.metadata.jvm.PackageParts
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {org.jetbrains.kotlin.metadata.jvm.PackageParts} PackageParts
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        PackageParts.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+
+                        /**
                          * Creates a PackageParts message from a plain object. Also converts values to their respective internal types.
                          * @function fromObject
                          * @memberof org.jetbrains.kotlin.metadata.jvm.PackageParts
@@ -760,6 +792,22 @@ export const org = $root.org = (() => {
                     };
 
                     /**
+                     * Decodes a StringTable message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.StringTable
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.StringTable} StringTable
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    StringTable.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+
+                    /**
                      * Creates a StringTable message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
                      * @memberof org.jetbrains.kotlin.metadata.StringTable
@@ -898,6 +946,22 @@ export const org = $root.org = (() => {
                             }
                         }
                         return message;
+                    };
+
+                    /**
+                     * Decodes a QualifiedNameTable message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.QualifiedNameTable
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.QualifiedNameTable} QualifiedNameTable
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    QualifiedNameTable.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
                     };
 
                     /**
@@ -1064,6 +1128,22 @@ export const org = $root.org = (() => {
                             if (!message.hasOwnProperty("shortName"))
                                 throw $util.ProtocolError("missing required 'shortName'", { instance: message });
                             return message;
+                        };
+
+                        /**
+                         * Decodes a QualifiedName message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof org.jetbrains.kotlin.metadata.QualifiedNameTable.QualifiedName
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {org.jetbrains.kotlin.metadata.QualifiedNameTable.QualifiedName} QualifiedName
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        QualifiedName.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
                         };
 
                         /**
@@ -1263,6 +1343,22 @@ export const org = $root.org = (() => {
                     };
 
                     /**
+                     * Decodes an Annotation message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.Annotation
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.Annotation} Annotation
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Annotation.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+
+                    /**
                      * Creates an Annotation message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
                      * @memberof org.jetbrains.kotlin.metadata.Annotation
@@ -1421,6 +1517,22 @@ export const org = $root.org = (() => {
                             if (!message.hasOwnProperty("value"))
                                 throw $util.ProtocolError("missing required 'value'", { instance: message });
                             return message;
+                        };
+
+                        /**
+                         * Decodes an Argument message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof org.jetbrains.kotlin.metadata.Annotation.Argument
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {org.jetbrains.kotlin.metadata.Annotation.Argument} Argument
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        Argument.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
                         };
 
                         /**
@@ -1690,6 +1802,22 @@ export const org = $root.org = (() => {
                                     }
                                 }
                                 return message;
+                            };
+
+                            /**
+                             * Decodes a Value message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof org.jetbrains.kotlin.metadata.Annotation.Argument.Value
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {org.jetbrains.kotlin.metadata.Annotation.Argument.Value} Value
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            Value.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
                             };
 
                             /**
@@ -2191,6 +2319,22 @@ export const org = $root.org = (() => {
                     };
 
                     /**
+                     * Decodes a Type message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.Type
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.Type} Type
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Type.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+
+                    /**
                      * Creates a Type message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
                      * @memberof org.jetbrains.kotlin.metadata.Type
@@ -2445,6 +2589,22 @@ export const org = $root.org = (() => {
                                 }
                             }
                             return message;
+                        };
+
+                        /**
+                         * Decodes an Argument message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof org.jetbrains.kotlin.metadata.Type.Argument
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {org.jetbrains.kotlin.metadata.Type.Argument} Argument
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        Argument.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
                         };
 
                         /**
@@ -2728,6 +2888,22 @@ export const org = $root.org = (() => {
                         if (!message.hasOwnProperty("name"))
                             throw $util.ProtocolError("missing required 'name'", { instance: message });
                         return message;
+                    };
+
+                    /**
+                     * Decodes a TypeParameter message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.TypeParameter
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.TypeParameter} TypeParameter
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    TypeParameter.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
                     };
 
                     /**
@@ -3316,6 +3492,22 @@ export const org = $root.org = (() => {
                     };
 
                     /**
+                     * Decodes a Class message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.Class
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.Class} Class
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Class.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+
+                    /**
                      * Creates a Class message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
                      * @memberof org.jetbrains.kotlin.metadata.Class
@@ -3803,6 +3995,22 @@ export const org = $root.org = (() => {
                     };
 
                     /**
+                     * Decodes a Package message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.Package
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.Package} Package
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Package.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+
+                    /**
                      * Creates a Package message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
                      * @memberof org.jetbrains.kotlin.metadata.Package
@@ -4008,6 +4216,22 @@ export const org = $root.org = (() => {
                             }
                         }
                         return message;
+                    };
+
+                    /**
+                     * Decodes a TypeTable message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.TypeTable
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.TypeTable} TypeTable
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    TypeTable.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
                     };
 
                     /**
@@ -4224,6 +4448,22 @@ export const org = $root.org = (() => {
                             }
                         }
                         return message;
+                    };
+
+                    /**
+                     * Decodes a Constructor message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.Constructor
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.Constructor} Constructor
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Constructor.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
                     };
 
                     /**
@@ -4677,6 +4917,22 @@ export const org = $root.org = (() => {
                         if (!message.hasOwnProperty("name"))
                             throw $util.ProtocolError("missing required 'name'", { instance: message });
                         return message;
+                    };
+
+                    /**
+                     * Decodes a Function message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.Function
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.Function} Function
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Function.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
                     };
 
                     /**
@@ -5350,6 +5606,22 @@ export const org = $root.org = (() => {
                     };
 
                     /**
+                     * Decodes a Property message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.Property
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.Property} Property
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Property.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+
+                    /**
                      * Creates a Property message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
                      * @memberof org.jetbrains.kotlin.metadata.Property
@@ -5835,6 +6107,22 @@ export const org = $root.org = (() => {
                     };
 
                     /**
+                     * Decodes a ValueParameter message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.ValueParameter
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.ValueParameter} ValueParameter
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    ValueParameter.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+
+                    /**
                      * Creates a ValueParameter message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
                      * @memberof org.jetbrains.kotlin.metadata.ValueParameter
@@ -6158,6 +6446,22 @@ export const org = $root.org = (() => {
                     };
 
                     /**
+                     * Decodes a TypeAlias message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.TypeAlias
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.TypeAlias} TypeAlias
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    TypeAlias.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+
+                    /**
                      * Creates a TypeAlias message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
                      * @memberof org.jetbrains.kotlin.metadata.TypeAlias
@@ -6396,6 +6700,22 @@ export const org = $root.org = (() => {
                             }
                         }
                         return message;
+                    };
+
+                    /**
+                     * Decodes an EnumEntry message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.EnumEntry
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.EnumEntry} EnumEntry
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    EnumEntry.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
                     };
 
                     /**
@@ -6685,6 +7005,22 @@ export const org = $root.org = (() => {
                     };
 
                     /**
+                     * Decodes a VersionRequirement message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.VersionRequirement
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.VersionRequirement} VersionRequirement
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    VersionRequirement.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+
+                    /**
                      * Creates a VersionRequirement message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
                      * @memberof org.jetbrains.kotlin.metadata.VersionRequirement
@@ -6912,6 +7248,22 @@ export const org = $root.org = (() => {
                     };
 
                     /**
+                     * Decodes a VersionRequirementTable message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.VersionRequirementTable
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.VersionRequirementTable} VersionRequirementTable
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    VersionRequirementTable.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+
+                    /**
                      * Creates a VersionRequirementTable message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
                      * @memberof org.jetbrains.kotlin.metadata.VersionRequirementTable
@@ -7111,6 +7463,22 @@ export const org = $root.org = (() => {
                     };
 
                     /**
+                     * Decodes a PackageFragment message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.PackageFragment
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.PackageFragment} PackageFragment
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    PackageFragment.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+
+                    /**
                      * Creates a PackageFragment message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
                      * @memberof org.jetbrains.kotlin.metadata.PackageFragment
@@ -7295,6 +7663,22 @@ export const org = $root.org = (() => {
                             }
                         }
                         return message;
+                    };
+
+                    /**
+                     * Decodes a Contract message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.Contract
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.Contract} Contract
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Contract.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
                     };
 
                     /**
@@ -7491,6 +7875,22 @@ export const org = $root.org = (() => {
                             }
                         }
                         return message;
+                    };
+
+                    /**
+                     * Decodes an Effect message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.Effect
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.Effect} Effect
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Effect.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
                     };
 
                     /**
@@ -7852,6 +8252,22 @@ export const org = $root.org = (() => {
                     };
 
                     /**
+                     * Decodes an Expression message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.Expression
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.Expression} Expression
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Expression.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+
+                    /**
                      * Creates an Expression message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
                      * @memberof org.jetbrains.kotlin.metadata.Expression
@@ -8091,6 +8507,22 @@ export const org = $root.org = (() => {
                     };
 
                     /**
+                     * Decodes a CompilerPluginData message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof org.jetbrains.kotlin.metadata.CompilerPluginData
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {org.jetbrains.kotlin.metadata.CompilerPluginData} CompilerPluginData
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    CompilerPluginData.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+
+                    /**
                      * Creates a CompilerPluginData message from a plain object. Also converts values to their respective internal types.
                      * @function fromObject
                      * @memberof org.jetbrains.kotlin.metadata.CompilerPluginData
@@ -8266,6 +8698,22 @@ export const google = $root.google = (() => {
                     }
                 }
                 return message;
+            };
+
+            /**
+             * Decodes a FileDescriptorSet message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.FileDescriptorSet
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.FileDescriptorSet} FileDescriptorSet
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            FileDescriptorSet.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -8568,6 +9016,22 @@ export const google = $root.google = (() => {
                     }
                 }
                 return message;
+            };
+
+            /**
+             * Decodes a FileDescriptorProto message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.FileDescriptorProto
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.FileDescriptorProto} FileDescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            FileDescriptorProto.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -8921,6 +9385,22 @@ export const google = $root.google = (() => {
             };
 
             /**
+             * Decodes a DescriptorProto message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.DescriptorProto
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.DescriptorProto} DescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            DescriptorProto.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
              * Creates a DescriptorProto message from a plain object. Also converts values to their respective internal types.
              * @function fromObject
              * @memberof google.protobuf.DescriptorProto
@@ -9152,6 +9632,22 @@ export const google = $root.google = (() => {
                 };
 
                 /**
+                 * Decodes an ExtensionRange message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.DescriptorProto.ExtensionRange
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.DescriptorProto.ExtensionRange} ExtensionRange
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ExtensionRange.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+
+                /**
                  * Creates an ExtensionRange message from a plain object. Also converts values to their respective internal types.
                  * @function fromObject
                  * @memberof google.protobuf.DescriptorProto.ExtensionRange
@@ -9379,6 +9875,22 @@ export const google = $root.google = (() => {
                     }
                 }
                 return message;
+            };
+
+            /**
+             * Decodes a FieldDescriptorProto message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.FieldDescriptorProto
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.FieldDescriptorProto} FieldDescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            FieldDescriptorProto.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -9738,6 +10250,22 @@ export const google = $root.google = (() => {
             };
 
             /**
+             * Decodes an EnumDescriptorProto message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.EnumDescriptorProto
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.EnumDescriptorProto} EnumDescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            EnumDescriptorProto.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
              * Creates an EnumDescriptorProto message from a plain object. Also converts values to their respective internal types.
              * @function fromObject
              * @memberof google.protobuf.EnumDescriptorProto
@@ -9920,6 +10448,22 @@ export const google = $root.google = (() => {
             };
 
             /**
+             * Decodes an EnumValueDescriptorProto message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.EnumValueDescriptorProto
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.EnumValueDescriptorProto} EnumValueDescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            EnumValueDescriptorProto.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
              * Creates an EnumValueDescriptorProto message from a plain object. Also converts values to their respective internal types.
              * @function fromObject
              * @memberof google.protobuf.EnumValueDescriptorProto
@@ -10090,6 +10634,22 @@ export const google = $root.google = (() => {
                     }
                 }
                 return message;
+            };
+
+            /**
+             * Decodes a ServiceDescriptorProto message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.ServiceDescriptorProto
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.ServiceDescriptorProto} ServiceDescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ServiceDescriptorProto.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -10285,6 +10845,22 @@ export const google = $root.google = (() => {
                     }
                 }
                 return message;
+            };
+
+            /**
+             * Decodes a MethodDescriptorProto message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.MethodDescriptorProto
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.MethodDescriptorProto} MethodDescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MethodDescriptorProto.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -10557,6 +11133,22 @@ export const google = $root.google = (() => {
             };
 
             /**
+             * Decodes a FileOptions message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.FileOptions
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.FileOptions} FileOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            FileOptions.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
              * Creates a FileOptions message from a plain object. Also converts values to their respective internal types.
              * @function fromObject
              * @memberof google.protobuf.FileOptions
@@ -10818,6 +11410,22 @@ export const google = $root.google = (() => {
                     }
                 }
                 return message;
+            };
+
+            /**
+             * Decodes a MessageOptions message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.MessageOptions
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.MessageOptions} MessageOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MessageOptions.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -11125,6 +11733,22 @@ export const google = $root.google = (() => {
             };
 
             /**
+             * Decodes a FieldOptions message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.FieldOptions
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.FieldOptions} FieldOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            FieldOptions.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
              * Creates a FieldOptions message from a plain object. Also converts values to their respective internal types.
              * @function fromObject
              * @memberof google.protobuf.FieldOptions
@@ -11373,6 +11997,22 @@ export const google = $root.google = (() => {
             };
 
             /**
+             * Decodes an EnumOptions message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.EnumOptions
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.EnumOptions} EnumOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            EnumOptions.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
              * Creates an EnumOptions message from a plain object. Also converts values to their respective internal types.
              * @function fromObject
              * @memberof google.protobuf.EnumOptions
@@ -11523,6 +12163,22 @@ export const google = $root.google = (() => {
             };
 
             /**
+             * Decodes an EnumValueOptions message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.EnumValueOptions
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.EnumValueOptions} EnumValueOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            EnumValueOptions.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
              * Creates an EnumValueOptions message from a plain object. Also converts values to their respective internal types.
              * @function fromObject
              * @memberof google.protobuf.EnumValueOptions
@@ -11667,6 +12323,22 @@ export const google = $root.google = (() => {
             };
 
             /**
+             * Decodes a ServiceOptions message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.ServiceOptions
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.ServiceOptions} ServiceOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ServiceOptions.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
              * Creates a ServiceOptions message from a plain object. Also converts values to their respective internal types.
              * @function fromObject
              * @memberof google.protobuf.ServiceOptions
@@ -11808,6 +12480,22 @@ export const google = $root.google = (() => {
                     }
                 }
                 return message;
+            };
+
+            /**
+             * Decodes a MethodOptions message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.MethodOptions
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.MethodOptions} MethodOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            MethodOptions.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -12030,6 +12718,22 @@ export const google = $root.google = (() => {
                     }
                 }
                 return message;
+            };
+
+            /**
+             * Decodes an UninterpretedOption message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.UninterpretedOption
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.UninterpretedOption} UninterpretedOption
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            UninterpretedOption.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -12257,6 +12961,22 @@ export const google = $root.google = (() => {
                 };
 
                 /**
+                 * Decodes a NamePart message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.UninterpretedOption.NamePart
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.UninterpretedOption.NamePart} NamePart
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                NamePart.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+
+                /**
                  * Creates a NamePart message from a plain object. Also converts values to their respective internal types.
                  * @function fromObject
                  * @memberof google.protobuf.UninterpretedOption.NamePart
@@ -12396,6 +13116,22 @@ export const google = $root.google = (() => {
                     }
                 }
                 return message;
+            };
+
+            /**
+             * Decodes a SourceCodeInfo message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof google.protobuf.SourceCodeInfo
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {google.protobuf.SourceCodeInfo} SourceCodeInfo
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SourceCodeInfo.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -12589,6 +13325,22 @@ export const google = $root.google = (() => {
                         }
                     }
                     return message;
+                };
+
+                /**
+                 * Decodes a Location message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.SourceCodeInfo.Location
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.SourceCodeInfo.Location} Location
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Location.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
                 };
 
                 /**

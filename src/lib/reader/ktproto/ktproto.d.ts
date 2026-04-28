@@ -81,6 +81,15 @@ export namespace org {
                         public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.jvm.Module;
 
                         /**
+                         * Decodes a Module message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns Module
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.jvm.Module;
+
+                        /**
                          * Creates a Module message from a plain object. Also converts values to their respective internal types.
                          * @param object Plain object
                          * @returns Module
@@ -175,6 +184,15 @@ export namespace org {
                         public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.jvm.PackageParts;
 
                         /**
+                         * Decodes a PackageParts message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns PackageParts
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.jvm.PackageParts;
+
+                        /**
                          * Creates a PackageParts message from a plain object. Also converts values to their respective internal types.
                          * @param object Plain object
                          * @returns PackageParts
@@ -234,6 +252,15 @@ export namespace org {
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.StringTable;
 
                     /**
+                     * Decodes a StringTable message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns StringTable
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.StringTable;
+
+                    /**
                      * Creates a StringTable message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
                      * @returns StringTable
@@ -290,6 +317,15 @@ export namespace org {
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.QualifiedNameTable;
+
+                    /**
+                     * Decodes a QualifiedNameTable message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns QualifiedNameTable
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.QualifiedNameTable;
 
                     /**
                      * Creates a QualifiedNameTable message from a plain object. Also converts values to their respective internal types.
@@ -362,6 +398,15 @@ export namespace org {
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
                         public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.QualifiedNameTable.QualifiedName;
+
+                        /**
+                         * Decodes a QualifiedName message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns QualifiedName
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.QualifiedNameTable.QualifiedName;
 
                         /**
                          * Creates a QualifiedName message from a plain object. Also converts values to their respective internal types.
@@ -439,6 +484,15 @@ export namespace org {
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.Annotation;
 
                     /**
+                     * Decodes an Annotation message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Annotation
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.Annotation;
+
+                    /**
                      * Creates an Annotation message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
                      * @returns Annotation
@@ -503,6 +557,15 @@ export namespace org {
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
                         public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.Annotation.Argument;
+
+                        /**
+                         * Decodes an Argument message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns Argument
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.Annotation.Argument;
 
                         /**
                          * Creates an Argument message from a plain object. Also converts values to their respective internal types.
@@ -623,6 +686,15 @@ export namespace org {
                              * @throws {$protobuf.util.ProtocolError} If required fields are missing
                              */
                             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.Annotation.Argument.Value;
+
+                            /**
+                             * Decodes a Value message from the specified reader or buffer, length delimited.
+                             * @param reader Reader or buffer to decode from
+                             * @returns Value
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.Annotation.Argument.Value;
 
                             /**
                              * Creates a Value message from a plain object. Also converts values to their respective internal types.
@@ -789,6 +861,15 @@ export namespace org {
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.Type;
 
                     /**
+                     * Decodes a Type message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Type
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.Type;
+
+                    /**
                      * Creates a Type message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
                      * @returns Type
@@ -859,6 +940,15 @@ export namespace org {
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
                         public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.Type.Argument;
+
+                        /**
+                         * Decodes an Argument message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns Argument
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.Type.Argument;
 
                         /**
                          * Creates an Argument message from a plain object. Also converts values to their respective internal types.
@@ -965,6 +1055,15 @@ export namespace org {
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.TypeParameter;
+
+                    /**
+                     * Decodes a TypeParameter message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns TypeParameter
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.TypeParameter;
 
                     /**
                      * Creates a TypeParameter message from a plain object. Also converts values to their respective internal types.
@@ -1167,6 +1266,15 @@ export namespace org {
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.Class;
 
                     /**
+                     * Decodes a Class message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Class
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.Class;
+
+                    /**
                      * Creates a Class message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
                      * @returns Class
@@ -1263,6 +1371,15 @@ export namespace org {
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.Package;
 
                     /**
+                     * Decodes a Package message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Package
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.Package;
+
+                    /**
                      * Creates a Package message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
                      * @returns Package
@@ -1325,6 +1442,15 @@ export namespace org {
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.TypeTable;
+
+                    /**
+                     * Decodes a TypeTable message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns TypeTable
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.TypeTable;
 
                     /**
                      * Creates a TypeTable message from a plain object. Also converts values to their respective internal types.
@@ -1407,6 +1533,15 @@ export namespace org {
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.Constructor;
+
+                    /**
+                     * Decodes a Constructor message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Constructor
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.Constructor;
 
                     /**
                      * Creates a Constructor message from a plain object. Also converts values to their respective internal types.
@@ -1567,6 +1702,15 @@ export namespace org {
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.Function;
+
+                    /**
+                     * Decodes a Function message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Function
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.Function;
 
                     /**
                      * Creates a Function message from a plain object. Also converts values to their respective internal types.
@@ -1765,6 +1909,15 @@ export namespace org {
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.Property;
 
                     /**
+                     * Decodes a Property message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Property
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.Property;
+
+                    /**
                      * Creates a Property message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
                      * @returns Property
@@ -1863,6 +2016,15 @@ export namespace org {
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.ValueParameter;
+
+                    /**
+                     * Decodes a ValueParameter message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ValueParameter
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.ValueParameter;
 
                     /**
                      * Creates a ValueParameter message from a plain object. Also converts values to their respective internal types.
@@ -1977,6 +2139,15 @@ export namespace org {
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.TypeAlias;
 
                     /**
+                     * Decodes a TypeAlias message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns TypeAlias
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.TypeAlias;
+
+                    /**
                      * Creates a TypeAlias message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
                      * @returns TypeAlias
@@ -2039,6 +2210,15 @@ export namespace org {
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.EnumEntry;
+
+                    /**
+                     * Decodes an EnumEntry message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns EnumEntry
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.EnumEntry;
 
                     /**
                      * Creates an EnumEntry message from a plain object. Also converts values to their respective internal types.
@@ -2162,6 +2342,15 @@ export namespace org {
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.VersionRequirement;
 
                     /**
+                     * Decodes a VersionRequirement message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns VersionRequirement
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.VersionRequirement;
+
+                    /**
                      * Creates a VersionRequirement message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
                      * @returns VersionRequirement
@@ -2235,6 +2424,15 @@ export namespace org {
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.VersionRequirementTable;
+
+                    /**
+                     * Decodes a VersionRequirementTable message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns VersionRequirementTable
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.VersionRequirementTable;
 
                     /**
                      * Creates a VersionRequirementTable message from a plain object. Also converts values to their respective internal types.
@@ -2319,6 +2517,15 @@ export namespace org {
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.PackageFragment;
 
                     /**
+                     * Decodes a PackageFragment message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns PackageFragment
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.PackageFragment;
+
+                    /**
                      * Creates a PackageFragment message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
                      * @returns PackageFragment
@@ -2375,6 +2582,15 @@ export namespace org {
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.Contract;
+
+                    /**
+                     * Decodes a Contract message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Contract
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.Contract;
 
                     /**
                      * Creates a Contract message from a plain object. Also converts values to their respective internal types.
@@ -2457,6 +2673,15 @@ export namespace org {
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.Effect;
+
+                    /**
+                     * Decodes an Effect message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Effect
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.Effect;
 
                     /**
                      * Creates an Effect message from a plain object. Also converts values to their respective internal types.
@@ -2578,6 +2803,15 @@ export namespace org {
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.Expression;
 
                     /**
+                     * Decodes an Expression message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Expression
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.Expression;
+
+                    /**
                      * Creates an Expression message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
                      * @returns Expression
@@ -2652,6 +2886,15 @@ export namespace org {
                     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): org.jetbrains.kotlin.metadata.CompilerPluginData;
 
                     /**
+                     * Decodes a CompilerPluginData message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns CompilerPluginData
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): org.jetbrains.kotlin.metadata.CompilerPluginData;
+
+                    /**
                      * Creates a CompilerPluginData message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
                      * @returns CompilerPluginData
@@ -2718,6 +2961,15 @@ export namespace google {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FileDescriptorSet;
+
+            /**
+             * Decodes a FileDescriptorSet message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FileDescriptorSet
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FileDescriptorSet;
 
             /**
              * Creates a FileDescriptorSet message from a plain object. Also converts values to their respective internal types.
@@ -2838,6 +3090,15 @@ export namespace google {
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FileDescriptorProto;
 
             /**
+             * Decodes a FileDescriptorProto message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FileDescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FileDescriptorProto;
+
+            /**
              * Creates a FileDescriptorProto message from a plain object. Also converts values to their respective internal types.
              * @param object Plain object
              * @returns FileDescriptorProto
@@ -2932,6 +3193,15 @@ export namespace google {
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.DescriptorProto;
 
             /**
+             * Decodes a DescriptorProto message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns DescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.DescriptorProto;
+
+            /**
              * Creates a DescriptorProto message from a plain object. Also converts values to their respective internal types.
              * @param object Plain object
              * @returns DescriptorProto
@@ -2996,6 +3266,15 @@ export namespace google {
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
                 public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.DescriptorProto.ExtensionRange;
+
+                /**
+                 * Decodes an ExtensionRange message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns ExtensionRange
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.DescriptorProto.ExtensionRange;
 
                 /**
                  * Creates an ExtensionRange message from a plain object. Also converts values to their respective internal types.
@@ -3097,6 +3376,15 @@ export namespace google {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FieldDescriptorProto;
+
+            /**
+             * Decodes a FieldDescriptorProto message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FieldDescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FieldDescriptorProto;
 
             /**
              * Creates a FieldDescriptorProto message from a plain object. Also converts values to their respective internal types.
@@ -3201,6 +3489,15 @@ export namespace google {
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.EnumDescriptorProto;
 
             /**
+             * Decodes an EnumDescriptorProto message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns EnumDescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.EnumDescriptorProto;
+
+            /**
              * Creates an EnumDescriptorProto message from a plain object. Also converts values to their respective internal types.
              * @param object Plain object
              * @returns EnumDescriptorProto
@@ -3271,6 +3568,15 @@ export namespace google {
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.EnumValueDescriptorProto;
 
             /**
+             * Decodes an EnumValueDescriptorProto message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns EnumValueDescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.EnumValueDescriptorProto;
+
+            /**
              * Creates an EnumValueDescriptorProto message from a plain object. Also converts values to their respective internal types.
              * @param object Plain object
              * @returns EnumValueDescriptorProto
@@ -3339,6 +3645,15 @@ export namespace google {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.ServiceDescriptorProto;
+
+            /**
+             * Decodes a ServiceDescriptorProto message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ServiceDescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.ServiceDescriptorProto;
 
             /**
              * Creates a ServiceDescriptorProto message from a plain object. Also converts values to their respective internal types.
@@ -3415,6 +3730,15 @@ export namespace google {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.MethodDescriptorProto;
+
+            /**
+             * Decodes a MethodDescriptorProto message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns MethodDescriptorProto
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.MethodDescriptorProto;
 
             /**
              * Creates a MethodDescriptorProto message from a plain object. Also converts values to their respective internal types.
@@ -3529,6 +3853,15 @@ export namespace google {
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FileOptions;
 
             /**
+             * Decodes a FileOptions message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FileOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FileOptions;
+
+            /**
              * Creates a FileOptions message from a plain object. Also converts values to their respective internal types.
              * @param object Plain object
              * @returns FileOptions
@@ -3610,6 +3943,15 @@ export namespace google {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.MessageOptions;
+
+            /**
+             * Decodes a MessageOptions message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns MessageOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.MessageOptions;
 
             /**
              * Creates a MessageOptions message from a plain object. Also converts values to their respective internal types.
@@ -3721,6 +4063,15 @@ export namespace google {
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FieldOptions;
 
             /**
+             * Decodes a FieldOptions message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FieldOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FieldOptions;
+
+            /**
              * Creates a FieldOptions message from a plain object. Also converts values to their respective internal types.
              * @param object Plain object
              * @returns FieldOptions
@@ -3795,6 +4146,15 @@ export namespace google {
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.EnumOptions;
 
             /**
+             * Decodes an EnumOptions message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns EnumOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.EnumOptions;
+
+            /**
              * Creates an EnumOptions message from a plain object. Also converts values to their respective internal types.
              * @param object Plain object
              * @returns EnumOptions
@@ -3851,6 +4211,15 @@ export namespace google {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.EnumValueOptions;
+
+            /**
+             * Decodes an EnumValueOptions message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns EnumValueOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.EnumValueOptions;
 
             /**
              * Creates an EnumValueOptions message from a plain object. Also converts values to their respective internal types.
@@ -3911,6 +4280,15 @@ export namespace google {
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.ServiceOptions;
 
             /**
+             * Decodes a ServiceOptions message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ServiceOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.ServiceOptions;
+
+            /**
              * Creates a ServiceOptions message from a plain object. Also converts values to their respective internal types.
              * @param object Plain object
              * @returns ServiceOptions
@@ -3967,6 +4345,15 @@ export namespace google {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.MethodOptions;
+
+            /**
+             * Decodes a MethodOptions message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns MethodOptions
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.MethodOptions;
 
             /**
              * Creates a MethodOptions message from a plain object. Also converts values to their respective internal types.
@@ -4063,6 +4450,15 @@ export namespace google {
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.UninterpretedOption;
 
             /**
+             * Decodes an UninterpretedOption message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns UninterpretedOption
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.UninterpretedOption;
+
+            /**
              * Creates an UninterpretedOption message from a plain object. Also converts values to their respective internal types.
              * @param object Plain object
              * @returns UninterpretedOption
@@ -4129,6 +4525,15 @@ export namespace google {
                 public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.UninterpretedOption.NamePart;
 
                 /**
+                 * Decodes a NamePart message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns NamePart
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.UninterpretedOption.NamePart;
+
+                /**
                  * Creates a NamePart message from a plain object. Also converts values to their respective internal types.
                  * @param object Plain object
                  * @returns NamePart
@@ -4186,6 +4591,15 @@ export namespace google {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.SourceCodeInfo;
+
+            /**
+             * Decodes a SourceCodeInfo message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns SourceCodeInfo
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.SourceCodeInfo;
 
             /**
              * Creates a SourceCodeInfo message from a plain object. Also converts values to their respective internal types.
@@ -4264,6 +4678,15 @@ export namespace google {
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
                 public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.SourceCodeInfo.Location;
+
+                /**
+                 * Decodes a Location message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns Location
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.SourceCodeInfo.Location;
 
                 /**
                  * Creates a Location message from a plain object. Also converts values to their respective internal types.
