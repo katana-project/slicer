@@ -150,6 +150,7 @@ export const fileIcon = (label: string): StyledIcon => {
             case "kts":
             case "kotlin_module":
             case "kotlin_builtins":
+            case "kotlin_metadata":
                 return { icon: Kotlin };
             case "json":
             case "jsonc":

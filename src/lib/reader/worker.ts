@@ -3,7 +3,7 @@ import { expose } from "comlink";
 import type { Reader } from "./";
 import { read as axml } from "./axml";
 import { read as hprof } from "./hprof";
-import { readBuiltins as readKtprotoBuiltins, readModule as readKtprotoModule } from "./ktproto";
+import { readModule as readKtprotoModule, readPackageFragment as readKtprotoPackageFragment } from "./ktproto";
 import { read as mappings } from "./mappings";
 
 expose({
@@ -24,7 +24,7 @@ expose({
     async ktprotoModule(bytes) {
         return readKtprotoModule(bytes);
     },
-    async ktprotoBuiltins(bytes) {
-        return readKtprotoBuiltins(bytes);
+    async ktprotoPackageFragment(bytes) {
+        return readKtprotoPackageFragment(bytes);
     },
 } satisfies Reader);
