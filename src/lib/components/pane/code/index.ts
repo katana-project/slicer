@@ -23,10 +23,9 @@ export interface InterpretationOptions {
 // prettier-ignore
 const extensions = {
     [Interpretation.HEX]: [
-        "bin", "tar", "gz", "rar", "zip", "7z", "jar", "apk", "xapk", "dex", "lzma", "dll", "so", "dylib", "exe",
-        "kotlin_metadata", "nbt", "ogg", "cer", "der", "crt", "mrpack"
+        "bin", "tar", "gz", "rar", "zip", "7z", "jar", "apk", "xapk", "dex", "lzma", "dll", "so", "dylib", "exe", "nbt", "ogg", "cer", "der", "crt", "mrpack"
     ],
-    [Interpretation.KTPROTO]: ["kotlin_module", "kotlin_builtins"],
+    [Interpretation.KTPROTO]: ["kotlin_module", "kotlin_builtins", "kotlin_metadata"],
 };
 
 const typesByExts = new Map(
@@ -98,7 +97,8 @@ export const read = (entry: Entry, disasm: Disassembler, options: Interpretation
                 try {
                     switch (entry.extension) {
                         case "kotlin_builtins":
-                            return await w.ktprotoBuiltins(await entry.data.bytes());
+                        case "kotlin_metadata":
+                            return await w.ktprotoPackageFragment(await entry.data.bytes());
                         case "kotlin_module":
                             return await w.ktprotoModule(await entry.data.bytes());
                     }
