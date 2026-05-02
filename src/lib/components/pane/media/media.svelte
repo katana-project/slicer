@@ -3,13 +3,21 @@
     import type { PaneProps } from "$lib/components/pane";
     import { t } from "$lib/i18n";
     import { Loading } from "$lib/components/ui/loading";
+    import { cn } from "$lib/components/utils";
 
     let { tab }: PaneProps = $props();
     const entry = $derived(tab.entry!);
 
     let measureTape = $state<HTMLDivElement>();
 
-    let mediaElement = $state<HTMLMediaElement>();
+    let videoElement = $state<HTMLVideoElement>();
+    let videoHeight = $state(0);
+    $effect(() => {
+        videoElement?.addEventListener("resize", () => {
+            videoHeight = videoElement!.videoHeight;
+        });
+    });
+
     let canvas = $state<HTMLCanvasElement>();
 
     let audioContext: AudioContext;
@@ -20,12 +28,12 @@
 
     const HEIGHT = 128;
     const setupAudio = () => {
-        if (!mediaElement || !canvas || isInitialized) return;
+        if (!videoElement || !canvas || isInitialized) return;
         isInitialized = true;
 
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
         analyser = audioContext.createAnalyser();
-        source = audioContext.createMediaElementSource(mediaElement);
+        source = audioContext.createMediaElementSource(videoElement);
 
         source.connect(analyser);
         analyser.connect(audioContext.destination);
@@ -91,14 +99,18 @@
     <div class="flex h-full w-full flex-col items-center justify-center p-4">
         <!-- svelte-ignore a11y_media_has_caption -->
         <video
-            bind:this={mediaElement}
+            bind:this={videoElement}
             onplay={setupAudio}
             src={createURL(blob)}
             controls
-            class="max-h-full max-w-full"
+            class={cn("max-h-full max-w-full", videoHeight > 0 || "h-full w-full")}
             crossorigin="anonymous"
         ></video>
     </div>
-    <canvas bind:this={canvas} height={HEIGHT} width={measureTape.offsetWidth} class="border-b-primary border-b"
+    <canvas
+        bind:this={canvas}
+        height={HEIGHT}
+        width={measureTape.offsetWidth}
+        class="border-b-primary border-t-muted border-t border-b"
     ></canvas>
 {/await}
