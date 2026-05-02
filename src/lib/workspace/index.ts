@@ -1,5 +1,5 @@
 import { warn } from "$lib/log";
-import { analysisBackground, workspaceArchiveDuplicateHandling } from "$lib/state";
+import { analysisBackground, workspaceArchiveDuplicateHandling, workspacePreventUnload } from "$lib/state";
 import { record } from "$lib/task";
 import { fetchProgress, groupBy, prettyMethodDesc, refFromName } from "$lib/utils";
 import { mappings } from "$lib/workspace/analysis/mapping";
@@ -187,8 +187,8 @@ mappings.subscribe(() => {
 
 // ask user for confirmation if there are entries in the workspace
 const unloadHandler = (e: BeforeUnloadEvent) => e.preventDefault();
-entries.subscribe((e) => {
-    window.onbeforeunload = e.size > 0 ? unloadHandler : null;
+derived([entries, workspacePreventUnload], (a) => a).subscribe(([$entries, $workspacePreventUnload]) => {
+    window.onbeforeunload = $entries.size > 0 && $workspacePreventUnload ? unloadHandler : null;
 });
 
 export const classes = derived(entries, ($entries) => {

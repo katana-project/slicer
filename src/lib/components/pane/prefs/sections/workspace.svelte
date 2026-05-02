@@ -1,16 +1,30 @@
 <script lang="ts">
     import { encodings } from "$lib/workspace/encoding";
     import { Select, SelectContent, SelectItem, SelectTrigger } from "$lib/components/ui/select";
-    import { workspaceEncoding, workspaceArchiveEncoding, workspaceArchiveDuplicateHandling } from "$lib/state";
+    import {
+        workspaceEncoding,
+        workspaceArchiveEncoding,
+        workspaceArchiveDuplicateHandling,
+        workspacePreventUnload,
+    } from "$lib/state";
     import Section from "../section.svelte";
     import Label from "../label.svelte";
     import { t } from "$lib/i18n";
     import type { PaneProps } from "$lib/components/pane";
+    import { Switch } from "$lib/components/ui/switch";
 
     let _: PaneProps = $props();
 </script>
 
 <Section id="workspace" labelKey="pane.prefs.section.workspace">
+    <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
+        <Label
+            for="workspacePreventUnload"
+            textKey="pane.prefs.workspace.prevent-unload"
+            descKey="pane.prefs.workspace.prevent-unload.desc"
+        />
+        <Switch id="workspacePreventUnload" bind:checked={$workspacePreventUnload} />
+    </div>
     <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
         <Label for="workspaceEncoding" textKey="pane.prefs.workspace.file-encoding" />
         <Select type="single" bind:value={$workspaceEncoding}>

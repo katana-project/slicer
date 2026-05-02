@@ -270,6 +270,8 @@
     "pane.prefs.editor.text-size.desc": "Adjusts the default editor font size.",
     "pane.prefs.editor.sync-text-size": "Sync text size",
     "pane.prefs.editor.sync-text-size.desc": "Synchronizes text size across all editors.",
+    "pane.prefs.workspace.prevent-unload": "Prevent accidental unload",
+    "pane.prefs.workspace.prevent-unload.desc": "Shows a confirmation dialog when closing slicer with loaded entries.",
     "pane.prefs.workspace.file-encoding": "File encoding",
     "pane.prefs.workspace.archive-encoding": "Archive encoding",
     "pane.prefs.workspace.archive-encoding.desc": "Default encoding for ZIP archive data.",
