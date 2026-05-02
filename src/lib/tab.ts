@@ -22,6 +22,7 @@ export enum TabType {
     GRAPH = "graph",
     CLASS = "class",
     IMAGE = "image",
+    MEDIA = "media",
     HEAP_DUMP = "dump",
     STRUCTURE = "structure",
 }
@@ -388,6 +389,7 @@ derived([analysisTransformers, mappings], (a) => a).subscribe(() => {
 // prettier-ignore
 const extensions = {
     [TabType.IMAGE]: ["jpg", "jpeg", "gif", "png", "webp"],
+    [TabType.MEDIA]: ["mp4", "webm", "ogg", "mp3", "wav", "flac", "mov", "avi", "m4a", "aac", "mkv"],
     [TabType.HEAP_DUMP]: ["hprof"],
 };
 

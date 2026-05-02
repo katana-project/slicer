@@ -14,6 +14,7 @@
         [TabType.CODE]: () => import("./code/code.svelte"),
         [TabType.GRAPH]: () => import("./flow/flow.svelte"),
         [TabType.IMAGE]: () => import("./image/image.svelte"),
+        [TabType.MEDIA]: () => import("./media/media.svelte"),
         [TabType.HEAP_DUMP]: () => import("./dump/dump.svelte"),
         [TabType.CLASS]: () => import("./class/class.svelte"),
         [TabType.STRUCTURE]: () => import("./structure/structure.svelte"),

@@ -16,6 +16,7 @@ import {
     FileCodeCorner,
     FileDigit,
     FilePen,
+    FilePlay,
     FileText,
     FlipVertical2,
     GitPullRequest,
@@ -159,6 +160,18 @@ export const fileIcon = (label: string): StyledIcon => {
             case "gif":
             case "webp":
                 return { icon: Image, classes: ["text-blue-500"] };
+            case "mp4":
+            case "webm":
+            case "ogg":
+            case "mp3":
+            case "wav":
+            case "flac":
+            case "mov":
+            case "avi":
+            case "m4a":
+            case "aac":
+            case "mkv":
+                return { icon: FilePlay, classes: ["text-red-500"] };
             case "html":
             case "xml":
             case "xhtml":

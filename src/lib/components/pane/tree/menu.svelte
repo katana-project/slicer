@@ -14,7 +14,17 @@
 </script>
 
 <script lang="ts">
-    import { Code, Download, FileCodeCorner, Gauge, GitBranchPlus, Image, Trash2, Info } from "@lucide/svelte";
+    import {
+        Code,
+        Download,
+        FileCodeCorner,
+        Gauge,
+        GitBranchPlus,
+        Image,
+        Trash2,
+        Info,
+        FilePlay,
+    } from "@lucide/svelte";
     import { EntryType } from "$lib/workspace";
     import { dynamicTabDefs, TabType } from "$lib/tab";
     import {
@@ -54,6 +64,10 @@
                 <ContextMenuItem class="flex justify-between" onclick={() => handler.open(entry.value, TabType.IMAGE)}>
                     {$t("pane.project.menu.open.image")}
                     <Image size={16} />
+                </ContextMenuItem>
+                <ContextMenuItem class="flex justify-between" onclick={() => handler.open(entry.value, TabType.MEDIA)}>
+                    {$t("pane.project.menu.open.media")}
+                    <FilePlay size={16} />
                 </ContextMenuItem>
                 {#if entry.value.type !== EntryType.ARCHIVE}
                     <ContextMenuItem
