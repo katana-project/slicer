@@ -36,7 +36,7 @@ export const vf: Disassembler = createFromWorker(
     {
         id: "vf",
         name: "Vineflower",
-        version: "1.11.2",
+        version: "1.12.0",
         language(entry?: ClassEntry): Language {
             if (!entry) {
                 return "java";
