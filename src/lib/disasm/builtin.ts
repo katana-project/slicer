@@ -52,7 +52,7 @@ export const vf: Disassembler = createFromWorker(
         },
     },
     () => new VFWorker(),
-    false
+    true
 );
 
 export const procyon: Disassembler = createFromWorker(
