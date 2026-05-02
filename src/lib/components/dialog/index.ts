@@ -6,6 +6,7 @@ import LoadExternalDialog from "./load_external.svelte";
 import LoadMappingsDialog from "./load_mappings.svelte";
 import LoadMappingsFileDialog from "./load_mappings_file.svelte";
 import PrefsClearDialog from "./prefs_clear.svelte";
+import PropertiesDialog from "./properties.svelte";
 import ScriptDialog from "./script.svelte";
 import ScriptDeleteDialog from "./script_delete.svelte";
 import ScriptLoadDialog from "./script_load.svelte";
@@ -21,6 +22,7 @@ export {
     LoadMappingsDialog,
     LoadMappingsFileDialog,
     PrefsClearDialog,
+    PropertiesDialog,
     ScriptDeleteDialog,
     ScriptDialog,
     ScriptLoadDialog,

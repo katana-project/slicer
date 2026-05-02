@@ -19,6 +19,7 @@
         LoadMappingsFileDialog,
         ScriptLoadFileDialog,
         LoadMappingsDialog,
+        PropertiesDialog,
     } from "$lib/components/dialog";
     import {
         Menubar,
@@ -257,6 +258,15 @@
         <MenubarMenu>
             <MenubarTrigger class="relative">{$t("menu.view")}</MenubarTrigger>
             <MenubarContent align="start">
+                <MenubarItem
+                    class="justify-between"
+                    disabled={!tab?.entry}
+                    onclick={() => modals.open(PropertiesDialog, { entry })}
+                >
+                    {$t("menu.view.properties")}
+                    <Info size={16} />
+                </MenubarItem>
+                <MenubarSeparator />
                 <MenubarItem
                     class="justify-between"
                     disabled={!tab?.entry || tab.type === TabType.CODE}

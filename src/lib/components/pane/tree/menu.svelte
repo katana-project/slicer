@@ -14,7 +14,7 @@
 </script>
 
 <script lang="ts">
-    import { Code, Download, FileCodeCorner, Gauge, GitBranchPlus, Image, Trash2 } from "@lucide/svelte";
+    import { Code, Download, FileCodeCorner, Gauge, GitBranchPlus, Image, Trash2, Info } from "@lucide/svelte";
     import { EntryType } from "$lib/workspace";
     import { dynamicTabDefs, TabType } from "$lib/tab";
     import {
@@ -28,7 +28,7 @@
     } from "$lib/components/ui/context-menu";
     import type { EventHandler } from "$lib/event";
     import { modals } from "svelte-modals";
-    import { DeleteDialog } from "$lib/components/dialog";
+    import { DeleteDialog, PropertiesDialog } from "$lib/components/dialog";
     import IconComponent from "$lib/components/icon.svelte";
 
     interface Props {
@@ -89,6 +89,13 @@
             </ContextMenuSubContent>
         </ContextMenuSub>
         <ContextMenuSeparator />
+        <ContextMenuItem
+            class="flex justify-between"
+            onclick={() => modals.open(PropertiesDialog, { entry: entry.value })}
+        >
+            {$t("pane.project.menu.properties")}
+            <Info size={16} />
+        </ContextMenuItem>
         <ContextMenuItem class="flex justify-between" onclick={() => handler.export([entry.value])}>
             {$t("pane.project.menu.export")}
             <Download size={16} />
