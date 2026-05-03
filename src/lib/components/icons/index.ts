@@ -149,6 +149,9 @@ export const fileIcon = (label: string): StyledIcon => {
                 return { icon: Coffee, classes: ["text-red-500"] };
             case "kt":
             case "kts":
+            case "kotlin_module":
+            case "kotlin_builtins":
+            case "kotlin_metadata":
                 return { icon: Kotlin };
             case "json":
             case "jsonc":

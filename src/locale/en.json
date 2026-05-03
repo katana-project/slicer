@@ -156,6 +156,7 @@
     "pane.code.interp.hex": "Hexadecimal",
     "pane.code.interp.text": "Text",
     "pane.code.interp.binary-xml": "Binary XML",
+    "pane.code.interp.ktproto": "Kotlin metadata",
     "pane.code.interp.detected": "(detected)",
     "pane.code.tooltip.default-package": "default package",
     "pane.code.menu.editor": "Editor",
