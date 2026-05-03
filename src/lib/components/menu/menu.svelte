@@ -63,6 +63,7 @@
     import InjectedScriptMenu from "./script/injected.svelte";
     import { ScriptState } from "$lib/script";
     import IconComponent from "$lib/components/icon.svelte";
+    import { cn } from "$lib/components/utils";
 
     interface Props {
         panes: PaneData[];
@@ -137,9 +138,21 @@
 
         return Array.from(extraMenus.values());
     });
+
+    const wcoSupportedList = window.matchMedia("(display-mode: window-controls-overlay)");
+    let windowControlsSupported = $state(wcoSupportedList.matches || "windowControlsOverlay" in navigator);
+
+    wcoSupportedList.addEventListener("change", (e) => {
+        windowControlsSupported = e.matches;
+    });
 </script>
 
-<Menubar class="window-controls justify-between rounded-none border-b border-none px-2 lg:px-4">
+<Menubar
+    class={cn(
+        "justify-between rounded-none border-b border-none px-2 lg:px-4",
+        windowControlsSupported && "window-controls"
+    )}
+>
     <div class="flex flex-row">
         <MenubarMenu>
             <MenubarTrigger class="font-bold">{$t("menu.root")}</MenubarTrigger>
@@ -489,30 +502,27 @@
 
 <style>
     /* PWA title bar */
-    /* noinspection CssInvalidMediaFeature */
-    @media (display-mode: window-controls-overlay) {
-        :global(.window-controls) {
-            position: sticky;
-            z-index: 9999;
-            background-color: var(--background);
+    :global(.window-controls) {
+        position: sticky;
+        z-index: 9999;
+        background-color: var(--background);
 
-            left: env(titlebar-area-x, 0);
-            top: env(titlebar-area-y, 0);
-            width: env(titlebar-area-width, 100%);
-            height: env(titlebar-area-height, 2.5rem);
+        left: env(titlebar-area-x, 0);
+        top: env(titlebar-area-y, 0);
+        width: env(titlebar-area-width, 100%);
+        height: env(titlebar-area-height, 2.25rem);
 
-            -webkit-app-region: drag;
-            app-region: drag;
-        }
+        -webkit-app-region: drag;
+        app-region: drag;
+    }
 
-        :global(.window-controls > *) {
-            /* fix item height on smaller title bars */
-            padding-top: 0;
-            padding-bottom: 0;
-            height: 100%;
+    :global(.window-controls > *) {
+        /* fix item height on smaller title bars */
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 100%;
 
-            -webkit-app-region: no-drag;
-            app-region: no-drag;
-        }
+        -webkit-app-region: no-drag;
+        app-region: no-drag;
     }
 </style>

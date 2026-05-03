@@ -19,7 +19,7 @@
     variant="ghost"
     size="icon"
     {title}
-    class="h-8 w-8"
+    class="size-7"
     onclick={() => {
         open = !open;
         onchange?.(open);
