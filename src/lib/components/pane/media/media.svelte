@@ -4,11 +4,12 @@
     import { t } from "$lib/i18n";
     import { Loading } from "$lib/components/ui/loading";
     import { cn } from "$lib/components/utils";
+    import { Disc3 } from "@lucide/svelte";
 
     let { tab }: PaneProps = $props();
     const entry = $derived(tab.entry!);
 
-    let measureTape = $state<HTMLDivElement>();
+    let canvasWidth = $state(0);
 
     let videoElement = $state<HTMLVideoElement>();
     let videoHeight = $state(0);
@@ -17,6 +18,18 @@
             videoHeight = videoElement!.videoHeight;
         });
     });
+
+    let isPlaying = $state(false);
+    const timeout = setInterval(() => {
+        if (!videoElement) {
+            isPlaying = false;
+            return;
+        }
+
+        isPlaying =
+            videoElement.currentTime > 0 && !videoElement.paused && !videoElement.ended && videoElement.readyState > 2;
+    }, 100);
+    onDestroy(() => clearInterval(timeout));
 
     let canvas = $state<HTMLCanvasElement>();
 
@@ -48,9 +61,9 @@
 
         const draw = () => {
             animationFrame = requestAnimationFrame(draw);
-            if (!canvas) return;
+            if (!canvas || !canvasWidth) return;
 
-            const WIDTH = measureTape!.offsetWidth;
+            const WIDTH = canvasWidth;
 
             canvas.width = WIDTH;
             canvas.height = HEIGHT;
@@ -92,25 +105,36 @@
     };
 </script>
 
-<div bind:this={measureTape} class="w-full"></div>
 {#await entry.data.blob()}
     <Loading value={$t("pane.media.loading")} timed />
 {:then blob}
-    <div class="flex h-full w-full flex-col items-center justify-center p-4">
-        <!-- svelte-ignore a11y_media_has_caption -->
-        <video
-            bind:this={videoElement}
-            onplay={setupAudio}
-            src={createURL(blob)}
-            controls
-            class={cn("max-h-full max-w-full", videoHeight > 0 || "h-full w-full")}
-            crossorigin="anonymous"
-        ></video>
+    <div class="bg-background flex h-full w-full flex-col overflow-hidden">
+        <div class="relative flex min-h-0 flex-1 items-center justify-center p-8">
+            <div class={cn("bg-muted absolute z-0 rounded-full p-6 opacity-50", isPlaying && "animate-spin")}>
+                <Disc3 size={64} />
+            </div>
+            <!-- svelte-ignore a11y_media_has_caption -->
+            <video
+                bind:this={videoElement}
+                onplay={setupAudio}
+                src={createURL(blob)}
+                controls
+                class={cn(
+                    "z-10 max-h-full max-w-full overflow-hidden rounded-md border bg-black/5 shadow-xl ring-1 ring-black/5 dark:ring-white/10",
+                    videoHeight > 0 || "h-full w-full"
+                )}
+                crossorigin="anonymous"
+            ></video>
+        </div>
+        <div bind:clientWidth={canvasWidth} class="border-border bg-muted/30 w-full flex-none border-t">
+            <canvas bind:this={canvas} height={HEIGHT} width={canvasWidth} class="w-full opacity-90"></canvas>
+        </div>
     </div>
-    <canvas
-        bind:this={canvas}
-        height={HEIGHT}
-        width={measureTape.offsetWidth}
-        class="border-b-primary border-t-muted border-t border-b"
-    ></canvas>
 {/await}
+
+<style>
+    /* noinspection CssInvalidPseudoSelector */
+    video::-webkit-media-controls-enclosure {
+        border-radius: 0;
+    }
+</style>
