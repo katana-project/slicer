@@ -274,8 +274,16 @@ export const persisted = <T>(ns: string, key: string, initialValue: T): Writable
     // allow overriding localStorage with URL parameters for sharing specific state
     const value = new URLSearchParams(window.location.search).get(key) ?? localStorage.getItem(`${ns}.${key}`);
 
+    let initial = false;
     const store = writable<T>(value ? JSON.parse(value) : initialValue);
     store.subscribe((v) => {
+        if (!initial) {
+            // inhibit initial write to localStorage
+            // this allows for temporary overrides via URL parameters without affecting the actual persisted value
+            initial = true;
+            return;
+        }
+
         localStorage.setItem(`${ns}.${key}`, JSON.stringify(v));
     });
     return store;
