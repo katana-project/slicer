@@ -155,10 +155,11 @@ const analyzeCharacteristics = (node: Node): CharacteristicType[] => {
                     case "java/lang/reflect/Method":
                     case "java/lang/reflect/Constructor":
                     case "java/lang/reflect/Field":
-                    case "java/lang/invoke/MethodHandle":
-                    case "java/lang/invoke/MethodHandles":
-                    case "java/lang/invoke/MethodHandles$Lookup":
-                    case "java/lang/invoke/MethodType":
+                    // MethodHandle stuff is emitted by javac in e.g. string concat - we can't have that
+                    // case "java/lang/invoke/MethodHandle":
+                    // case "java/lang/invoke/MethodHandles":
+                    // case "java/lang/invoke/MethodHandles$Lookup":
+                    // case "java/lang/invoke/MethodType":
                     case "java/lang/invoke/VarHandle":
                     case "java/util/concurrent/atomic/AtomicReferenceFieldUpdater":
                     case "java/util/concurrent/atomic/AtomicIntegerFieldUpdater":
@@ -217,13 +218,28 @@ const analyzeCharacteristics = (node: Node): CharacteristicType[] => {
                 const methodName = nameType?.nameEntry?.string;
 
                 if (!className || !methodName) break;
-
-                if (className === "java/lang/Runtime" || className === "java/lang/System") {
-                    if (methodName === "exec") {
-                        chars.add(CharacteristicType.PROCESS_MANIPULATION);
+                switch (className) {
+                    case "java/lang/Runtime":
+                    case "java/lang/System": {
+                        if (methodName === "exec") {
+                            chars.add(CharacteristicType.PROCESS_MANIPULATION);
+                        }
+                        if (methodName === "load" || methodName === "loadLibrary") {
+                            chars.add(CharacteristicType.NATIVE_CODE);
+                        }
+                        break;
                     }
-                    if (methodName === "load" || methodName === "loadLibrary") {
-                        chars.add(CharacteristicType.NATIVE_CODE);
+                    case "java/lang/invoke/MethodHandles": {
+                        if (methodName === "lookup" || methodName === "publicLookup") {
+                            chars.add(CharacteristicType.REFLECTION);
+                        }
+                        break;
+                    }
+                    case "java/lang/invoke/MethodHandles$Lookup": {
+                        if (methodName.match(/^(find|unreflect).+$/)) {
+                            chars.add(CharacteristicType.REFLECTION);
+                        }
+                        break;
                     }
                 }
 
