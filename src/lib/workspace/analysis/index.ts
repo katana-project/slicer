@@ -3,25 +3,16 @@ import { analysisBackground } from "$lib/state";
 import { recordProgress } from "$lib/task";
 import { cancellable, type Cancellable, rateLimit } from "$lib/utils";
 import { createDefaultWorkerPool } from "$lib/worker";
-import {
-    CharacteristicType,
-    type ClassEntry,
-    entries,
-    type Entry,
-    EntryPointType,
-    EntryType,
-    type MemberEntry,
-} from "$lib/workspace";
+import { type ClassEntry, entries, type Entry, EntryType, type MemberEntry } from "$lib/workspace";
 import { TransformationPoint, transformInPlace } from "$lib/workspace/analysis/transform";
 import { unwrapTransforms } from "$lib/workspace/data";
-import { FLAG_SKIP_ATTR_PARSE, FLAG_SLICE_BUFFER, type Node } from "@katana-project/asm";
-import { type Annotation, type AnnotationsAttribute, readAnnotations } from "@katana-project/asm/attr/annotation";
-import type { ClassEntry as ClassPoolEntry, RefEntry } from "@katana-project/asm/pool";
-import { AttributeType, ConstantType, Modifier } from "@katana-project/asm/spec";
+import { FLAG_SKIP_ATTR_PARSE, FLAG_SLICE_BUFFER } from "@katana-project/asm";
 import { get } from "svelte/store";
 import { QueryType, SearchMode, type SearchQuery, type SearchResult } from "./search";
 import type { AnalysisWorker } from "./worker";
 import Worker from "./worker?worker";
+
+export * from "./types";
 
 export const enum AnalysisState {
     NONE,
@@ -56,205 +47,19 @@ const analyzeClass = async (entry: Entry, skipAttr: boolean) => {
 
         // post-transform analysis
         if (entry.type === EntryType.CLASS) {
-            classEntry.entryPoints = analyzeEntryPoints(classEntry.node);
-            classEntry.characteristics = analyzeCharacteristics(classEntry.node);
+            const [entryPoints, characteristics] = await workers
+                .instance()
+                .task(async (w) => [
+                    await w.collectEntryPoints(classEntry.node),
+                    await w.collectCharacteristics(classEntry.node),
+                ]);
+
+            classEntry.entryPoints = entryPoints;
+            classEntry.characteristics = characteristics;
         }
     } catch (e) {
         error(`failed to analyze class ${entry.name}`, e);
     }
-};
-
-const FABRIC_INITIALIZERS = new Set([
-    "net/fabricmc/api/ModInitializer",
-    "net/fabricmc/api/ClientModInitializer",
-    "net/fabricmc/api/DedicatedServerModInitializer",
-]);
-
-const analyzeEntryPoints = (node: Node): EntryPointType[] => {
-    const entryPoints: EntryPointType[] = [];
-
-    const mainMethod = node.methods.find(
-        (m) =>
-            m.name.string === "main" && m.type.string === "([Ljava/lang/String;)V" && (m.access & Modifier.STATIC) !== 0
-    );
-
-    if (mainMethod) {
-        entryPoints.push(EntryPointType.MAIN);
-    }
-
-    let annotations: Annotation[] = [];
-    try {
-        const attr = node.attrs.find(
-            (a) =>
-                a.name?.string === AttributeType.RUNTIME_VISIBLE_ANNOTATIONS ||
-                a.name?.string === AttributeType.RUNTIME_INVISIBLE_ANNOTATIONS
-        ) as AnnotationsAttribute | undefined;
-
-        if (attr) {
-            annotations = attr.annotations ?? readAnnotations(attr, node.pool).annotations;
-        }
-    } catch {
-        // annotations already defaults to []
-    }
-
-    const premainMethod = node.methods.find(
-        (m) =>
-            m.name.string === "premain" &&
-            (m.type.string === "(Ljava/lang/String;Ljava/lang/instrument/Instrumentation;)V" ||
-                m.type.string === "(Ljava/lang/String;)V") &&
-            (m.access & Modifier.STATIC) !== 0
-    );
-
-    if (premainMethod) {
-        entryPoints.push(EntryPointType.AGENT);
-    }
-
-    switch (node.superClass?.nameEntry?.string) {
-        case "org/bukkit/plugin/java/JavaPlugin":
-            entryPoints.push(EntryPointType.MINECRAFT_BUKKIT);
-            break;
-        case "net/md_5/bungee/api/plugin/Plugin":
-            entryPoints.push(EntryPointType.MINECRAFT_BUNGEE);
-            break;
-    }
-
-    const velocityPlugin = annotations.some((a) => a.typeEntry?.string === "Lcom/velocitypowered/api/plugin/Plugin;");
-    if (velocityPlugin) {
-        entryPoints.push(EntryPointType.MINECRAFT_VELOCITY);
-    }
-
-    const forgeMod = annotations.some((a) => a.typeEntry?.string === "Lnet/minecraftforge/fml/common/Mod;");
-    if (forgeMod) {
-        entryPoints.push(EntryPointType.MINECRAFT_FORGE);
-    }
-
-    const fabricMod = node.interfaces?.some((i) => i.nameEntry && FABRIC_INITIALIZERS.has(i.nameEntry.string));
-    if (fabricMod) {
-        entryPoints.push(EntryPointType.MINECRAFT_FABRIC);
-    }
-
-    return entryPoints;
-};
-
-const analyzeCharacteristics = (node: Node): CharacteristicType[] => {
-    const chars = new Set<CharacteristicType>();
-    for (const entry of node.pool) {
-        switch (entry?.type) {
-            case ConstantType.CLASS: {
-                const className = (entry as ClassPoolEntry).nameEntry?.string;
-                if (!className) break;
-
-                switch (className) {
-                    case "java/lang/ClassLoader":
-                    case "java/net/URLClassLoader":
-                        chars.add(CharacteristicType.CLASS_LOADING);
-                        break;
-                    case "javax/crypto/Cipher":
-                        chars.add(CharacteristicType.ENCRYPTION);
-                        break;
-                    case "java/lang/reflect/Method":
-                    case "java/lang/reflect/Constructor":
-                    case "java/lang/reflect/Field":
-                    // MethodHandle stuff is emitted by javac in e.g. string concat - we can't have that
-                    // case "java/lang/invoke/MethodHandle":
-                    // case "java/lang/invoke/MethodHandles":
-                    // case "java/lang/invoke/MethodHandles$Lookup":
-                    // case "java/lang/invoke/MethodType":
-                    case "java/lang/invoke/VarHandle":
-                    case "java/util/concurrent/atomic/AtomicReferenceFieldUpdater":
-                    case "java/util/concurrent/atomic/AtomicIntegerFieldUpdater":
-                    case "java/util/concurrent/atomic/AtomicLongFieldUpdater":
-                        chars.add(CharacteristicType.REFLECTION);
-                        break;
-                    case "java/io/File":
-                    case "java/nio/file/Files":
-                    case "java/nio/file/Path":
-                    case "java/nio/file/Paths":
-                    case "java/nio/file/FileSystem":
-                    case "java/nio/file/FileSystems":
-                    case "java/nio/channels/FileChannel":
-                    case "java/nio/channels/AsynchronousFileChannel":
-                        chars.add(CharacteristicType.FILE_IO);
-                        break;
-                    case "java/net/Socket":
-                    case "java/net/ServerSocket":
-                    case "java/net/DatagramSocket":
-                    case "java/net/HttpURLConnection":
-                    case "java/net/URL":
-                    case "java/net/URLConnection":
-                    case "java/net/http/HttpClient":
-                    case "java/nio/channels/NetworkChannel":
-                    case "java/nio/channels/SocketChannel":
-                    case "java/nio/channels/ServerSocketChannel":
-                    case "java/nio/channels/DatagramChannel":
-                    case "java/nio/channels/AsynchronousSocketChannel":
-                    case "java/nio/channels/AsynchronousServerSocketChannel":
-                        chars.add(CharacteristicType.NETWORK_IO);
-                        break;
-                    case "java/io/ObjectInputStream":
-                    case "java/io/ObjectOutputStream":
-                        chars.add(CharacteristicType.OBJECT_SERDES);
-                        break;
-                    case "java/lang/foreign/MemorySegment":
-                    case "java/lang/foreign/Arena":
-                    case "java/lang/foreign/Linker":
-                    case "java/lang/foreign/SymbolLookup":
-                    case "sun/misc/Unsafe":
-                        chars.add(CharacteristicType.NATIVE_CODE);
-                        break;
-                    case "java/lang/ProcessBuilder":
-                    case "java/lang/ProcessHandle":
-                    case "java/lang/Process":
-                        chars.add(CharacteristicType.PROCESS_MANIPULATION);
-                        break;
-                }
-                break;
-            }
-            case ConstantType.METHODREF:
-            case ConstantType.INTERFACE_METHODREF: {
-                const refEntry = entry as RefEntry;
-                const className = refEntry.refEntry?.nameEntry?.string;
-                const nameType = refEntry.nameTypeEntry;
-                const methodName = nameType?.nameEntry?.string;
-
-                if (!className || !methodName) break;
-                switch (className) {
-                    case "java/lang/Runtime":
-                    case "java/lang/System": {
-                        if (methodName === "exec") {
-                            chars.add(CharacteristicType.PROCESS_MANIPULATION);
-                        }
-                        if (methodName === "load" || methodName === "loadLibrary") {
-                            chars.add(CharacteristicType.NATIVE_CODE);
-                        }
-                        break;
-                    }
-                    case "java/lang/invoke/MethodHandles": {
-                        if (methodName === "lookup" || methodName === "publicLookup") {
-                            chars.add(CharacteristicType.REFLECTION);
-                        }
-                        break;
-                    }
-                    case "java/lang/invoke/MethodHandles$Lookup": {
-                        if (methodName.match(/^(find|unreflect).+$/)) {
-                            chars.add(CharacteristicType.REFLECTION);
-                        }
-                        break;
-                    }
-                }
-
-                break;
-            }
-        }
-    }
-
-    for (const method of node.methods) {
-        if ((method.access & Modifier.NATIVE) !== 0) {
-            chars.add(CharacteristicType.NATIVE_CODE);
-        }
-    }
-
-    return Array.from(chars.values());
 };
 
 export const analyze = async (entry: Entry, state: AnalysisState = AnalysisState.PARTIAL) => {

@@ -1,6 +1,7 @@
 import { TabPosition, TabType } from "$lib/tab";
 import { type Modifiers, parseModifiers } from "$lib/utils";
-import { CharacteristicType, type ClassEntry, type Entry, EntryPointType, EntryType } from "$lib/workspace";
+import { type ClassEntry, type Entry, EntryType } from "$lib/workspace";
+import { CharacteristicType, EntryPointType } from "$lib/workspace/analysis";
 import {
     Binary,
     Box,

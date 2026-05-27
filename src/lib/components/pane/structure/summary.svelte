@@ -11,12 +11,13 @@
         Map as MapIcon,
     } from "@lucide/svelte";
     import { cn } from "$lib/components/utils";
-    import { EntryType, type ClassEntry, type Entry, EntryPointType, CharacteristicType } from "$lib/workspace";
+    import { EntryType, type ClassEntry, type Entry } from "$lib/workspace";
     import { characteristicIcon, entryIcon, entryPointIcon } from "$lib/components/icons";
     import handler from "$lib/event/handler";
     import { Button } from "$lib/components/ui/button";
     import { prettyInternalName } from "$lib/utils";
     import { mappings } from "$lib/workspace/analysis/mapping";
+    import { EntryPointType, CharacteristicType } from "$lib/workspace/analysis";
 
     interface Props {
         classes: Map<string, Entry>;

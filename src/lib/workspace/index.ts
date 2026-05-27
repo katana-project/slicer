@@ -6,7 +6,15 @@ import { mappings } from "$lib/workspace/analysis/mapping";
 import type { Member, Node } from "@katana-project/asm";
 import type { Zip, Entry as ZipEntry } from "@katana-project/zip";
 import { derived, get, writable } from "svelte/store";
-import { AnalysisState, analyze, analyzeBackground, analyzeSchedule, waitForBackgroundAnalysis } from "./analysis";
+import {
+    AnalysisState,
+    analyze,
+    analyzeBackground,
+    analyzeSchedule,
+    type CharacteristicType,
+    type EntryPointType,
+    waitForBackgroundAnalysis,
+} from "./analysis";
 import { transform } from "./analysis/transform";
 import { type Data, fileData, memoryData, type Named, parseName, zipData } from "./data";
 import { archiveDecoder } from "./encoding";
@@ -49,27 +57,6 @@ export interface Entry extends Named {
 export interface ArchiveEntry extends Entry {
     type: EntryType.ARCHIVE;
     archive: Zip;
-}
-
-export enum EntryPointType {
-    MAIN = "main",
-    AGENT = "agent",
-    MINECRAFT_BUKKIT = "minecraft.bukkit",
-    MINECRAFT_BUNGEE = "minecraft.bungee",
-    MINECRAFT_VELOCITY = "minecraft.velocity",
-    MINECRAFT_FORGE = "minecraft.forge",
-    MINECRAFT_FABRIC = "minecraft.fabric",
-}
-
-export enum CharacteristicType {
-    CLASS_LOADING = "class-loading",
-    ENCRYPTION = "encryption",
-    FILE_IO = "file-io",
-    NETWORK_IO = "network-io",
-    OBJECT_SERDES = "object-serdes",
-    REFLECTION = "reflection",
-    NATIVE_CODE = "native-code",
-    PROCESS_MANIPULATION = "process-manipulation",
 }
 
 export interface ClassEntry extends Entry {
@@ -216,6 +203,7 @@ export interface LoadResult {
 }
 
 export const ZIP_EXTENSIONS = new Set(["zip", "jar", "apk", "xapk", "war", "ear", "jmod", "mrpack"]);
+const NON_ZIP_EXTENSIONS = new Set(["class", "dex", "arsc", "jpg", "png", "json"]);
 
 const readZip = async (blob: Blob): Promise<Zip> => {
     const { readBlob } = await import("@katana-project/zip");
@@ -308,7 +296,14 @@ const load0 = async (entries: Map<string, Entry>, d: Data, parent?: Entry): Prom
             (headerView[3] === 0x04 || headerView[3] === 0x02 || headerView[3] === 0x06)
         );
     };
-    if ((entry.extension && ZIP_EXTENSIONS.has(entry.extension)) || (await checkZipHeader(d))) {
+
+    // perf: filter out some extensions that definitely will not house ZIPs
+    // if they do, it's likely a result of obfuscation and don't contain much value
+    const extensionOrEmpty = entry.extension ?? "";
+    if (
+        ZIP_EXTENSIONS.has(extensionOrEmpty) ||
+        (!NON_ZIP_EXTENSIONS.has(extensionOrEmpty) && (await checkZipHeader(d)))
+    ) {
         try {
             const archiveEntry = entry as ArchiveEntry;
 
