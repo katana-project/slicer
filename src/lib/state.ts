@@ -49,6 +49,7 @@ export const analysisBackground = persisted<boolean>(root, "analysis.background"
 export const analysisJdkClasses = persisted<boolean>(root, "analysis.jdk-classes", true);
 export const analysisTransformers = persisted<string[]>(root, "analysis.transformers", []);
 export const interpHexRowBytes = persisted<number>(root, "interp.hex.row-bytes", 16);
+export const dismissedToasts = persisted<string[]>(root, "dismissed-toasts", []);
 
 export const panes = persisted<PaneData[]>(root, "panes", [
     { position: "primary_center" as TabPosition, tabs: [{ type: "welcome" as TabType, active: true }], open: true },

@@ -10,7 +10,7 @@ import {
     remove as removeScript,
     unload as unloadScript,
 } from "$lib/script";
-import { urlRemote, urlRemoteFile } from "$lib/state";
+import { dismissedToasts, projectMode, urlRemote, urlRemoteFile } from "$lib/state";
 import {
     clear as clearTabs,
     current as currentTab,
@@ -108,6 +108,20 @@ const remoteProgress = (task: Task, url: string): ((loaded: number, total: numbe
             task.progress?.set((loaded / total) * 100);
         }
     };
+};
+
+const isToastDismissed = (key: string): boolean => {
+    return get(dismissedToasts).includes(key);
+};
+
+const dismissToast = (key: string) => {
+    dismissedToasts.update(($dismissedToasts) => {
+        if (!$dismissedToasts.includes(key)) {
+            return [...$dismissedToasts, key];
+        }
+
+        return $dismissedToasts;
+    });
 };
 
 export default {
@@ -379,6 +393,25 @@ export default {
             toast.success(tl("toast.success.title.load"), {
                 description: tl("toast.success.load-mappings", data.name),
             });
+
+            if (get(projectMode) !== "package" && !isToastDismissed("toast.info.mappings-project-mode")) {
+                toast.info(tl("toast.info.title.mappings-project-mode"), {
+                    description: tl("toast.info.mappings-project-mode"),
+                    classes: {
+                        actionButton: "!ml-2",
+                    },
+                    action: {
+                        label: tl("toast.info.action.mappings-project-mode.switch"),
+                        onClick: () => {
+                            projectMode.set("package");
+                        },
+                    },
+                    onDismiss: () => {
+                        dismissToast("toast.info.mappings-project-mode");
+                    },
+                    duration: 30000, // 30 seconds
+                });
+            }
         } catch (e) {
             error(`failed to load mappings from ${data.name}`, e);
             toast.error(tl("toast.error.title.generic"), {
