@@ -8,7 +8,7 @@
     import { entryIcon } from "$lib/components/icons";
     import { humanSize, prettyInternalName, prettyMethodDesc } from "$lib/utils";
     import { Loading } from "$lib/components/ui/loading";
-    import { DataType, type FileData, type ZipData } from "$lib/workspace/data";
+    import { DataType, type FileData, unwrapTransforms, type ZipData } from "$lib/workspace/data";
 
     interface Props extends ModalProps {
         entry: Entry;
@@ -16,8 +16,11 @@
 
     let { isOpen, close, entry }: Props = $props();
 
-    let file = $derived((entry.data as FileData).file);
-    let zipEntry = $derived((entry.data as ZipData).entry);
+    // transforms are not relevant for properties, so we can unwrap them to get the original data
+    let data = $derived(unwrapTransforms(entry.data));
+
+    let file = $derived((data as FileData).file);
+    let zipEntry = $derived((data as ZipData).entry);
 
     let node = $derived((entry as ClassEntry).node);
     let member = $derived((entry as MemberEntry).member);
@@ -37,7 +40,7 @@
             {/if}
         </DialogHeader>
         <div class="grid grid-cols-[auto_minmax(auto,1fr)] items-center gap-x-4 gap-y-2 py-1">
-            {#await entry.data.blob().then( (b) => b.size, () => 0 )}
+            {#await data.blob().then( (b) => b.size, () => 0 )}
                 <Loading center />
             {:then blobSize}
                 <Label for="type" class="text-left">{$t("dialog.properties.type")}</Label>
@@ -46,12 +49,12 @@
                 <Label for="size" class="text-left">{$t("dialog.properties.size")}</Label>
                 <div id="size" class="text-sm">{humanSize(blobSize)} ({blobSize})</div>
 
-                {#if entry.data.type === DataType.FILE}
+                {#if data.type === DataType.FILE}
                     <Label for="last-modified" class="text-left">{$t("dialog.properties.last-modified")}</Label>
                     <div id="last-modified" class="text-sm">
                         {new Date(file.lastModified).toLocaleString()}
                     </div>
-                {:else if entry.data.type === DataType.ZIP}
+                {:else if data.type === DataType.ZIP}
                     <Label for="last-modified" class="text-left">{$t("dialog.properties.last-modified")}</Label>
                     <div id="last-modified" class="text-sm">
                         {zipEntry.lastModDate.toLocaleString()}
