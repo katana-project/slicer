@@ -47,6 +47,8 @@ import type {
     EventType,
     I18NContext,
     MappingContext,
+    NotificationContext,
+    NotificationOptions,
     Script,
     ScriptContext,
     Disassembler as ScriptDisassembler,
@@ -377,6 +379,41 @@ const i18nCtx: I18NContext = {
     },
 };
 
+const notificationCtx: NotificationContext = {
+    info(message: string, options?: NotificationOptions): void {
+        toast.info(tl(message, ...(options?.msgArgs ?? [])), {
+            duration: options?.duration,
+            description: options?.description
+                ? tl(options.description, ...(options?.descriptionArgs ?? []))
+                : undefined,
+        });
+    },
+    success(message: string, options?: NotificationOptions): void {
+        toast.success(tl(message, ...(options?.msgArgs ?? [])), {
+            duration: options?.duration,
+            description: options?.description
+                ? tl(options.description, ...(options?.descriptionArgs ?? []))
+                : undefined,
+        });
+    },
+    warning(message: string, options?: NotificationOptions): void {
+        toast.warning(tl(message, ...(options?.msgArgs ?? [])), {
+            duration: options?.duration,
+            description: options?.description
+                ? tl(options.description, ...(options?.descriptionArgs ?? []))
+                : undefined,
+        });
+    },
+    error(message: string, options?: NotificationOptions): void {
+        toast.error(tl(message, ...(options?.msgArgs ?? [])), {
+            duration: options?.duration,
+            description: options?.description
+                ? tl(options.description, ...(options?.descriptionArgs ?? []))
+                : undefined,
+        });
+    },
+};
+
 const createContext = (script: Script, parent: ScriptContext | null): ScriptContext => {
     const scriptListeners = new Map<EventType, EventListener<any>[]>();
     const context: Partial<ScriptContext> = {
@@ -386,6 +423,7 @@ const createContext = (script: Script, parent: ScriptContext | null): ScriptCont
         workspace: workspaceCtx,
         mapping: mappingCtx,
         i18n: i18nCtx,
+        notification: notificationCtx,
         addEventListener<K extends EventType>(type: K, listener: EventListener<EventMap[K]>) {
             let listeners = scriptListeners.get(type);
             if (!listeners) {
