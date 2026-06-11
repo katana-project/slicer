@@ -1,0 +1,12 @@
+{
+    "name": "@run-slicer/script",
+    "version": "0.15.0",
+    "author": "katana-project",
+    "license": "MIT",
+    "description": "Type definitions for the slicer scripting API.",
+    "types": "index.d.ts",
+    "files": [
+        "index.d.ts"
+    ],
+    "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
+}
