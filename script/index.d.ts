@@ -623,6 +623,51 @@ export interface I18NContext {
 }
 
 /**
+ * Options for configuring a toast notification.
+ */
+export interface NotificationOptions {
+    /**
+     * Translation key for the description of this notification.
+     */
+    readonly description?: string;
+
+    /**
+     * Translation arguments for the description of this notification.
+     */
+    readonly descriptionArgs?: any[];
+    /**
+     * Translation arguments for the message of this notification.
+     */
+    readonly msgArgs?: any[];
+    /*
+     * Duration in milliseconds before the toast fades.
+     */
+    readonly duration?: number;
+}
+
+/**
+ * Provides access to display notifications (toasts) in the UI.
+ */
+export interface NotificationContext {
+    /**
+     * Displays an informational toast notification.
+     */
+    info(message: string, options?: NotificationOptions): void;
+    /**
+     * Displays a success toast notification.
+     */
+    success(message: string, options?: NotificationOptions): void;
+    /**
+     * Displays a warning toast notification.
+     */
+    warning(message: string, options?: NotificationOptions): void;
+    /**
+     * Displays an error toast notification.
+     */
+    error(message: string, options?: NotificationOptions): void;
+}
+
+/**
  * The context in which a script is executed, providing access to the editor, disassembler, and workspace contexts,
  * as well as event handling capabilities.
  */
@@ -656,6 +701,10 @@ export interface ScriptContext {
      * The internationalization context, which allows translating strings based on the user's locale and registering new translations.
      */
     readonly i18n: I18NContext;
+    /**
+     * The notification context, which allows displaying toast notifications in the UI.
+     */
+    readonly notification: NotificationContext;
 
     /**
      * Adds an event listener for the specified event type.
