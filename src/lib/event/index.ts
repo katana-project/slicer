@@ -27,6 +27,7 @@ export interface EventHandler {
     addScript(data?: string | File, load?: boolean): Awaitable<void>;
     loadScript(proto: ProtoScript): Awaitable<void>;
     unloadScript(proto: ProtoScript): Awaitable<void>;
+    reloadScript(proto: ProtoScript): Awaitable<void>;
     removeScript(proto: ProtoScript): Awaitable<void>;
 }
 
