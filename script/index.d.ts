@@ -643,6 +643,10 @@ export interface NotificationOptions {
      * Duration in milliseconds before the toast fades.
      */
     readonly duration?: number;
+    /**
+     * The ID of an existing toast to update.
+     */
+    readonly id?: string | number;
 }
 
 /**
@@ -652,19 +656,27 @@ export interface NotificationContext {
     /**
      * Displays an informational toast notification.
      */
-    info(message: string, options?: NotificationOptions): void;
+    info(message: string, options?: NotificationOptions): string | number;
     /**
      * Displays a success toast notification.
      */
-    success(message: string, options?: NotificationOptions): void;
+    success(message: string, options?: NotificationOptions): string | number;
     /**
      * Displays a warning toast notification.
      */
-    warning(message: string, options?: NotificationOptions): void;
+    warning(message: string, options?: NotificationOptions): string | number;
     /**
      * Displays an error toast notification.
      */
-    error(message: string, options?: NotificationOptions): void;
+    error(message: string, options?: NotificationOptions): string | number;
+    /**
+     * Displays a loading toast notification.
+     */
+    loading(message: string, options?: NotificationOptions): string | number;
+    /**
+     * Dismisses a toast notification by its ID, or dismisses all if no ID is provided.
+     */
+    dismiss(id?: string | number): void;
 }
 
 /**
