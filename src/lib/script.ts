@@ -380,37 +380,53 @@ const i18nCtx: I18NContext = {
 };
 
 const notificationCtx: NotificationContext = {
-    info(message: string, options?: NotificationOptions): void {
-        toast.info(tl(message, ...(options?.msgArgs ?? [])), {
+    info(message: string, options?: NotificationOptions): string | number {
+        return toast.info(tl(message, ...(options?.msgArgs ?? [])), {
+            id: options?.id,
             duration: options?.duration,
             description: options?.description
                 ? tl(options.description, ...(options?.descriptionArgs ?? []))
                 : undefined,
         });
     },
-    success(message: string, options?: NotificationOptions): void {
-        toast.success(tl(message, ...(options?.msgArgs ?? [])), {
+    success(message: string, options?: NotificationOptions): string | number {
+        return toast.success(tl(message, ...(options?.msgArgs ?? [])), {
+            id: options?.id,
             duration: options?.duration,
             description: options?.description
                 ? tl(options.description, ...(options?.descriptionArgs ?? []))
                 : undefined,
         });
     },
-    warning(message: string, options?: NotificationOptions): void {
-        toast.warning(tl(message, ...(options?.msgArgs ?? [])), {
+    warning(message: string, options?: NotificationOptions): string | number {
+        return toast.warning(tl(message, ...(options?.msgArgs ?? [])), {
+            id: options?.id,
             duration: options?.duration,
             description: options?.description
                 ? tl(options.description, ...(options?.descriptionArgs ?? []))
                 : undefined,
         });
     },
-    error(message: string, options?: NotificationOptions): void {
-        toast.error(tl(message, ...(options?.msgArgs ?? [])), {
+    error(message: string, options?: NotificationOptions): string | number {
+        return toast.error(tl(message, ...(options?.msgArgs ?? [])), {
+            id: options?.id,
             duration: options?.duration,
             description: options?.description
                 ? tl(options.description, ...(options?.descriptionArgs ?? []))
                 : undefined,
         });
+    },
+    loading(message: string, options?: NotificationOptions): string | number {
+        return toast.loading(tl(message, ...(options?.msgArgs ?? [])), {
+            id: options?.id,
+            duration: options?.duration,
+            description: options?.description
+                ? tl(options.description, ...(options?.descriptionArgs ?? []))
+                : undefined,
+        });
+    },
+    dismiss(id?: string | number): void {
+        toast.dismiss(id);
     },
 };
 
