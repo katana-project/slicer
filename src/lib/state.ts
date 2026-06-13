@@ -6,6 +6,7 @@ export const root = "slicer.state";
 
 export interface ScriptData {
     url: string;
+    name?: string;
     load: boolean;
 }
 

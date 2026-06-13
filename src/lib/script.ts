@@ -69,11 +69,27 @@ export const enum ScriptState {
 
 export interface ProtoScript {
     url: string;
-    id: string; // computed based on url
+    name: string;
+    id: string;
     state: ScriptState;
     script: Script | null;
     context: ScriptContext | null;
 }
+
+const deriveScriptName = (url: string, name?: string): string => {
+    if (name) return name;
+    if (url.startsWith("data:")) return `script-${cyrb53(url).toString(16).slice(0, 8)}`;
+    try {
+        const u = new URL(url);
+        return u.pathname.substring(u.pathname.lastIndexOf("/") + 1) || url;
+    } catch {
+        return url;
+    }
+};
+
+export const displayName = (proto: ProtoScript): string => {
+    return proto.script?.name ?? proto.name;
+};
 
 export const scripts = writable<ProtoScript[]>([]);
 
@@ -525,24 +541,25 @@ const importScript = async (url: string): Promise<Script> => {
     return script;
 };
 
-const read0 = async (url: string): Promise<ProtoScript> => {
+const read0 = async (url: string, name?: string): Promise<ProtoScript> => {
     const id = cyrb53(url).toString(16);
+    const displayName = deriveScriptName(url, name);
     try {
         const script = await importScript(url);
-        return { url, id, state: ScriptState.UNLOADED, script, context: null };
+        return { url, name: displayName, id, state: ScriptState.UNLOADED, script, context: null };
     } catch (e) {
         error("failed to read script", e);
 
         toast.error(tl("toast.error.title.script.generic"), {
-            description: tl("toast.error.script.read", id),
+            description: tl("toast.error.script.read", displayName),
         });
     }
 
-    return { url, id, state: ScriptState.FAILED, script: null, context: null };
+    return { url, name: displayName, id, state: ScriptState.FAILED, script: null, context: null };
 };
 
-export const read = async (url: string): Promise<ProtoScript> => {
-    let script = await read0(url);
+export const read = async (url: string, name?: string): Promise<ProtoScript> => {
+    let script = await read0(url, name);
     scripts.update(($scripts) => {
         const existing = $scripts.find((s) => s.id === script.id);
         if (existing) {
@@ -573,7 +590,7 @@ export const load = async (def: ProtoScript): Promise<void> => {
         def.state = ScriptState.FAILED;
 
         toast.error(tl("toast.error.title.script.generic"), {
-            description: tl("toast.error.script.load", def.id),
+            description: tl("toast.error.script.load", def.name),
         });
     }
 
@@ -597,7 +614,7 @@ export const unload = async (def: ProtoScript): Promise<void> => {
         def.state = ScriptState.FAILED;
 
         toast.error(tl("toast.error.title.script.generic"), {
-            description: tl("toast.error.script.unload", def.id),
+            description: tl("toast.error.script.unload", def.name),
         });
     }
 
@@ -631,14 +648,14 @@ export const reload = async (def: ProtoScript): Promise<void> => {
         }
 
         toast.success(tl("toast.success.title.reload"), {
-            description: tl("toast.success.reload-script", def.id),
+            description: tl("toast.success.reload-script", displayName(def)),
         });
     } catch (e) {
         error("failed to reload script", e);
         def.state = ScriptState.FAILED;
 
         toast.error(tl("toast.error.title.script.generic"), {
-            description: tl("toast.error.script.load", def.id),
+            description: tl("toast.error.script.load", def.name),
         });
     }
 
@@ -649,7 +666,7 @@ export const reload = async (def: ProtoScript): Promise<void> => {
 
 Promise.all(
     get(scriptingScripts).map(async (s) => {
-        const script = await read(s.url);
+        const script = await read(s.url, s.name);
         if (s.load) {
             await load(script);
         }
@@ -660,7 +677,7 @@ Promise.all(
     // start synchronizing stores only after all scripts have tried to load
     scripts.subscribe(($scripts) => {
         scriptingScripts.update(() => {
-            return $scripts.map((s) => ({ url: s.url, load: s.state === ScriptState.LOADED }));
+            return $scripts.map((s) => ({ url: s.url, name: s.name, load: s.state === ScriptState.LOADED }));
         });
     });
 });

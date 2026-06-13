@@ -61,7 +61,7 @@
     import { mappingSet } from "$lib/workspace/analysis/mapping/data";
     import ExportAllMenubarSubContent from "./export_all.svelte";
     import InjectedScriptMenu from "./script/injected.svelte";
-    import { ScriptState } from "$lib/script";
+    import { ScriptState, displayName } from "$lib/script";
     import IconComponent from "$lib/components/icon.svelte";
 
     interface Props {
@@ -78,7 +78,7 @@
     let { panes = $bindable(), tab, entries, classes, scripts, disasms, transformers, handler }: Props = $props();
     let orderedScripts = $derived(
         scripts.toSorted((a, b) => {
-            return (a.script?.name ?? a.id).localeCompare(b.script?.name ?? b.id);
+            return displayName(a).localeCompare(displayName(b));
         })
     );
 

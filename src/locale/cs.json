@@ -391,7 +391,7 @@
     "dialog.prefs-clear.desc": "Toto trvale zruší všechna vaše přizpůsobení. <p class=\"mt-2 font-semibold\">Tuto akci nelze vrátit zpět.</p>",
     "dialog.prefs-clear.action.cancel": "Zrušit",
     "dialog.prefs-clear.action.confirm": "Vymazat",
-    "dialog.script.desc": "Informace o skriptu <span class=\"italic\">{0}</span>.",
+    "dialog.script.desc": "Informace o skriptu.",
     "dialog.script.table.id": "ID",
     "dialog.script.table.name": "Název",
     "dialog.script.table.desc": "Popis",

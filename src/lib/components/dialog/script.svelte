@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { ProtoScript } from "$lib/script";
+    import { type ProtoScript, displayName } from "$lib/script";
     import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "$lib/components/ui/dialog";
     import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "$lib/components/ui/table";
     import type { ModalProps } from "svelte-modals";
@@ -36,10 +36,8 @@
     <DialogContent class="flex w-fit flex-col sm:max-w-4xl">
         <div class="flex flex-col gap-4">
             <DialogHeader>
-                <DialogTitle>{proto.script?.name || proto.id}</DialogTitle>
-                <DialogDescription>
-                    {@html $t("dialog.script.desc", proto.id)}
-                </DialogDescription>
+                <DialogTitle>{displayName(proto)}</DialogTitle>
+                <DialogDescription>{$t("dialog.script.desc")}</DialogDescription>
             </DialogHeader>
             <Table>
                 <TableHeader>

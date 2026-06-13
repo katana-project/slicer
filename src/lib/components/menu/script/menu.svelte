@@ -8,7 +8,7 @@
         MenubarSubContent,
         MenubarSubTrigger,
     } from "$lib/components/ui/menubar";
-    import { type ProtoScript, ScriptState } from "$lib/script";
+    import { type ProtoScript, ScriptState, displayName } from "$lib/script";
     import ScriptOption from "./option.svelte";
     import { Info, RefreshCw, Trash2 } from "@lucide/svelte";
     import type { EventHandler } from "$lib/event";
@@ -35,7 +35,7 @@
 </script>
 
 <MenubarSub>
-    <MenubarSubTrigger>{script?.name || proto.id}</MenubarSubTrigger>
+    <MenubarSubTrigger>{displayName(proto)}</MenubarSubTrigger>
     <MenubarSubContent class="max-h-96 min-w-48 overflow-y-auto">
         <MenubarCheckboxItem
             checked={proto.state === ScriptState.LOADED}
