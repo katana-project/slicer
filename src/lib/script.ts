@@ -5,7 +5,7 @@ import {
     find as findDisasm,
     remove as removeDisasm,
 } from "$lib/disasm";
-import { createSource as createClassSource, createResources } from "$lib/disasm/source";
+import { createResources, createSource as createClassSource } from "$lib/disasm/source";
 import { add as addTl, remove as removeTl, tl, type TranslationKey } from "$lib/i18n";
 import type { Language } from "$lib/lang";
 import { error, warn } from "$lib/log";
@@ -39,21 +39,21 @@ import { mappingSet } from "$lib/workspace/analysis/mapping/data";
 import { DataType, memoryData, type MemoryData, unwrapTransforms } from "$lib/workspace/data";
 import { write as writeMappings } from "$lib/writer/mappings";
 import type {
+    Disassembler as ScriptDisassembler,
     DisassemblerContext,
     EditorContext,
+    Entry as ScriptEntry,
     Event,
     EventListener,
     EventMap,
     EventType,
     I18NContext,
     MappingContext,
+    MappingType as ScriptMappingType,
     NotificationContext,
     NotificationOptions,
     Script,
     ScriptContext,
-    Disassembler as ScriptDisassembler,
-    Entry as ScriptEntry,
-    MappingType as ScriptMappingType,
     Tab as ScriptTab,
     TabDeclaration,
     WorkspaceContext,
@@ -500,30 +500,35 @@ locale.subscribe(($locale) => {
     rootContext.dispatchEvent({ type: "locale_change", locale: $locale });
 });
 
+const importScript = async (url: string): Promise<Script> => {
+    let script: Script;
+    try {
+        script = (await import(/* @vite-ignore */ url)).default as Script;
+    } catch (e) {
+        if (e instanceof TypeError) {
+            // MIME type mismatch? try fetching as text and evaluating
+            const res = await fetch(url);
+            if (!res.ok) {
+                throw new Error(`Failed to fetch script: ${res.status} ${res.statusText}`);
+            }
+
+            const dataUrl = `data:text/javascript;base64,${window.btoa(await res.text())}`;
+            script = (await import(/* @vite-ignore */ dataUrl)).default as Script;
+        } else {
+            throw e;
+        }
+    }
+
+    if (!script?.load || !script?.unload) {
+        throw new Error("Invalid script, missing required properties");
+    }
+    return script;
+};
+
 const read0 = async (url: string): Promise<ProtoScript> => {
     const id = cyrb53(url).toString(16);
     try {
-        let script: Script | null = null;
-        try {
-            script = (await import(/* @vite-ignore */ url)).default as Script;
-        } catch (e) {
-            if (e instanceof TypeError) {
-                // MIME type mismatch? try fetching as text and evaluating
-                const res = await fetch(url);
-                if (!res.ok) {
-                    throw new Error(`Failed to fetch script: ${res.status} ${res.statusText}`);
-                }
-
-                const dataUrl = `data:text/javascript;base64,${window.btoa(await res.text())}`;
-                script = (await import(/* @vite-ignore */ dataUrl)).default as Script;
-            } else {
-                throw e;
-            }
-        }
-        if (!script || !script.load || !script.unload) {
-            throw new Error("Invalid script, missing required properties");
-        }
-
+        const script = await importScript(url);
         return { url, id, state: ScriptState.UNLOADED, script, context: null };
     } catch (e) {
         error("failed to read script", e);
@@ -602,6 +607,39 @@ export const unload = async (def: ProtoScript): Promise<void> => {
 export const remove = async (def: ProtoScript): Promise<void> => {
     await unload(def);
     scripts.update(($scripts) => $scripts.filter((s) => s.id !== def.id));
+};
+
+export const reload = async (def: ProtoScript): Promise<void> => {
+    if (def.state === ScriptState.LOADED) {
+        await unload(def);
+    }
+
+    try {
+        const url = def.url.startsWith("data:")
+            ? def.url
+            : (() => {
+                  const u = new URL(def.url, window.location.href);
+                  u.searchParams.set("t", Date.now().toString());
+                  return u.toString();
+              })();
+
+        def.script = await importScript(url);
+        def.state = ScriptState.UNLOADED;
+        await load(def);
+
+        toast.success(tl("toast.success.title.reload"), {
+            description: tl("toast.success.reload-script", def.id),
+        });
+    } catch (e) {
+        error("failed to reload script", e);
+        def.state = ScriptState.FAILED;
+
+        toast.error(tl("toast.error.title.script.generic"), {
+            description: tl("toast.error.script.load", def.id),
+        });
+    }
+
+    scripts.update(($scripts) => $scripts);
 };
 
 // script loading

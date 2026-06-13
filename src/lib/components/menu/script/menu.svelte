@@ -10,7 +10,7 @@
     } from "$lib/components/ui/menubar";
     import { type ProtoScript, ScriptState } from "$lib/script";
     import ScriptOption from "./option.svelte";
-    import { Info, Trash2 } from "@lucide/svelte";
+    import { Info, RefreshCw, Trash2 } from "@lucide/svelte";
     import type { EventHandler } from "$lib/event";
     import { modals } from "svelte-modals";
     import { ScriptDialog, ScriptDeleteDialog } from "$lib/components/dialog";
@@ -48,6 +48,10 @@
         <MenubarItem inset class="justify-between" onclick={() => modals.open(ScriptDialog, { proto, handler })}>
             {$t("menu.scripts.script.info")}
             <Info size={16} />
+        </MenubarItem>
+        <MenubarItem inset class="justify-between" onclick={() => handler.reloadScript(proto)}>
+            {$t("menu.scripts.script.reload")}
+            <RefreshCw size={16} />
         </MenubarItem>
         <MenubarItem
             inset

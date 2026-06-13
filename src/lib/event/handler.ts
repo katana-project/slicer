@@ -7,6 +7,7 @@ import {
     load as loadScript,
     type ProtoScript,
     read as readScript,
+    reload as reloadScript,
     remove as removeScript,
     unload as unloadScript,
 } from "$lib/script";
@@ -506,6 +507,9 @@ export default {
     },
     loadScript,
     unloadScript,
+    async reloadScript(proto: ProtoScript): Promise<void> {
+        await record("task.script.reload", proto.id, () => reloadScript(proto));
+    },
     async removeScript(proto: ProtoScript): Promise<void> {
         await removeScript(proto);
         toast.success(tl("toast.success.title.delete"), {
