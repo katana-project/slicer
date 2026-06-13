@@ -5,7 +5,7 @@ import {
     find as findDisasm,
     remove as removeDisasm,
 } from "$lib/disasm";
-import { createResources, createSource as createClassSource } from "$lib/disasm/source";
+import { createSource as createClassSource, createResources } from "$lib/disasm/source";
 import { add as addTl, remove as removeTl, tl, type TranslationKey } from "$lib/i18n";
 import type { Language } from "$lib/lang";
 import { error, warn } from "$lib/log";
@@ -39,21 +39,21 @@ import { mappingSet } from "$lib/workspace/analysis/mapping/data";
 import { DataType, memoryData, type MemoryData, unwrapTransforms } from "$lib/workspace/data";
 import { write as writeMappings } from "$lib/writer/mappings";
 import type {
-    Disassembler as ScriptDisassembler,
     DisassemblerContext,
     EditorContext,
-    Entry as ScriptEntry,
     Event,
     EventListener,
     EventMap,
     EventType,
     I18NContext,
     MappingContext,
-    MappingType as ScriptMappingType,
     NotificationContext,
     NotificationOptions,
     Script,
     ScriptContext,
+    Disassembler as ScriptDisassembler,
+    Entry as ScriptEntry,
+    MappingType as ScriptMappingType,
     Tab as ScriptTab,
     TabDeclaration,
     WorkspaceContext,

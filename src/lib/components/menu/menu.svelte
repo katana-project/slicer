@@ -76,6 +76,11 @@
     }
 
     let { panes = $bindable(), tab, entries, classes, scripts, disasms, transformers, handler }: Props = $props();
+    let orderedScripts = $derived(
+        scripts.toSorted((a, b) => {
+            return (a.script?.name ?? a.id).localeCompare(b.script?.name ?? b.id);
+        })
+    );
 
     const updatePane = (position: TabPosition, open: boolean) => {
         let pane = panes.find((p) => p.position === position);
@@ -124,7 +129,7 @@
 
     let extraTopLevelMenus = $derived.by(() => {
         const extraMenus = new Set<TranslationKey>();
-        for (const proto of scripts) {
+        for (const proto of orderedScripts) {
             if (proto.state !== ScriptState.LOADED) continue;
 
             const options = proto.script?.options ?? [];
@@ -210,7 +215,7 @@
                     {$t("menu.root.prefs")}
                     <Settings size={16} />
                 </MenubarItem>
-                <InjectedScriptMenu id="menu.root" protos={scripts} />
+                <InjectedScriptMenu id="menu.root" protos={orderedScripts} />
             </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
@@ -252,7 +257,7 @@
                     {$t("menu.file.export")}
                     <Shortcut key="e" modifier={Modifier.CTRL} />
                 </MenubarItem>
-                <InjectedScriptMenu id="menu.file" protos={scripts} />
+                <InjectedScriptMenu id="menu.file" protos={orderedScripts} />
             </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
@@ -316,7 +321,7 @@
                         </MenubarRadioGroup>
                     </MenubarSubContent>
                 </MenubarSub>
-                <InjectedScriptMenu id="menu.view" protos={scripts} />
+                <InjectedScriptMenu id="menu.view" protos={orderedScripts} />
             </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
@@ -358,7 +363,7 @@
                         {/each}
                     </MenubarSubContent>
                 </MenubarSub>
-                <InjectedScriptMenu id="menu.analysis" protos={scripts} />
+                <InjectedScriptMenu id="menu.analysis" protos={orderedScripts} />
             </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
@@ -408,7 +413,7 @@
                     {$t("menu.mapping.clear")}
                     <Trash size={16} />
                 </MenubarItem>
-                <InjectedScriptMenu id="menu.mapping" protos={scripts} />
+                <InjectedScriptMenu id="menu.mapping" protos={orderedScripts} />
             </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
@@ -438,9 +443,9 @@
                         </MenubarItem>
                     </MenubarSubContent>
                 </MenubarSub>
-                {#if scripts.length > 0}
+                {#if orderedScripts.length > 0}
                     <MenubarSeparator />
-                    {#each scripts as proto (proto.id)}
+                    {#each orderedScripts as proto (proto.id)}
                         <ScriptMenu {proto} {handler} />
                     {/each}
                 {/if}
@@ -452,14 +457,14 @@
                     {$t("menu.scripts.docs")}
                     <BookOpen size={16} />
                 </MenubarItem>
-                <InjectedScriptMenu id="menu.scripts" protos={scripts} />
+                <InjectedScriptMenu id="menu.scripts" protos={orderedScripts} />
             </MenubarContent>
         </MenubarMenu>
         {#each extraTopLevelMenus as id (id)}
             <MenubarMenu>
                 <MenubarTrigger class="relative">{$t(id)}</MenubarTrigger>
                 <MenubarContent align="start">
-                    <InjectedScriptMenu {id} protos={scripts} top />
+                    <InjectedScriptMenu {id} protos={orderedScripts} top />
                 </MenubarContent>
             </MenubarMenu>
         {/each}
