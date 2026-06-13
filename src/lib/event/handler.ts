@@ -40,6 +40,7 @@ import {
     type Task,
 } from "$lib/task";
 import {
+    base64Encode,
     chunk,
     distribute,
     downloadBlob,
@@ -483,7 +484,7 @@ export default {
             try {
                 const data = await navigator.clipboard.readText();
 
-                url = `data:text/javascript;base64,${window.btoa(data)}`;
+                url = `data:text/javascript;base64,${base64Encode(data)}`;
             } catch (e) {
                 toast.error(tl("toast.error.title.generic"), {
                     description: tl("toast.error.clipboard.denied"),
@@ -492,7 +493,7 @@ export default {
             }
         } else if (data instanceof File) {
             const dataContent = await data.text();
-            url = `data:text/javascript;base64,${window.btoa(dataContent)}`;
+            url = `data:text/javascript;base64,${base64Encode(dataContent)}`;
         } else {
             url = data;
         }

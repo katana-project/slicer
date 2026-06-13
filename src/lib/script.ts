@@ -23,7 +23,7 @@ import {
     tabDefs,
     tabs,
 } from "$lib/tab";
-import { cancellable, cyrb53 } from "$lib/utils";
+import { base64Encode, cancellable, cyrb53 } from "$lib/utils";
 import {
     type ClassEntry,
     clear as clearWs,
@@ -512,7 +512,7 @@ const importScript = async (url: string): Promise<Script> => {
                 throw new Error(`Failed to fetch script: ${res.status} ${res.statusText}`);
             }
 
-            const dataUrl = `data:text/javascript;base64,${window.btoa(await res.text())}`;
+            const dataUrl = `data:text/javascript;base64,${base64Encode(await res.text())}`;
             script = (await import(/* @vite-ignore */ dataUrl)).default as Script;
         } else {
             throw e;
