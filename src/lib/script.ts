@@ -5,7 +5,7 @@ import {
     find as findDisasm,
     remove as removeDisasm,
 } from "$lib/disasm";
-import { createSource as createClassSource, createResources } from "$lib/disasm/source";
+import { createResources, createSource as createClassSource } from "$lib/disasm/source";
 import { add as addTl, remove as removeTl, tl, type TranslationKey } from "$lib/i18n";
 import type { Language } from "$lib/lang";
 import { error, warn } from "$lib/log";
@@ -39,21 +39,21 @@ import { mappingSet } from "$lib/workspace/analysis/mapping/data";
 import { DataType, memoryData, type MemoryData, unwrapTransforms } from "$lib/workspace/data";
 import { write as writeMappings } from "$lib/writer/mappings";
 import type {
+    Disassembler as ScriptDisassembler,
     DisassemblerContext,
     EditorContext,
+    Entry as ScriptEntry,
     Event,
     EventListener,
     EventMap,
     EventType,
     I18NContext,
     MappingContext,
+    MappingType as ScriptMappingType,
     NotificationContext,
     NotificationOptions,
     Script,
     ScriptContext,
-    Disassembler as ScriptDisassembler,
-    Entry as ScriptEntry,
-    MappingType as ScriptMappingType,
     Tab as ScriptTab,
     TabDeclaration,
     WorkspaceContext,
@@ -485,13 +485,9 @@ locale.subscribe(($locale) => {
 });
 
 const importScript = async (url: string): Promise<Script> => {
+    let script: Script;
     try {
-        const mod = await import(/* @vite-ignore */ url);
-        const script = mod.default as Script;
-        if (!script?.load || !script?.unload) {
-            throw new Error("Invalid script, missing required properties");
-        }
-        return script;
+        script = (await import(/* @vite-ignore */ url)).default as Script;
     } catch (e) {
         if (e instanceof TypeError) {
             // MIME type mismatch? try fetching as text and evaluating
@@ -501,15 +497,16 @@ const importScript = async (url: string): Promise<Script> => {
             }
 
             const dataUrl = `data:text/javascript;base64,${window.btoa(await res.text())}`;
-            const mod = await import(/* @vite-ignore */ dataUrl);
-            const script = mod.default as Script;
-            if (!script?.load || !script?.unload) {
-                throw new Error("Invalid script, missing required properties");
-            }
-            return script;
+            script = (await import(/* @vite-ignore */ dataUrl)).default as Script;
+        } else {
+            throw e;
         }
-        throw e;
     }
+
+    if (!script?.load || !script?.unload) {
+        throw new Error("Invalid script, missing required properties");
+    }
+    return script;
 };
 
 const read0 = async (url: string): Promise<ProtoScript> => {
@@ -610,9 +607,7 @@ export const reload = async (def: ProtoScript): Promise<void> => {
                   return u.toString();
               })();
 
-        const script = await importScript(url);
-
-        def.script = script;
+        def.script = await importScript(url);
         def.state = ScriptState.UNLOADED;
         await load(def);
 
