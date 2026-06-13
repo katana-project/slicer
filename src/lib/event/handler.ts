@@ -4,11 +4,13 @@ import { error } from "$lib/log";
 import { workers } from "$lib/reader";
 import { MappingType } from "$lib/reader/mappings";
 import {
+    displayName,
     load as loadScript,
     type ProtoScript,
     read as readScript,
     reload as reloadScript,
     remove as removeScript,
+    ScriptState,
     unload as unloadScript,
 } from "$lib/script";
 import { dismissedToasts, projectMode, urlRemote, urlRemoteFile } from "$lib/state";
@@ -39,6 +41,7 @@ import {
     type Task,
 } from "$lib/task";
 import {
+    base64Encode,
     chunk,
     distribute,
     downloadBlob,
@@ -471,6 +474,7 @@ export default {
     },
     async addScript(data?: string | File, load?: boolean): Promise<void> {
         let url: string | undefined;
+        let name: string | undefined;
         if (!data) {
             if (!navigator.clipboard) {
                 toast.error(tl("toast.error.title.generic"), {
@@ -482,7 +486,8 @@ export default {
             try {
                 const data = await navigator.clipboard.readText();
 
-                url = `data:text/javascript;base64,${window.btoa(data)}`;
+                url = `data:text/javascript;base64,${base64Encode(data)}`;
+                name = "clipboard";
             } catch (e) {
                 toast.error(tl("toast.error.title.generic"), {
                     description: tl("toast.error.clipboard.denied"),
@@ -491,18 +496,22 @@ export default {
             }
         } else if (data instanceof File) {
             const dataContent = await data.text();
-            url = `data:text/javascript;base64,${window.btoa(dataContent)}`;
+            url = `data:text/javascript;base64,${base64Encode(dataContent)}`;
+            name = data.name;
         } else {
             url = data;
         }
 
-        const proto = await record("task.script.import", truncate(url, 120), () => readScript(url));
-        toast.success(tl("toast.success.title.import"), {
-            description: tl("toast.success.import-script", proto.id),
-        });
+        const proto = await record("task.script.import", truncate(url, 120), () => readScript(url, name));
 
-        if (load) {
-            await loadScript(proto);
+        if (proto.state !== ScriptState.FAILED) {
+            toast.success(tl("toast.success.title.import"), {
+                description: tl("toast.success.import-script", displayName(proto)),
+            });
+
+            if (load) {
+                await loadScript(proto);
+            }
         }
     },
     loadScript,
@@ -513,7 +522,7 @@ export default {
     async removeScript(proto: ProtoScript): Promise<void> {
         await removeScript(proto);
         toast.success(tl("toast.success.title.delete"), {
-            description: tl("toast.success.delete-script", proto.id),
+            description: tl("toast.success.delete-script", displayName(proto)),
         });
     },
 } satisfies EventHandler;

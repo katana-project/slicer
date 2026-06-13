@@ -10,7 +10,7 @@
         AlertDialogTitle,
     } from "$lib/components/ui/alert-dialog";
     import { buttonVariants } from "$lib/components/ui/button";
-    import type { ProtoScript } from "$lib/script";
+    import { type ProtoScript, displayName } from "$lib/script";
     import type { EventHandler } from "$lib/event";
     import type { ModalProps } from "svelte-modals";
     import { t } from "$lib/i18n";
@@ -35,7 +35,7 @@
         <AlertDialogHeader>
             <AlertDialogTitle>{$t("dialog.script-delete.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-                {@html $t("dialog.script-delete.desc", proto.id)}
+                {@html $t("dialog.script-delete.desc", displayName(proto))}
             </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

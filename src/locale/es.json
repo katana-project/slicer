@@ -393,7 +393,7 @@
     "dialog.prefs-clear.desc": "Esto deshará permanentemente todas tus personalizaciones. <p class=\"mt-2 font-semibold\">Esta acción no se puede deshacer.</p>",
     "dialog.prefs-clear.action.cancel": "Cancelar",
     "dialog.prefs-clear.action.confirm": "Restablecer",
-    "dialog.script.desc": "Información sobre el script <span class=\"italic\">{0}</span>.",
+    "dialog.script.desc": "Información sobre el script.",
     "dialog.script.table.id": "ID",
     "dialog.script.table.name": "Nombre",
     "dialog.script.table.desc": "Descripción",

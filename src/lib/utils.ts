@@ -730,6 +730,10 @@ export const capitalize = (str: string): string => {
     return str.charAt(0).toUpperCase() + str.substring(1);
 };
 
+export const base64Encode = (str: string): string => {
+    return window.btoa(unescape(encodeURIComponent(str)));
+};
+
 const npEscapes = new Map<string, string>();
 for (const [start, end] of [
     [0x0000, 0x001f],
