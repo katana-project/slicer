@@ -74,7 +74,7 @@
     "pane.header.open.no-results": "No se encontró la pestaña.",
     "pane.header.menu.close.self": "Cerrar",
     "pane.header.menu.close.others": "Cerrar las demás",
-    "pane.header.menu.close.right": "Cerca a la derecha",
+    "pane.header.menu.close.right": "Cerrar a la derecha",
     "pane.header.menu.close.all": "Cerrar todas",
     "pane.header.menu.pin": "Anclar pestaña",
     "pane.header.menu.unpin": "Desanclar pestaña",
