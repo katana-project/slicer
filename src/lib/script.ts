@@ -610,7 +610,8 @@ export const remove = async (def: ProtoScript): Promise<void> => {
 };
 
 export const reload = async (def: ProtoScript): Promise<void> => {
-    if (def.state === ScriptState.LOADED) {
+    const loaded = def.state === ScriptState.LOADED;
+    if (loaded) {
         await unload(def);
     }
 
@@ -625,7 +626,9 @@ export const reload = async (def: ProtoScript): Promise<void> => {
 
         def.script = await importScript(url);
         def.state = ScriptState.UNLOADED;
-        await load(def);
+        if (loaded) {
+            await load(def);
+        }
 
         toast.success(tl("toast.success.title.reload"), {
             description: tl("toast.success.reload-script", def.id),

@@ -9,6 +9,7 @@ import {
     read as readScript,
     reload as reloadScript,
     remove as removeScript,
+    ScriptState,
     unload as unloadScript,
 } from "$lib/script";
 import { dismissedToasts, projectMode, urlRemote, urlRemoteFile } from "$lib/state";
@@ -497,12 +498,15 @@ export default {
         }
 
         const proto = await record("task.script.import", truncate(url, 120), () => readScript(url));
-        toast.success(tl("toast.success.title.import"), {
-            description: tl("toast.success.import-script", proto.id),
-        });
 
-        if (load) {
-            await loadScript(proto);
+        if (proto.state !== ScriptState.FAILED) {
+            toast.success(tl("toast.success.title.import"), {
+                description: tl("toast.success.import-script", proto.id),
+            });
+
+            if (load) {
+                await loadScript(proto);
+            }
         }
     },
     loadScript,
