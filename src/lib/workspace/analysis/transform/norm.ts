@@ -1,4 +1,6 @@
 import { type Member, write } from "@katana-project/asm";
+import { removeUnreachable } from "@katana-project/asm/analysis/reach";
+import { verify } from "@katana-project/asm/analysis/verify";
 import type { CodeAttribute } from "@katana-project/asm/attr";
 import type { LoadStoreInstruction } from "@katana-project/asm/insn";
 import { AttributeType, Modifier, Opcode } from "@katana-project/asm/spec";
@@ -32,9 +34,7 @@ export default [
         group: "norm",
         icon: ShieldCheck,
         async run(entry, _data) {
-            const { verify } = await import("@katana-project/asm/analysis/verify");
             verify(entry.node);
-
             return write(entry.node);
         },
     },
@@ -146,7 +146,6 @@ export default [
         group: "norm",
         icon: Paintbrush,
         async run(entry, _data) {
-            const { removeUnreachable } = await import("@katana-project/asm/analysis/reach");
             for (const method of entry.node.methods) {
                 const code = method.attrs.findIndex((a) => a.type === AttributeType.CODE);
                 if (code !== -1) {

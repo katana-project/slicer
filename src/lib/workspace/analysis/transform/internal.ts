@@ -1,7 +1,7 @@
 import { rootContext } from "$lib/script";
 import { mappings } from "$lib/workspace/analysis/mapping";
 import { write } from "@katana-project/asm";
-import type { Remapper } from "@katana-project/asm/analysis/remap";
+import { remap, type Remapper } from "@katana-project/asm/analysis/remap";
 import {
     arrayType,
     type ArrayType,
@@ -133,9 +133,7 @@ export const internalEarlyTransformers: Transformer[] = [
                 return data;
             }
 
-            const { remap } = await import("@katana-project/asm/analysis/remap");
             remap(entry.node, $remapper);
-
             return write(entry.node);
         },
     },
