@@ -71,7 +71,6 @@
             class="bg-background min-h-10 w-full resize-none overflow-hidden font-mono text-xs focus-visible:outline-hidden"
             spellcheck="false"
             onkeydown={handleKeyDown}
-            oninput={handleInput}
-        ></textarea>
+            oninput={handleInput}></textarea>
     </div>
 </div>

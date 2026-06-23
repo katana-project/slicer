@@ -72,8 +72,7 @@
             <textarea
                 readonly
                 class="bg-muted/40 h-72 resize-none rounded-md p-4 font-mono text-sm break-all"
-                value={text || $t("dialog.script.load-fail")}
-            ></textarea>
+                value={text || $t("dialog.script.load-fail")}></textarea>
         {/await}
     </DialogContent>
 </Dialog>
