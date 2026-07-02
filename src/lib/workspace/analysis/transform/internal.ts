@@ -1,4 +1,4 @@
-import { rootContext } from "$lib/script";
+import { rootContext, wrapEntry } from "$lib/script";
 import { mappings } from "$lib/workspace/analysis/mapping";
 import { write } from "@katana-project/asm";
 import { remap, type Remapper } from "@katana-project/asm/analysis/remap";
@@ -28,7 +28,23 @@ export const internalTransformers: Transformer[] = [
         id: "script",
         internal: true,
         async run(entry, data) {
-            return (await rootContext.dispatchEvent({ type: "preload", name: entry.name, data })).data;
+            const scriptEntry = wrapEntry(entry);
+            const transformEvt = await rootContext.dispatchEvent({
+                type: "transform",
+                entry: scriptEntry,
+                name: entry.name,
+                data,
+            });
+
+            // the "transform" event takes precedence: internal transforms -> "transform" event -> "preload" event
+            return (
+                await rootContext.dispatchEvent({
+                    type: "preload",
+                    entry: scriptEntry,
+                    name: entry.name,
+                    data: transformEvt.data,
+                })
+            ).data;
         },
     },
 ];

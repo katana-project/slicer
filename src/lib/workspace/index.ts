@@ -1,4 +1,5 @@
 import { warn } from "$lib/log";
+import { rootContext, wrapEntry } from "$lib/script";
 import { analysisBackground, workspaceArchiveDuplicateHandling, workspacePreventUnload } from "$lib/state";
 import { record } from "$lib/task";
 import { fetchProgress, groupBy, prettyMethodDesc, refFromName } from "$lib/utils";
@@ -16,7 +17,7 @@ import {
     waitForBackgroundAnalysis,
 } from "./analysis";
 import { transform } from "./analysis/transform";
-import { type Data, fileData, memoryData, type Named, parseName, zipData } from "./data";
+import { type Data, fileData, memoryData, type Named, parseName, transformData, zipData } from "./data";
 import { archiveDecoder } from "./encoding";
 
 export const enum EntryType {
@@ -77,6 +78,20 @@ export const readDeferred = async (entry: Entry): Promise<Entry> => {
     // preprocess class file
     if (entry.type === EntryType.CLASS || entry.type === EntryType.MEMBER) {
         entry = await transform(entry as ClassEntry);
+    } else {
+        // alternative path for transforming non-class entries via scripts
+        const data = await entry.data.bytes();
+        const transformEvt = await rootContext.dispatchEvent({
+            type: "transform",
+            name: entry.name,
+            entry: wrapEntry(entry),
+            data,
+        });
+        if (transformEvt.data === data) {
+            return entry; // no transformation occurred
+        }
+
+        entry = { ...entry, data: transformData(entry.data, transformEvt.data) };
     }
     return entry;
 };

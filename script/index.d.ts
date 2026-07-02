@@ -122,7 +122,7 @@ export interface RadioOption extends Option {
 /**
  * A type of {@link Event}.
  */
-export type EventType = "option_change" | "locale_change" | "preload";
+export type EventType = "option_change" | "locale_change" | "preload" | "transform";
 
 /**
  * An event emitted onto an event bus.
@@ -164,16 +164,27 @@ export interface LocaleChangeEvent extends Event {
 }
 
 /**
- * An event emitted when a class file is to be interpreted (read) in a tab.
+ * An event emitted when a workspace entry is to be interpreted (read) in a tab.
+ *
+ * If the event type is `preload`, the entry is guaranteed to be a class file with readable bytecode.
  */
-export interface PreloadEvent extends Event {
-    readonly type: "preload";
+export interface TransformEvent extends Event {
+    readonly type: "preload" | "transform";
+
+    /**
+     * The workspace entry.
+     */
+    readonly entry: Entry;
+
     /**
      * The name of *the workspace entry* being loaded ({@link Entry#name}).
      */
     readonly name: string;
+
     /**
-     * The *transformed* raw bytecode of the class file, mutable.
+     * The raw data of the entry, mutable.
+     *
+     * If the event type is `preload`, this is the *transformed* raw bytecode of the class file.
      */
     data: Uint8Array;
 }
@@ -184,7 +195,11 @@ export interface PreloadEvent extends Event {
 export interface EventMap {
     option_change: OptionChangeEvent;
     locale_change: LocaleChangeEvent;
-    preload: PreloadEvent;
+    /**
+     * @deprecated Use the `transform` event with an entry type check.
+     */
+    preload: TransformEvent;
+    transform: TransformEvent;
 }
 
 /**
@@ -371,7 +386,7 @@ export interface EditorContext {
     /**
      * Refreshes a tab.
      * @param id The unique identifier of the tab to refresh.
-     * @param hard Whether to perform a hard refresh, which retransforms the associated entry (and fires {@link PreloadEvent}). Defaults to `false`.
+     * @param hard Whether to perform a hard refresh, which retransforms the associated entry (and fires {@link TransformEvent}). Defaults to `false`.
      */
     refresh(id: string, hard?: boolean): Awaitable<void>;
 
