@@ -393,7 +393,7 @@
     "dialog.prefs-clear.desc": "Dadurch werden alle Ihre Anpassungen dauerhaft rückgängig gemacht. <p class=\"mt-2 font-semibold\">Diese Aktion kann nicht rückgängig gemacht werden.</p>",
     "dialog.prefs-clear.action.cancel": "Abbrechen",
     "dialog.prefs-clear.action.confirm": "Löschen",
-    "dialog.script.desc": "Informationen über das <span class=\"italic\">{0}</span> Skript.",
+    "dialog.script.desc": "Informationen über das Skript.",
     "dialog.script.table.id": "ID",
     "dialog.script.table.name": "Name",
     "dialog.script.table.desc": "Beschreibung",
