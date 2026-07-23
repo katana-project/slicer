@@ -4609,6 +4609,8 @@ export const org = $root.org = (() => {
                      * @property {Array.<org.jetbrains.kotlin.metadata.ITypeParameter>|null} [typeParameter] Function typeParameter
                      * @property {org.jetbrains.kotlin.metadata.IType|null} [receiverType] Function receiverType
                      * @property {number|null} [receiverTypeId] Function receiverTypeId
+                     * @property {org.jetbrains.kotlin.metadata.IType|null} [companionExtensionReceiverType] Function companionExtensionReceiverType
+                     * @property {number|null} [companionExtensionReceiverTypeId] Function companionExtensionReceiverTypeId
                      * @property {Array.<org.jetbrains.kotlin.metadata.IType>|null} [contextReceiverType] Function contextReceiverType
                      * @property {Array.<number>|null} [contextReceiverTypeId] Function contextReceiverTypeId
                      * @property {Array.<org.jetbrains.kotlin.metadata.IValueParameter>|null} [contextParameter] Function contextParameter
@@ -4708,6 +4710,22 @@ export const org = $root.org = (() => {
                      * @instance
                      */
                     Function.prototype.receiverTypeId = 0;
+
+                    /**
+                     * Function companionExtensionReceiverType.
+                     * @member {org.jetbrains.kotlin.metadata.IType|null|undefined} companionExtensionReceiverType
+                     * @memberof org.jetbrains.kotlin.metadata.Function
+                     * @instance
+                     */
+                    Function.prototype.companionExtensionReceiverType = null;
+
+                    /**
+                     * Function companionExtensionReceiverTypeId.
+                     * @member {number} companionExtensionReceiverTypeId
+                     * @memberof org.jetbrains.kotlin.metadata.Function
+                     * @instance
+                     */
+                    Function.prototype.companionExtensionReceiverTypeId = 0;
 
                     /**
                      * Function contextReceiverType.
@@ -4841,6 +4859,14 @@ export const org = $root.org = (() => {
                                 }
                             case 8: {
                                     message.receiverTypeId = reader.int32();
+                                    break;
+                                }
+                            case 14: {
+                                    message.companionExtensionReceiverType = $root.org.jetbrains.kotlin.metadata.Type.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 15: {
+                                    message.companionExtensionReceiverTypeId = reader.int32();
                                     break;
                                 }
                             case 10: {
@@ -4977,6 +5003,13 @@ export const org = $root.org = (() => {
                         }
                         if (object.receiverTypeId != null)
                             message.receiverTypeId = object.receiverTypeId | 0;
+                        if (object.companionExtensionReceiverType != null) {
+                            if (typeof object.companionExtensionReceiverType !== "object")
+                                throw TypeError(".org.jetbrains.kotlin.metadata.Function.companionExtensionReceiverType: object expected");
+                            message.companionExtensionReceiverType = $root.org.jetbrains.kotlin.metadata.Type.fromObject(object.companionExtensionReceiverType);
+                        }
+                        if (object.companionExtensionReceiverTypeId != null)
+                            message.companionExtensionReceiverTypeId = object.companionExtensionReceiverTypeId | 0;
                         if (object.contextReceiverType) {
                             if (!Array.isArray(object.contextReceiverType))
                                 throw TypeError(".org.jetbrains.kotlin.metadata.Function.contextReceiverType: array expected");
@@ -5096,6 +5129,8 @@ export const org = $root.org = (() => {
                             object.returnTypeId = 0;
                             object.receiverTypeId = 0;
                             object.flags = 6;
+                            object.companionExtensionReceiverType = null;
+                            object.companionExtensionReceiverTypeId = 0;
                             object.typeTable = null;
                             object.contract = null;
                         }
@@ -5143,6 +5178,10 @@ export const org = $root.org = (() => {
                             for (let j = 0; j < message.contextParameter.length; ++j)
                                 object.contextParameter[j] = $root.org.jetbrains.kotlin.metadata.ValueParameter.toObject(message.contextParameter[j], options);
                         }
+                        if (message.companionExtensionReceiverType != null && message.hasOwnProperty("companionExtensionReceiverType"))
+                            object.companionExtensionReceiverType = $root.org.jetbrains.kotlin.metadata.Type.toObject(message.companionExtensionReceiverType, options);
+                        if (message.companionExtensionReceiverTypeId != null && message.hasOwnProperty("companionExtensionReceiverTypeId"))
+                            object.companionExtensionReceiverTypeId = message.companionExtensionReceiverTypeId;
                         if (message.typeTable != null && message.hasOwnProperty("typeTable"))
                             object.typeTable = $root.org.jetbrains.kotlin.metadata.TypeTable.toObject(message.typeTable, options);
                         if (message.versionRequirement && message.versionRequirement.length) {
@@ -5208,6 +5247,8 @@ export const org = $root.org = (() => {
                      * @property {Array.<org.jetbrains.kotlin.metadata.ITypeParameter>|null} [typeParameter] Property typeParameter
                      * @property {org.jetbrains.kotlin.metadata.IType|null} [receiverType] Property receiverType
                      * @property {number|null} [receiverTypeId] Property receiverTypeId
+                     * @property {org.jetbrains.kotlin.metadata.IType|null} [companionExtensionReceiverType] Property companionExtensionReceiverType
+                     * @property {number|null} [companionExtensionReceiverTypeId] Property companionExtensionReceiverTypeId
                      * @property {Array.<org.jetbrains.kotlin.metadata.IType>|null} [contextReceiverType] Property contextReceiverType
                      * @property {Array.<number>|null} [contextReceiverTypeId] Property contextReceiverTypeId
                      * @property {Array.<org.jetbrains.kotlin.metadata.IValueParameter>|null} [contextParameter] Property contextParameter
@@ -5316,6 +5357,22 @@ export const org = $root.org = (() => {
                      * @instance
                      */
                     Property.prototype.receiverTypeId = 0;
+
+                    /**
+                     * Property companionExtensionReceiverType.
+                     * @member {org.jetbrains.kotlin.metadata.IType|null|undefined} companionExtensionReceiverType
+                     * @memberof org.jetbrains.kotlin.metadata.Property
+                     * @instance
+                     */
+                    Property.prototype.companionExtensionReceiverType = null;
+
+                    /**
+                     * Property companionExtensionReceiverTypeId.
+                     * @member {number} companionExtensionReceiverTypeId
+                     * @memberof org.jetbrains.kotlin.metadata.Property
+                     * @instance
+                     */
+                    Property.prototype.companionExtensionReceiverTypeId = 0;
 
                     /**
                      * Property contextReceiverType.
@@ -5499,6 +5556,14 @@ export const org = $root.org = (() => {
                                     message.receiverTypeId = reader.int32();
                                     break;
                                 }
+                            case 18: {
+                                    message.companionExtensionReceiverType = $root.org.jetbrains.kotlin.metadata.Type.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 19: {
+                                    message.companionExtensionReceiverTypeId = reader.int32();
+                                    break;
+                                }
                             case 12: {
                                     if (!(message.contextReceiverType && message.contextReceiverType.length))
                                         message.contextReceiverType = [];
@@ -5663,6 +5728,13 @@ export const org = $root.org = (() => {
                         }
                         if (object.receiverTypeId != null)
                             message.receiverTypeId = object.receiverTypeId | 0;
+                        if (object.companionExtensionReceiverType != null) {
+                            if (typeof object.companionExtensionReceiverType !== "object")
+                                throw TypeError(".org.jetbrains.kotlin.metadata.Property.companionExtensionReceiverType: object expected");
+                            message.companionExtensionReceiverType = $root.org.jetbrains.kotlin.metadata.Type.fromObject(object.companionExtensionReceiverType);
+                        }
+                        if (object.companionExtensionReceiverTypeId != null)
+                            message.companionExtensionReceiverTypeId = object.companionExtensionReceiverTypeId | 0;
                         if (object.contextReceiverType) {
                             if (!Array.isArray(object.contextReceiverType))
                                 throw TypeError(".org.jetbrains.kotlin.metadata.Property.contextReceiverType: array expected");
@@ -5827,6 +5899,8 @@ export const org = $root.org = (() => {
                             object.returnTypeId = 0;
                             object.receiverTypeId = 0;
                             object.flags = 518;
+                            object.companionExtensionReceiverType = null;
+                            object.companionExtensionReceiverTypeId = 0;
                             object.getterContract = null;
                             object.setterContract = null;
                         }
@@ -5885,6 +5959,10 @@ export const org = $root.org = (() => {
                             for (let j = 0; j < message.contextParameter.length; ++j)
                                 object.contextParameter[j] = $root.org.jetbrains.kotlin.metadata.ValueParameter.toObject(message.contextParameter[j], options);
                         }
+                        if (message.companionExtensionReceiverType != null && message.hasOwnProperty("companionExtensionReceiverType"))
+                            object.companionExtensionReceiverType = $root.org.jetbrains.kotlin.metadata.Type.toObject(message.companionExtensionReceiverType, options);
+                        if (message.companionExtensionReceiverTypeId != null && message.hasOwnProperty("companionExtensionReceiverTypeId"))
+                            object.companionExtensionReceiverTypeId = message.companionExtensionReceiverTypeId;
                         if (message.versionRequirement && message.versionRequirement.length) {
                             object.versionRequirement = [];
                             for (let j = 0; j < message.versionRequirement.length; ++j)
@@ -5960,6 +6038,8 @@ export const org = $root.org = (() => {
                      * @property {number|null} [varargElementTypeId] ValueParameter varargElementTypeId
                      * @property {Array.<org.jetbrains.kotlin.metadata.IAnnotation>|null} [annotation] ValueParameter annotation
                      * @property {org.jetbrains.kotlin.metadata.Annotation.Argument.IValue|null} [annotationParameterDefaultValue] ValueParameter annotationParameterDefaultValue
+                     * @property {org.jetbrains.kotlin.metadata.IType|null} [equalityBoundType] ValueParameter equalityBoundType
+                     * @property {number|null} [equalityBoundTypeId] ValueParameter equalityBoundTypeId
                      */
 
                     /**
@@ -6043,6 +6123,22 @@ export const org = $root.org = (() => {
                     ValueParameter.prototype.annotationParameterDefaultValue = null;
 
                     /**
+                     * ValueParameter equalityBoundType.
+                     * @member {org.jetbrains.kotlin.metadata.IType|null|undefined} equalityBoundType
+                     * @memberof org.jetbrains.kotlin.metadata.ValueParameter
+                     * @instance
+                     */
+                    ValueParameter.prototype.equalityBoundType = null;
+
+                    /**
+                     * ValueParameter equalityBoundTypeId.
+                     * @member {number} equalityBoundTypeId
+                     * @memberof org.jetbrains.kotlin.metadata.ValueParameter
+                     * @instance
+                     */
+                    ValueParameter.prototype.equalityBoundTypeId = 0;
+
+                    /**
                      * Decodes a ValueParameter message from the specified reader or buffer.
                      * @function decode
                      * @memberof org.jetbrains.kotlin.metadata.ValueParameter
@@ -6094,6 +6190,14 @@ export const org = $root.org = (() => {
                                 }
                             case 8: {
                                     message.annotationParameterDefaultValue = $root.org.jetbrains.kotlin.metadata.Annotation.Argument.Value.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 9: {
+                                    message.equalityBoundType = $root.org.jetbrains.kotlin.metadata.Type.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 10: {
+                                    message.equalityBoundTypeId = reader.int32();
                                     break;
                                 }
                             default:
@@ -6167,6 +6271,13 @@ export const org = $root.org = (() => {
                                 throw TypeError(".org.jetbrains.kotlin.metadata.ValueParameter.annotationParameterDefaultValue: object expected");
                             message.annotationParameterDefaultValue = $root.org.jetbrains.kotlin.metadata.Annotation.Argument.Value.fromObject(object.annotationParameterDefaultValue);
                         }
+                        if (object.equalityBoundType != null) {
+                            if (typeof object.equalityBoundType !== "object")
+                                throw TypeError(".org.jetbrains.kotlin.metadata.ValueParameter.equalityBoundType: object expected");
+                            message.equalityBoundType = $root.org.jetbrains.kotlin.metadata.Type.fromObject(object.equalityBoundType);
+                        }
+                        if (object.equalityBoundTypeId != null)
+                            message.equalityBoundTypeId = object.equalityBoundTypeId | 0;
                         return message;
                     };
 
@@ -6193,6 +6304,8 @@ export const org = $root.org = (() => {
                             object.typeId = 0;
                             object.varargElementTypeId = 0;
                             object.annotationParameterDefaultValue = null;
+                            object.equalityBoundType = null;
+                            object.equalityBoundTypeId = 0;
                         }
                         if (message.flags != null && message.hasOwnProperty("flags"))
                             object.flags = message.flags;
@@ -6213,6 +6326,10 @@ export const org = $root.org = (() => {
                         }
                         if (message.annotationParameterDefaultValue != null && message.hasOwnProperty("annotationParameterDefaultValue"))
                             object.annotationParameterDefaultValue = $root.org.jetbrains.kotlin.metadata.Annotation.Argument.Value.toObject(message.annotationParameterDefaultValue, options);
+                        if (message.equalityBoundType != null && message.hasOwnProperty("equalityBoundType"))
+                            object.equalityBoundType = $root.org.jetbrains.kotlin.metadata.Type.toObject(message.equalityBoundType, options);
+                        if (message.equalityBoundTypeId != null && message.hasOwnProperty("equalityBoundTypeId"))
+                            object.equalityBoundTypeId = message.equalityBoundTypeId;
                         return object;
                     };
 

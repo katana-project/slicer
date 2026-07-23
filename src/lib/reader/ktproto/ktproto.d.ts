@@ -1599,6 +1599,12 @@ export namespace org {
                     /** Function receiverTypeId */
                     receiverTypeId?: (number|null);
 
+                    /** Function companionExtensionReceiverType */
+                    companionExtensionReceiverType?: (org.jetbrains.kotlin.metadata.IType|null);
+
+                    /** Function companionExtensionReceiverTypeId */
+                    companionExtensionReceiverTypeId?: (number|null);
+
                     /** Function contextReceiverType */
                     contextReceiverType?: (org.jetbrains.kotlin.metadata.IType[]|null);
 
@@ -1662,6 +1668,12 @@ export namespace org {
 
                     /** Function receiverTypeId. */
                     public receiverTypeId: number;
+
+                    /** Function companionExtensionReceiverType. */
+                    public companionExtensionReceiverType?: (org.jetbrains.kotlin.metadata.IType|null);
+
+                    /** Function companionExtensionReceiverTypeId. */
+                    public companionExtensionReceiverTypeId: number;
 
                     /** Function contextReceiverType. */
                     public contextReceiverType: org.jetbrains.kotlin.metadata.IType[];
@@ -1768,6 +1780,12 @@ export namespace org {
                     /** Property receiverTypeId */
                     receiverTypeId?: (number|null);
 
+                    /** Property companionExtensionReceiverType */
+                    companionExtensionReceiverType?: (org.jetbrains.kotlin.metadata.IType|null);
+
+                    /** Property companionExtensionReceiverTypeId */
+                    companionExtensionReceiverTypeId?: (number|null);
+
                     /** Property contextReceiverType */
                     contextReceiverType?: (org.jetbrains.kotlin.metadata.IType[]|null);
 
@@ -1849,6 +1867,12 @@ export namespace org {
 
                     /** Property receiverTypeId. */
                     public receiverTypeId: number;
+
+                    /** Property companionExtensionReceiverType. */
+                    public companionExtensionReceiverType?: (org.jetbrains.kotlin.metadata.IType|null);
+
+                    /** Property companionExtensionReceiverTypeId. */
+                    public companionExtensionReceiverTypeId: number;
 
                     /** Property contextReceiverType. */
                     public contextReceiverType: org.jetbrains.kotlin.metadata.IType[];
@@ -1972,6 +1996,12 @@ export namespace org {
 
                     /** ValueParameter annotationParameterDefaultValue */
                     annotationParameterDefaultValue?: (org.jetbrains.kotlin.metadata.Annotation.Argument.IValue|null);
+
+                    /** ValueParameter equalityBoundType */
+                    equalityBoundType?: (org.jetbrains.kotlin.metadata.IType|null);
+
+                    /** ValueParameter equalityBoundTypeId */
+                    equalityBoundTypeId?: (number|null);
                 }
 
                 /** Represents a ValueParameter. */
@@ -2006,6 +2036,12 @@ export namespace org {
 
                     /** ValueParameter annotationParameterDefaultValue. */
                     public annotationParameterDefaultValue?: (org.jetbrains.kotlin.metadata.Annotation.Argument.IValue|null);
+
+                    /** ValueParameter equalityBoundType. */
+                    public equalityBoundType?: (org.jetbrains.kotlin.metadata.IType|null);
+
+                    /** ValueParameter equalityBoundTypeId. */
+                    public equalityBoundTypeId: number;
 
                     /**
                      * Decodes a ValueParameter message from the specified reader or buffer.
