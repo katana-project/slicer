@@ -338,6 +338,7 @@
     "dialog.about.brand": "slicer",
     "dialog.about.build.dev": "versión en desarrollo",
     "dialog.about.build.branch": ", rama {0}",
+    "dialog.about.sponsored-by": "Sponsored by 💖",
     "dialog.about.footer": "Código abierto ❤️ <span class=\"mx-2\">en</span> <a href=\"https://github.com/katana-project/slicer\" target=\"_blank\" class=\"text-blue-600 hover:text-blue-700 hover:underline\">katana-project/slicer</a>",
     "dialog.properties.size": "Size",
     "dialog.properties.type": "Type",
