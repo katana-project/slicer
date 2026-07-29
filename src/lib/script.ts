@@ -36,14 +36,7 @@ import {
 import { AnalysisState, analyze } from "$lib/workspace/analysis";
 import { mappings } from "$lib/workspace/analysis/mapping";
 import { mappingSet } from "$lib/workspace/analysis/mapping/data";
-import {
-    DataType,
-    type FileData,
-    memoryData,
-    type MemoryData,
-    unwrapTransforms,
-    type ZipData,
-} from "$lib/workspace/data";
+import { DataType, memoryData, type MemoryData, unwrapTransforms, type ZipData } from "$lib/workspace/data";
 import { write as writeMappings } from "$lib/writer/mappings";
 import type {
     ArchiveEntryMetadata,
@@ -54,7 +47,6 @@ import type {
     EventListener,
     EventMap,
     EventType,
-    FileMetadata,
     I18NContext,
     MappingContext,
     NotificationContext,
@@ -106,19 +98,13 @@ export const scripts = writable<ProtoScript[]>([]);
 export const wrapMetadata = (e: Entry): EntryMetadata => {
     const unwrappedData = unwrapTransforms(e.data);
     switch (unwrappedData.type) {
-        case DataType.FILE:
-            return {
-                type: "file",
-                size: unwrappedData.size,
-                lastModified: new Date((unwrappedData as FileData).file.lastModified),
-            } as FileMetadata;
         case DataType.ZIP: {
             const zipEntry = (unwrappedData as ZipData).entry;
 
             return {
                 type: "archive_entry",
                 size: unwrappedData.size,
-                lastModified: zipEntry.lastModDate,
+                lastModified: unwrappedData.lastModified,
                 uncompressedSize: zipEntry.uncompressedSize,
                 compressionMethod: zipEntry.compressionMethod,
                 crc32: zipEntry.crc32,
@@ -126,7 +112,7 @@ export const wrapMetadata = (e: Entry): EntryMetadata => {
         }
     }
 
-    return { type: "unknown", size: unwrappedData.size };
+    return { type: "unknown", size: unwrappedData.size, lastModified: unwrappedData.lastModified };
 };
 
 export const wrapEntry = (e: Entry): ScriptEntry => {

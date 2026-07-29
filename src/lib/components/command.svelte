@@ -22,6 +22,7 @@
     let open = $state(false);
     let searchWorkspace = $state(false);
     let search = $state("");
+    let rankType: RankType = $state("name");
 
     const alternateName = (entry: Entry): string | null => {
         if (entry.type === EntryType.CLASS) {
@@ -32,26 +33,38 @@
         return null;
     };
 
-    type RankedEntry = { entry: Entry; altName: string | null; distance: number };
-    const filter = (entries: Entry[], term: string): RankedEntry[] => {
+    type RankType = "name" | "size" | "last_mod";
+    const rank = (entry: Entry, type: RankType, distance: number): number => {
+        switch (type) {
+            case "size":
+                return entry.data.size;
+            case "last_mod":
+                return entry.data.lastModified?.getTime() ?? 0;
+        }
+
+        return distance;
+    };
+
+    type RankedEntry = { entry: Entry; altName: string | null; rank: number };
+    const filter = (entries: Entry[], term: string, rankType: RankType): RankedEntry[] => {
         term = term.toLowerCase();
         return entries
             .map((e) => {
                 const altName = alternateName(e);
                 if (e.name.toLowerCase().includes(term)) {
-                    return { entry: e, altName, distance: e.name.length - term.length };
+                    return { entry: e, altName, rank: rank(e, rankType, e.name.length - term.length) };
                 }
                 if (altName?.toLowerCase()?.includes(term)) {
-                    return { entry: e, altName, distance: altName!.length - term.length };
+                    return { entry: e, altName, rank: rank(e, rankType, altName!.length - term.length) };
                 }
 
                 return null;
             })
             .filter(Boolean)
-            .sort((a, b) => a!.distance - b!.distance) as RankedEntry[];
+            .sort((a, b) => a!.rank - b!.rank) as RankedEntry[];
     };
 
-    let filteredEntries = $derived(search && searchWorkspace ? filter(entries, search) : []);
+    let filteredEntries = $derived(searchWorkspace ? filter(entries, search, "name") : []);
 
     let shift = false;
     onMount(() => {

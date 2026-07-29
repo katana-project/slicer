@@ -205,7 +205,7 @@ export interface EventMap {
 /**
  * A type of entry metadata.
  */
-export type EntryMetadataType = "archive_entry" | "file" | "unknown";
+export type EntryMetadataType = "archive_entry" | "unknown";
 
 /**
  * Metadata for a workspace entry.
@@ -219,6 +219,10 @@ export interface EntryMetadata {
      * The (approximate) size of the entry in bytes.
      */
     readonly size: number;
+    /**
+     * Last modification date of the entry, if available.
+     */
+    readonly lastModified?: Date;
 }
 
 /**
@@ -227,10 +231,6 @@ export interface EntryMetadata {
 export interface ArchiveEntryMetadata extends EntryMetadata {
     readonly type: "archive_entry";
 
-    /**
-     * Last modification date of the entry reported by the archive's metadata.
-     */
-    readonly lastModified: Date;
     /**
      * Uncompressed size of the entry reported by the archive's metadata.
      *
@@ -247,18 +247,6 @@ export interface ArchiveEntryMetadata extends EntryMetadata {
      * The CRC value of the archive entry.
      */
     readonly crc32: number;
-}
-
-/**
- * Metadata for a file stored on the host's filesystem.
- */
-export interface FileMetadata extends EntryMetadata {
-    readonly type: "file";
-
-    /**
-     * Last modification date of the file.
-     */
-    readonly lastModified: Date;
 }
 
 /**

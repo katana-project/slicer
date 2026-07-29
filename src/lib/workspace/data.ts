@@ -49,6 +49,7 @@ export interface Data extends BlobLike {
     type: DataType;
     name: string;
     size: number;
+    lastModified?: Date;
 }
 
 export interface FileData extends Data {
@@ -62,6 +63,7 @@ export const fileData = (file: File): FileData => {
         name: file.name,
         file: file,
         size: file.size,
+        lastModified: new Date(file.lastModified),
         stream(): Promise<ReadableStream<Uint8Array>> {
             return Promise.resolve(file.stream());
         },
@@ -94,6 +96,7 @@ export const zipData = async (zip: Zip): Promise<ZipData[]> => {
                     parent: zip,
                     entry: v,
                     size: v.compressedSize,
+                    lastModified: v.lastModDate,
                     async stream(): Promise<ReadableStream<Uint8Array>> {
                         return (await v.blob()).stream();
                     },

@@ -8,7 +8,7 @@
     import { entryIcon } from "$lib/components/icons";
     import { humanSize, prettyInternalName, prettyMethodDesc } from "$lib/utils";
     import { Loading } from "$lib/components/ui/loading";
-    import { DataType, type FileData, unwrapTransforms, type ZipData } from "$lib/workspace/data";
+    import { DataType, unwrapTransforms, type ZipData } from "$lib/workspace/data";
 
     interface Props extends ModalProps {
         entry: Entry;
@@ -19,7 +19,6 @@
     // transforms are not relevant for properties, so we can unwrap them to get the original data
     let data = $derived(unwrapTransforms(entry.data));
 
-    let file = $derived((data as FileData).file);
     let zipEntry = $derived((data as ZipData).entry);
 
     let node = $derived((entry as ClassEntry).node);
@@ -49,17 +48,14 @@
                 <Label for="size" class="text-left">{$t("dialog.properties.size")}</Label>
                 <div id="size" class="text-sm">{humanSize(blobSize)} ({blobSize})</div>
 
-                {#if data.type === DataType.FILE}
+                {#if data.lastModified}
                     <Label for="last-modified" class="text-left">{$t("dialog.properties.last-modified")}</Label>
                     <div id="last-modified" class="text-sm">
-                        {new Date(file.lastModified).toLocaleString()}
+                        {data.lastModified.toLocaleString()}
                     </div>
-                {:else if data.type === DataType.ZIP}
-                    <Label for="last-modified" class="text-left">{$t("dialog.properties.last-modified")}</Label>
-                    <div id="last-modified" class="text-sm">
-                        {zipEntry.lastModDate.toLocaleString()}
-                    </div>
+                {/if}
 
+                {#if data.type === DataType.ZIP}
                     <Label for="compressed-size" class="text-left">{$t("dialog.properties.compressed-size")}</Label>
                     <div id="compressed-size" class="text-sm">
                         {humanSize(zipEntry.compressedSize)} ({zipEntry.compressedSize})
