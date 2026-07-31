@@ -9,8 +9,10 @@
     import { VList } from "virtua/svelte";
     import type { EventHandler } from "$lib/event";
     import { tabDefs, TabPosition } from "$lib/tab";
-    import { prettyInternalName } from "$lib/utils";
+    import { humanSize, prettyInternalName } from "$lib/utils";
     import IconComponent from "$lib/components/icon.svelte";
+    import { Select, SelectContent, SelectItem, SelectTrigger } from "$lib/components/ui/select";
+    import { commandWorkspaceSearchSort, type WorkspaceSearchSort } from "$lib/state";
 
     interface Props {
         entries: Entry[];
@@ -22,7 +24,6 @@
     let open = $state(false);
     let searchWorkspace = $state(false);
     let search = $state("");
-    let rankType: RankType = $state("name");
 
     const alternateName = (entry: Entry): string | null => {
         if (entry.type === EntryType.CLASS) {
@@ -33,12 +34,11 @@
         return null;
     };
 
-    type RankType = "name" | "size" | "last_mod";
-    const rank = (entry: Entry, type: RankType, distance: number): number => {
+    const rank = (entry: Entry, type: WorkspaceSearchSort, distance: number): number => {
         switch (type) {
             case "size":
                 return entry.data.size;
-            case "last_mod":
+            case "last-mod":
                 return entry.data.lastModified?.getTime() ?? 0;
         }
 
@@ -46,16 +46,16 @@
     };
 
     type RankedEntry = { entry: Entry; altName: string | null; rank: number };
-    const filter = (entries: Entry[], term: string, rankType: RankType): RankedEntry[] => {
+    const filter = (entries: Entry[], term: string, sortType: WorkspaceSearchSort): RankedEntry[] => {
         term = term.toLowerCase();
         return entries
             .map((e) => {
                 const altName = alternateName(e);
                 if (e.name.toLowerCase().includes(term)) {
-                    return { entry: e, altName, rank: rank(e, rankType, e.name.length - term.length) };
+                    return { entry: e, altName, rank: rank(e, sortType, e.name.length - term.length) };
                 }
                 if (altName?.toLowerCase()?.includes(term)) {
-                    return { entry: e, altName, rank: rank(e, rankType, altName!.length - term.length) };
+                    return { entry: e, altName, rank: rank(e, sortType, altName!.length - term.length) };
                 }
 
                 return null;
@@ -64,7 +64,7 @@
             .sort((a, b) => a!.rank - b!.rank) as RankedEntry[];
     };
 
-    let filteredEntries = $derived(searchWorkspace ? filter(entries, search, "name") : []);
+    let filteredEntries = $derived(searchWorkspace ? filter(entries, search, $commandWorkspaceSearchSort) : []);
 
     let shift = false;
     onMount(() => {
@@ -99,6 +99,35 @@
         bind:value={search}
         placeholder={$t(searchWorkspace ? "command.workspace.search.placeholder" : "command.placeholder")}
     />
+    {#if searchWorkspace}
+        <div class="flex flex-row w-full">
+            <Select type="single" bind:value={$commandWorkspaceSearchSort}>
+                <SelectTrigger
+                    class="border-b-border h-7 w-full rounded-none border-0 border-b text-xs [&_svg]:ml-2 [&_svg]:h-4 [&_svg]:w-4"
+                >
+                    <span>
+                        <span class="text-muted-foreground mr-2">{$t("command.workspace.search.sort")}</span>
+                        {$t(`command.workspace.search.sort.${$commandWorkspaceSearchSort}`)}
+                    </span>
+                </SelectTrigger>
+                <SelectContent
+                    side="bottom"
+                    align="center"
+                    class="*:min-w-[calc(var(--bits-select-anchor-width)-16px)]"
+                >
+                    <SelectItem value="name" label={$t("command.workspace.search.sort.name")} class="text-xs">
+                        {$t("command.workspace.search.sort.name")}
+                    </SelectItem>
+                    <SelectItem value="size" label={$t("command.workspace.search.sort.size")} class="text-xs">
+                        {$t("command.workspace.search.sort.size")}
+                    </SelectItem>
+                    <SelectItem value="last-mod" label={$t("command.workspace.search.sort.last-mod")} class="text-xs">
+                        {$t("command.workspace.search.sort.last-mod")}
+                    </SelectItem>
+                </SelectContent>
+            </Select>
+        </div>
+    {/if}
     <CommandList class={cn(!searchWorkspace || "h-[80vh] max-h-[80vh] [&>div]:contents")}>
         {#if searchWorkspace}
             {#if entries.length > 0}
@@ -121,6 +150,13 @@
                                             ({altName})
                                         </span>
                                     {/if}
+                                    <span class="break-anywhere text-muted-foreground text-xs">
+                                        {$t(
+                                            "command.workspace.search.meta",
+                                            humanSize(entry.data.size),
+                                            entry.data.lastModified?.toLocaleString() ?? "-"
+                                        )}
+                                    </span>
                                 </div>
                             </CommandItem>
                         {/snippet}
