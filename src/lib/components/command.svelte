@@ -4,7 +4,7 @@
     import { onMount } from "svelte";
     import { type ClassEntry, type Entry, EntryType } from "$lib/workspace";
     import { entryIcon } from "$lib/components/icons";
-    import { Search } from "@lucide/svelte";
+    import { ArrowDownWideNarrow, ArrowUpDown, ArrowUpNarrowWide, Search } from "@lucide/svelte";
     import { cn } from "$lib/components/utils";
     import { VList } from "virtua/svelte";
     import type { EventHandler } from "$lib/event";
@@ -12,7 +12,12 @@
     import { humanSize, prettyInternalName } from "$lib/utils";
     import IconComponent from "$lib/components/icon.svelte";
     import { Select, SelectContent, SelectItem, SelectTrigger } from "$lib/components/ui/select";
-    import { commandWorkspaceSearchSort, type WorkspaceSearchSort } from "$lib/state";
+    import {
+        commandWorkspaceSearchSort as sortMode,
+        commandWorkspaceSearchSortDir as sortDir,
+        type WorkspaceSearchSort,
+    } from "$lib/state";
+    import { Button } from "$lib/components/ui/button";
 
     interface Props {
         entries: Entry[];
@@ -45,26 +50,45 @@
         return distance;
     };
 
-    type RankedEntry = { entry: Entry; altName: string | null; rank: number };
-    const filter = (entries: Entry[], term: string, sortType: WorkspaceSearchSort): RankedEntry[] => {
-        term = term.toLowerCase();
-        return entries
-            .map((e) => {
-                const altName = alternateName(e);
-                if (e.name.toLowerCase().includes(term)) {
-                    return { entry: e, altName, rank: rank(e, sortType, e.name.length - term.length) };
-                }
-                if (altName?.toLowerCase()?.includes(term)) {
-                    return { entry: e, altName, rank: rank(e, sortType, altName!.length - term.length) };
-                }
+    type SortFunc = (a: RankedEntry, b: RankedEntry) => number;
+    let sortFunc: SortFunc = $derived.by(() => {
+        // automatic behavior:
+        // size and last-mod are descending - biggest size and newest time at the top
+        // name is ascending - smallest distance at the top
+        const asc = $sortDir === "auto" ? $sortMode === "name" : $sortDir === "asc";
+        if (asc) {
+            return (a, b) => a.rank - b.rank;
+        }
 
-                return null;
-            })
-            .filter(Boolean)
-            .sort((a, b) => a!.rank - b!.rank) as RankedEntry[];
+        return (a, b) => b.rank - a.rank;
+    });
+
+    type RankedEntry = { entry: Entry; altName: string | null; rank: number };
+    const filter = (
+        entries: Entry[],
+        term: string,
+        sortType: WorkspaceSearchSort,
+        sortFunc: SortFunc
+    ): RankedEntry[] => {
+        term = term.toLowerCase();
+        return (
+            entries
+                .map((e) => {
+                    const altName = alternateName(e);
+                    if (e.name.toLowerCase().includes(term)) {
+                        return { entry: e, altName, rank: rank(e, sortType, e.name.length - term.length) };
+                    }
+                    if (altName?.toLowerCase()?.includes(term)) {
+                        return { entry: e, altName, rank: rank(e, sortType, altName!.length - term.length) };
+                    }
+
+                    return null;
+                })
+                .filter(Boolean) as RankedEntry[]
+        ).sort(sortFunc);
     };
 
-    let filteredEntries = $derived(searchWorkspace ? filter(entries, search, $commandWorkspaceSearchSort) : []);
+    let filteredEntries = $derived(searchWorkspace ? filter(entries, search, $sortMode, sortFunc) : []);
 
     let shift = false;
     onMount(() => {
@@ -100,14 +124,12 @@
         placeholder={$t(searchWorkspace ? "command.workspace.search.placeholder" : "command.placeholder")}
     />
     {#if searchWorkspace}
-        <div class="flex flex-row w-full">
-            <Select type="single" bind:value={$commandWorkspaceSearchSort}>
-                <SelectTrigger
-                    class="border-b-border h-7 w-full rounded-none border-0 border-b text-xs [&_svg]:ml-2 [&_svg]:h-4 [&_svg]:w-4"
-                >
+        <div class="flex flex-row w-full border-border border-b">
+            <Select type="single" bind:value={$sortMode}>
+                <SelectTrigger class="h-7 w-full rounded-none border-0 text-xs [&_svg]:ml-2 [&_svg]:h-4 [&_svg]:w-4">
                     <span>
                         <span class="text-muted-foreground mr-2">{$t("command.workspace.search.sort")}</span>
-                        {$t(`command.workspace.search.sort.${$commandWorkspaceSearchSort}`)}
+                        {$t(`command.workspace.search.sort.${$sortMode}`)}
                     </span>
                 </SelectTrigger>
                 <SelectContent
@@ -126,6 +148,23 @@
                     </SelectItem>
                 </SelectContent>
             </Select>
+            <Button
+                variant="outline"
+                size="icon"
+                class="rounded-none border-0 border-l border-border"
+                onclick={() =>
+                    $sortDir === "auto"
+                        ? ($sortDir = "asc")
+                        : $sortDir === "asc"
+                          ? ($sortDir = "desc")
+                          : ($sortDir = "auto")}
+                title={$t(`command.workspace.search.sort.dir.${$sortDir}`)}
+                aria-label={$t(`command.workspace.search.sort.dir.${$sortDir}`)}
+            >
+                {@const Icon =
+                    $sortDir === "auto" ? ArrowUpDown : $sortDir === "asc" ? ArrowUpNarrowWide : ArrowDownWideNarrow}
+                <Icon />
+            </Button>
         </div>
     {/if}
     <CommandList class={cn(!searchWorkspace || "h-[80vh] max-h-[80vh] [&>div]:contents")}>
