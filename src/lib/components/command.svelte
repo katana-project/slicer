@@ -9,7 +9,7 @@
     import { VList } from "virtua/svelte";
     import type { EventHandler } from "$lib/event";
     import { tabDefs, TabPosition } from "$lib/tab";
-    import { humanSize, prettyInternalName } from "$lib/utils";
+    import { debounced, humanSize, prettyInternalName } from "$lib/utils";
     import IconComponent from "$lib/components/icon.svelte";
     import { Select, SelectContent, SelectItem, SelectTrigger } from "$lib/components/ui/select";
     import {
@@ -18,6 +18,7 @@
         type WorkspaceSearchSort,
     } from "$lib/state";
     import { Button } from "$lib/components/ui/button";
+    import { toStore } from "svelte/store";
 
     interface Props {
         entries: Entry[];
@@ -88,7 +89,11 @@
         ).sort(sortFunc);
     };
 
-    let filteredEntries = $derived(searchWorkspace ? filter(entries, search, $sortMode, sortFunc) : []);
+    const debouncedSearch = debounced(
+        toStore(() => search),
+        150
+    );
+    let filteredEntries = $derived(searchWorkspace ? filter(entries, $debouncedSearch, $sortMode, sortFunc) : []);
 
     let shift = false;
     onMount(() => {

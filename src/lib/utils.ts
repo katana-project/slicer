@@ -2,7 +2,7 @@
 
 import { Modifier } from "@katana-project/asm/spec";
 import type { ExternalTypeReference } from "@katana-project/laser";
-import { derived, type Readable, writable, type Writable } from "svelte/store";
+import { derived, get, type Readable, writable, type Writable } from "svelte/store";
 
 export const partition = <T>(arr: T[], func: (e: T) => boolean): [T[], T[]] => {
     const pass: T[] = [],
@@ -338,13 +338,17 @@ export const urlPersisted = <T>(key: string): Writable<T | null> => {
 
 export const debounced = <T>(store: Readable<T>, delay: number): Readable<T> => {
     let timeoutId: any;
-    return derived(store, ($store, set) => {
-        if (timeoutId) {
-            clearTimeout(timeoutId);
-        }
+    return derived(
+        store,
+        ($store, set) => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
 
-        timeoutId = setTimeout(() => set($store), delay);
-    });
+            timeoutId = setTimeout(() => set($store), delay);
+        },
+        get(store)
+    );
 };
 
 export const throttled = <T>(store: Writable<T>, interval: number): Writable<T> => {
