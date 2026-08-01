@@ -35,4 +35,9 @@ export default defineConfig({
         format: "es",
     },
     envPrefix: "WORKERS_CI_", // expose Workers CI env variables
+    define: {
+        // expose some GitHub Actions env variables
+        "import.meta.env.GITHUB_REF_NAME": JSON.stringify(process.env.GITHUB_REF_NAME || ""),
+        "import.meta.env.GITHUB_SHA": JSON.stringify(process.env.GITHUB_SHA || ""),
+    },
 });
