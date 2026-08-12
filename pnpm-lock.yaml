@@ -63,8 +63,8 @@ importers:
         specifier: link:script
         version: link:script
       '@run-slicer/vf':
-        specifier: 0.6.3-1.12.0
-        version: 0.6.3-1.12.0
+        specifier: 0.6.4-1.12.0
+        version: 0.6.4-1.12.0
       '@tanstack/table-core':
         specifier: ^8.21.3
         version: 8.21.3
@@ -750,8 +750,8 @@ packages:
   '@run-slicer/procyon@0.1.2-0.6.0':
     resolution: {integrity: sha512-xPra0FuATHnjLYLXFUlmRYkfmIukCrl5Zv6iM8ajSTYFDgK85HVNpBAo23NQbp+cMU6QpvOEviwE8nRwGuS07Q==}
 
-  '@run-slicer/vf@0.6.3-1.12.0':
-    resolution: {integrity: sha512-Sz0HU2ScV1c1rs0Wx4nfhAiigXw08Mvydc3R2kROoIN6iVyAZAr1rNJpWMXabbTfxtu9TmPr9YdByl5aK/PQWQ==}
+  '@run-slicer/vf@0.6.4-1.12.0':
+    resolution: {integrity: sha512-fKKqDHVCOKed3jcbrX4aA9Za7YY+/7tq2tVlkbSPQ9NVMaGeBhqyRE/gnLc30ZJ3zKP/UYIh69FaUkrF/dmLuQ==}
 
   '@sindresorhus/is@7.2.0':
     resolution: {integrity: sha512-P1Cz1dWaFfR4IR+U13mqqiGsLFf1KbayybWwdd2vfctdV6hDpUkgCY0nKOLLTMSoRd/jJNjtbqzf13K8DCCXQw==}
@@ -2045,7 +2045,7 @@ snapshots:
 
   '@run-slicer/procyon@0.1.2-0.6.0': {}
 
-  '@run-slicer/vf@0.6.3-1.12.0': {}
+  '@run-slicer/vf@0.6.4-1.12.0': {}
 
   '@sindresorhus/is@7.2.0': {}
 
