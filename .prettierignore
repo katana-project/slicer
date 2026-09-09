@@ -4,3 +4,7 @@ pnpm-lock.yaml
 # generated files
 /src/locale/index.ts
 crowdin.yml
+
+# Kotlin protobuf files
+*.proto
+src/lib/reader/ktproto/ktproto.*
