@@ -211,6 +211,7 @@
     "pane.search.result.menu.disasm": "Desensamblar",
     "pane.search.result.menu.graph": "Ver gráfico",
     "pane.search.menu.type.pseudocode": "Pseudocódigo",
+    "pane.search.menu.type.pool": "Constant pool",
     "pane.search.menu.type.string": "Cadenas de texto",
     "pane.search.menu.type.method": "Métodos",
     "pane.search.menu.type.field": "Campos",
