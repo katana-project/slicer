@@ -3,6 +3,7 @@ import type { Member, Node } from "@katana-project/asm";
 
 export enum QueryType {
     PSEUDOCODE = "pseudocode",
+    CONSTANT_POOL = "pool",
     STRING = "string",
     FIELD = "field",
     METHOD = "method",

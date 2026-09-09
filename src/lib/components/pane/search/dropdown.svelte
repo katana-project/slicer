@@ -43,7 +43,7 @@
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem
             bind:checked={ref}
-            disabled={type === QueryType.PSEUDOCODE || type === QueryType.STRING}
+            disabled={type === QueryType.PSEUDOCODE || type === QueryType.CONSTANT_POOL || type === QueryType.STRING}
         >
             {$t("pane.search.menu.ref")}
         </DropdownMenuCheckboxItem>

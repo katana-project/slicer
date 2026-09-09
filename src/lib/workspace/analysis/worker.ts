@@ -103,24 +103,27 @@ expose({
         const comparator = createComparator(value, mode);
 
         switch (type) {
-            case QueryType.PSEUDOCODE:
+            case QueryType.PSEUDOCODE: {
                 const bsmAttr = readBsm(node);
-                const code = [
-                    ...node.methods.flatMap((member) => {
+                return node.methods
+                    .flatMap((member) => {
                         const codeAttr = readCode0(node, member);
                         return (codeAttr?.insns ?? []).map((i) => ({
                             member,
                             value: formatInsn(codeAttr!, bsmAttr, i, node.pool, true),
                         }));
-                    }),
-                    ...node.pool
-                        .filter((e) => e !== null)
-                        .map((e) => ({
-                            value: `${ConstantType[e.type]} ${formatEntry(e, node.pool, bsmAttr ?? undefined)}`,
-                        })),
-                ];
-
-                return code.filter((e) => comparator(e.value));
+                    })
+                    .filter((e) => comparator(e.value));
+            }
+            case QueryType.CONSTANT_POOL: {
+                const bsmAttr = readBsm(node);
+                return node.pool
+                    .filter((e) => e !== null)
+                    .map((e) => ({
+                        value: `${ConstantType[e.type]} ${formatEntry(e, node.pool, bsmAttr ?? undefined)}`,
+                    }))
+                    .filter((e) => comparator(e.value));
+            }
             case QueryType.STRING:
                 return searchPoolEntries(node, comparator, (e) => e.type === ConstantType.STRING);
             case QueryType.FIELD:
