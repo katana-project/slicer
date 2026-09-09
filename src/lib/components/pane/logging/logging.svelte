@@ -35,6 +35,7 @@
         readonly
         {value}
         lang={log()}
+        scrollResize={false}
         onchange={(view) => {
             // scroll to the last line automatically
             const lastLine = view.state.doc.line(view.state.doc.lines);

@@ -118,6 +118,7 @@
         readonly?: boolean;
         lang?: LanguageSupport | null;
         size?: number;
+        scrollResize?: boolean;
         wrap?: boolean;
         view?: EditorView | null;
         onchange?: (view: EditorView) => void;
@@ -132,6 +133,7 @@
         readonly = false,
         lang = null,
         size = $bindable(0.75),
+        scrollResize = true,
         wrap = false,
         view = $bindable(null),
         onchange,
@@ -220,4 +222,4 @@
     };
 </script>
 
-<div bind:this={parent} class="absolute h-full w-full" onwheel={rescale}></div>
+<div bind:this={parent} class="absolute h-full w-full" onwheel={scrollResize ? rescale : null}></div>

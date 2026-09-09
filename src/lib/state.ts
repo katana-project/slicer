@@ -53,6 +53,7 @@ export const scriptingScripts = persisted<ScriptData[]>(root, "scripting.scripts
 export const editorWrap = persisted<boolean>(root, "editor.wrap", true);
 export const editorTextSize = persisted<number>(root, "editor.text-size", 0.75);
 export const editorTextSizeSync = persisted<boolean>(root, "editor.text-size.sync", true);
+export const editorTextSizeLock = persisted<boolean>(root, "editor.text-size.lock", false);
 export const imageSmoothing = persisted<ImageSmoothingMode>(root, "image.smoothing", "auto");
 export const analysisBackground = persisted<boolean>(root, "analysis.background", true);
 export const analysisJdkClasses = persisted<boolean>(root, "analysis.jdk-classes", true);

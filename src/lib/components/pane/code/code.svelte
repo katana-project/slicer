@@ -11,6 +11,7 @@
     import {
         editorTextSize,
         editorTextSizeSync,
+        editorTextSizeLock,
         editorWrap,
         interpHexRowBytes,
         toolsDisasm,
@@ -130,6 +131,7 @@
                     readonly
                     {lang}
                     bind:size={$textSize}
+                    scrollResize={!$editorTextSizeLock}
                     {wrap}
                     extensions={[resolverStore.of(typeResolver(resolver, handler, classes))]}
                     tooltip={() => [Tooltip, { resolver, classes, handler }]}
@@ -144,7 +146,7 @@
                 lang={language}
                 {handler}
                 bind:wrap
-                bind:sizeSync={$editorTextSizeSync}
+                bind:sizeLock={$editorTextSizeLock}
                 {resolver}
                 {mousePosition}
             />

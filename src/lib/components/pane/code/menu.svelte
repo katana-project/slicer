@@ -33,7 +33,7 @@
         lang: Language;
         value: string;
         wrap: boolean;
-        sizeSync: boolean;
+        sizeLock: boolean;
         handler: EventHandler;
         resolver: TypeReferenceResolver | null;
         mousePosition: { x: number; y: number };
@@ -48,7 +48,7 @@
         value,
         handler,
         wrap = $bindable(),
-        sizeSync = $bindable(),
+        sizeLock = $bindable(),
         resolver,
         mousePosition,
     }: Props = $props();
@@ -105,7 +105,7 @@
         {$t("pane.code.menu.editor.wrap")}
         <TextWrap size={16} />
     </ContextMenuCheckboxItem>
-    <ContextMenuCheckboxItem class="justify-between" bind:checked={sizeSync}>
+    <ContextMenuCheckboxItem class="justify-between" bind:checked={sizeLock}>
         {$t("pane.code.menu.editor.lock-zoom")}
         <CaseSensitive size={16} />
     </ContextMenuCheckboxItem>
