@@ -48,6 +48,8 @@
 
     let lastCentroid: Centroid | null = null;
     const handlePointerDown = (event: PointerEvent) => {
+        if (event.button === 2) return; // do not move with right click
+
         events.set(event.pointerId, event);
         lastCentroid = updatePosition();
     };
@@ -68,6 +70,8 @@
     };
 
     const handlePointerUp = (event: PointerEvent) => {
+        if (event.button === 2) return; // do not move with right click
+
         events.delete(event.pointerId);
         lastCentroid = events.size > 0 ? updatePosition() : null;
     };
@@ -164,8 +168,9 @@
             <img
                 src={createURL(blob)}
                 alt={entry.shortName}
+                draggable="false"
                 class={cn(
-                    "pointer-events-none h-[95%] w-[95%] object-contain will-change-transform",
+                    "h-[95%] w-[95%] object-contain will-change-transform",
                     smoothing ? "image-rendering-auto" : "image-rendering-pixelated"
                 )}
                 style="transform: translate({offsetX.current}px, {offsetY.current}px) scale({scale.current});"
