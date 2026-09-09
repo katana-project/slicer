@@ -276,6 +276,8 @@
     "pane.prefs.editor.text-size.desc": "Ajusta el tamaño de la letra predeterminado en el editor.",
     "pane.prefs.editor.sync-text-size": "Sincronizar tamaño de texto",
     "pane.prefs.editor.sync-text-size.desc": "Sincroniza el tamaño del texto en todos los editores.",
+    "pane.prefs.editor.lock-text-size": "Lock text size",
+    "pane.prefs.editor.lock-text-size.desc": "Disables the Ctrl+Scroll behavior for resizing text in the editor.",
     "pane.prefs.workspace.prevent-unload": "Prevent accidental unload",
     "pane.prefs.workspace.prevent-unload.desc": "Shows a confirmation dialog when closing slicer with loaded entries.",
     "pane.prefs.workspace.file-encoding": "Codificación de archivos",
