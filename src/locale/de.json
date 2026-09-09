@@ -211,6 +211,7 @@
     "pane.search.result.menu.disasm": "Disassemblieren",
     "pane.search.result.menu.graph": "Graph anzeigen",
     "pane.search.menu.type.pseudocode": "Pseudocode",
+    "pane.search.menu.type.pool": "Constant pool",
     "pane.search.menu.type.string": "Zeichenketten",
     "pane.search.menu.type.method": "Methoden",
     "pane.search.menu.type.field": "Felder",
