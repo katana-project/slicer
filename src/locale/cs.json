@@ -211,6 +211,7 @@
     "pane.search.result.menu.disasm": "Přeložit",
     "pane.search.result.menu.graph": "Zobrazit graf",
     "pane.search.menu.type.pseudocode": "Pseudokód",
+    "pane.search.menu.type.pool": "Constant pool",
     "pane.search.menu.type.string": "Řetězce",
     "pane.search.menu.type.method": "Metody",
     "pane.search.menu.type.field": "Pole",
