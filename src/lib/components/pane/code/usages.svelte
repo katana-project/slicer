@@ -1,14 +1,13 @@
 <script lang="ts">
     import { VList } from "virtua/svelte";
-    import { entryIcon } from "$lib/components/icons";
-    import { cn } from "$lib/components/utils";
     import { QueryType, search, SearchMode, type SearchResult } from "$lib/workspace/analysis";
     import { t } from "$lib/i18n";
     import type { EventHandler } from "$lib/event";
     import { groupBy } from "$lib/utils";
-    import { type Entry, memberEntry } from "$lib/workspace";
+    import type { Entry } from "$lib/workspace";
     import { error } from "$lib/log";
     import { toast } from "svelte-sonner";
+    import Usage from "./usage.svelte";
 
     interface Props {
         open: boolean;
@@ -46,7 +45,13 @@
         };
     });
 
-    let grouped = $derived(groupBy(usages, (usage) => usage.entry.name));
+    const isRelatedToSelf = (ref: string): boolean => name === ref || ref.startsWith(`${name}$`);
+
+    let grouped = $derived(
+        Array.from(groupBy(usages, (usage) => usage.entry.node.thisClass.nameEntry.string).entries())
+            // sort related entries to the end
+            .sort(([a], [b]) => +isRelatedToSelf(a) - +isRelatedToSelf(b))
+    );
 </script>
 
 <div class="divide-border flex h-full flex-col divide-y">
@@ -57,33 +62,9 @@
     </div>
 
     <div class="min-h-0 flex-1">
-        <VList data={Array.from(grouped.entries())} getKey={(_, i) => i} class="h-full overflow-x-hidden p-1">
+        <VList data={grouped} getKey={([name]) => name} class="h-full overflow-x-hidden p-1">
             {#snippet children([name, usages])}
-                {@const { icon: Icon, classes: iconClasses } = entryIcon(usages[0].entry)}
-
-                <div class="flex items-center gap-2 px-2 py-1 text-sm font-medium">
-                    <Icon class={cn(iconClasses, "h-4 w-4 shrink-0")} />
-                    <span class="text-foreground">{name}</span>
-                    <span class="text-muted-foreground text-xs">({usages.length})</span>
-                </div>
-
-                {#each usages as usage}
-                    {@const entry =
-                        usage.member?.type?.string?.charAt(0) === "("
-                            ? memberEntry(usage.entry, usage.member)
-                            : usage.entry}
-                    <button
-                        ondblclick={() => {
-                            open = false;
-                            handler.open(entry);
-                        }}
-                        class="hover:bg-accent/50 focus:bg-accent ml-6 flex w-[calc(100%-2rem)] flex-col gap-1 rounded-sm px-2 py-1 text-left transition-colors"
-                    >
-                        <code class="text-foreground truncate font-mono text-xs">
-                            {usage.value}
-                        </code>
-                    </button>
-                {/each}
+                <Usage {name} {usages} {handler} collapsed={isRelatedToSelf(name)} bind:modalOpen={open} />
             {/snippet}
         </VList>
     </div>
