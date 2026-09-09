@@ -276,6 +276,8 @@
     "pane.prefs.editor.text-size.desc": "Upravuje výchozí velikost písma editoru.",
     "pane.prefs.editor.sync-text-size": "Synchronizovat velikost textu",
     "pane.prefs.editor.sync-text-size.desc": "Synchronizuje velikost textu ve všech editorech.",
+    "pane.prefs.editor.lock-text-size": "Lock text size",
+    "pane.prefs.editor.lock-text-size.desc": "Disables the Ctrl+Scroll behavior for resizing text in the editor.",
     "pane.prefs.workspace.prevent-unload": "Zabránit nechtěnému ukončení",
     "pane.prefs.workspace.prevent-unload.desc": "Zobrazí potvrzovací dialog při ukončení s položkami načtenými v pracovním prostoru.",
     "pane.prefs.workspace.file-encoding": "Kódování souborů",
