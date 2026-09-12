@@ -75,12 +75,12 @@
                 {/if}
                 {#if entry.type === EntryType.CLASS || entry.type === EntryType.MEMBER}
                     <Label for="class-name" class="text-left">{$t("dialog.properties.class-name")}</Label>
-                    <div id="class-name" class="text-sm">
+                    <div id="class-name" class="text-sm break-anywhere">
                         {prettyInternalName(node.thisClass.nameEntry?.string || "")}
                     </div>
                     {#if entry.type === EntryType.MEMBER}
                         <Label for="member-desc" class="text-left">{$t("dialog.properties.member-desc")}</Label>
-                        <div id="member-desc" class="text-sm">
+                        <div id="member-desc" class="text-sm break-anywhere">
                             {member.name.string}{prettyMethodDesc(member.type.string, true)}
                         </div>
                     {/if}

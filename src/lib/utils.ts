@@ -736,6 +736,17 @@ export const capitalize = (str: string): string => {
 
 export const base64Encode = (str: string): string => new TextEncoder().encode(str).toBase64();
 
+export const blobToDataUrl = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = () => {
+            resolve(reader.result as string);
+        };
+        reader.readAsDataURL(blob);
+    });
+};
+
 const npEscapes = new Map<string, string>();
 for (const [start, end] of [
     [0x0000, 0x001f],

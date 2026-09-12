@@ -2,8 +2,7 @@
     import { Separator } from "$lib/components/ui/separator";
     import { Tween } from "svelte/motion";
     import { cubicOut } from "svelte/easing";
-    import { onDestroy } from "svelte";
-    import { humanSize } from "$lib/utils";
+    import { blobToDataUrl, humanSize } from "$lib/utils";
     import { Fullscreen, ImageMinus, ImageOff, ImagePlus, ZoomIn, ZoomOut } from "@lucide/svelte";
     import MenuButton from "./menu_button.svelte";
     import type { PaneProps } from "$lib/components/pane";
@@ -107,18 +106,11 @@
                 : true
             : $imageSmoothing === "on"
     );
-
-    const createURL = (blob: Blob) => {
-        const url = URL.createObjectURL(blob);
-        onDestroy(() => URL.revokeObjectURL(url));
-
-        return url;
-    };
 </script>
 
-{#await entry.data.blob()}
+{#await entry.data.blob().then(async (b) => [b, await blobToDataUrl(b)])}
     <Loading value={$t("pane.image.loading")} timed />
-{:then blob}
+{:then [blob, url]}
     <div class="flex h-8 min-h-8 w-full flex-col">
         <div class="bg-background flex grow flex-row items-center justify-between px-2">
             <div class="flex gap-2">
@@ -166,7 +158,7 @@
             onpointerout={handlePointerUp}
         >
             <img
-                src={createURL(blob)}
+                src={url}
                 alt={entry.shortName}
                 draggable="false"
                 class={cn(
