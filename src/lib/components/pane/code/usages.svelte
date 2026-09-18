@@ -48,7 +48,7 @@
     const isRelatedToSelf = (ref: string): boolean => name === ref || ref.startsWith(`${name}$`);
 
     let grouped = $derived(
-        Array.from(groupBy(usages, (usage) => usage.entry.node.thisClass.nameEntry.string).entries())
+        Array.from(groupBy(usages, (usage) => usage.entry.node.thisClass.nameEntry!.string).entries())
             // sort related entries to the end
             .sort(([a], [b]) => +isRelatedToSelf(a) - +isRelatedToSelf(b))
     );

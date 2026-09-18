@@ -38,7 +38,7 @@
 
 {#if !collapsed}
     {#each Array.from(usagesByMember.entries()) as [memberName, memberUsages]}
-        {@const mods = parseModifiers(memberUsages[0].member.access)}
+        {@const mods = parseModifiers(memberUsages[0].member?.access ?? 0)}
         {@const TypeIcon = mods.abstract ? AbstractMethod : Method}
         {@const ModifierIcon = accessIcon(mods)}
 

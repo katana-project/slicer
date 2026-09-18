@@ -302,7 +302,7 @@
                         disabled={!tab?.entry || tab.type === decl.id}
                         onclick={() => openEntry(decl.id)}
                     >
-                        {$t(decl.label)}
+                        {$t(decl.label || decl.id)}
                         {#if decl.icon}
                             <IconComponent icon={decl.icon} size={16} class="ml-3" />
                         {/if}

@@ -108,9 +108,9 @@
     );
 </script>
 
-{#await entry.data.blob().then(async (b) => [b, await blobToDataUrl(b)])}
+{#await entry.data.blob().then(async (b) => ({ blob: b, url: await blobToDataUrl(b) }))}
     <Loading value={$t("pane.image.loading")} timed />
-{:then [blob, url]}
+{:then { blob, url }}
     <div class="flex h-8 min-h-8 w-full flex-col">
         <div class="bg-background flex grow flex-row items-center justify-between px-2">
             <div class="flex gap-2">

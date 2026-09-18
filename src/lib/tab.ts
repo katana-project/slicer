@@ -7,7 +7,7 @@ import { prettyInternalName } from "$lib/utils";
 import { type ClassEntry, type Entry, EntryType, readDeferred } from "$lib/workspace";
 import { AnalysisState } from "$lib/workspace/analysis";
 import { mappings } from "$lib/workspace/analysis/mapping";
-import { Box, Folders, LayoutList, ScrollText, Search, Settings, Sparkles } from "@lucide/svelte";
+import { AppWindow, Box, Folders, LayoutList, ScrollText, Search, Settings, Sparkles } from "@lucide/svelte";
 import type { ScriptContext, Icon as ScriptIcon, TabDeclaration } from "@run-slicer/script";
 import { derived, get, writable } from "svelte/store";
 
@@ -105,7 +105,7 @@ export const tabDefs = derived(dynamicTabDefs, ($scriptTabDefs) => {
     for (const [type, { decl }] of $scriptTabDefs.entries()) {
         if (decl.contextual) continue; // skip contextual tabs
 
-        defs.set(type, { type, label: decl.label, icon: decl.icon });
+        defs.set(type, { type, label: decl.label, icon: decl.icon ?? AppWindow });
     }
 
     return Array.from(defs.values());
@@ -479,7 +479,7 @@ export const openUnscoped = async (
             const { context, decl } = scriptDef;
 
             const { label, icon: placementIcon } = await decl.place({ context, entry: null });
-            name = label || decl.label;
+            name = label || decl.label || decl.id;
             if (placementIcon) {
                 icon = placementIcon;
             }

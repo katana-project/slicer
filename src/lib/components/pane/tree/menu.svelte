@@ -94,7 +94,7 @@
                 </ContextMenuItem>
                 {#each $dynamicTabDefs.values().filter(({ decl }) => decl.contextual) as { decl } (decl.id)}
                     <ContextMenuItem class="flex justify-between" onclick={() => handler.open(entry.value, decl.id)}>
-                        {$t(decl.label)}
+                        {$t(decl.label || decl.id)}
                         {#if decl.icon}
                             <IconComponent icon={decl.icon} size={16} class="ml-3" />
                         {/if}

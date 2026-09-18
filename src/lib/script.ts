@@ -293,6 +293,10 @@ const unwrapDisasm = (disasm: ScriptDisassembler): Disassembler => {
 const createEditorCtx = (context: ScriptContext): EditorContext => {
     return {
         register(decl: TabDeclaration): void {
+            if (!decl.id || !decl.place || !decl.render) {
+                throw new Error("Missing required properties");
+            }
+
             dynamicTabDefs.update(($scriptTabDefs) => {
                 $scriptTabDefs.set(decl.id, { context, decl });
                 return $scriptTabDefs;
@@ -352,6 +356,10 @@ const disasmCtx: DisassemblerContext = {
         return disasm ? wrapDisasm(disasm) : null;
     },
     add(disasm: ScriptDisassembler) {
+        if (!disasm.id || !disasm.class) {
+            throw new Error("Missing required properties");
+        }
+
         addDisasm(unwrapDisasm(disasm));
     },
     remove(id: string) {

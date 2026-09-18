@@ -371,12 +371,13 @@ export interface TabDeclaration {
      * A human-readable name or a translation key for the tab's label.
      *
      * This will be used as the label for any "Open as" buttons.
+     * Defaults to the {@link id}.
      */
-    readonly label: string;
+    readonly label?: string;
     /**
      * An icon for the tab.
      */
-    readonly icon: Icon;
+    readonly icon?: Icon;
     /**
      * Whether the tab is contextual, meaning that it should only be rendered when there is an associated entry (i.e. when the {@link TabContext#entry} is not `null`).
      *
