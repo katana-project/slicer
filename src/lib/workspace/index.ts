@@ -5,7 +5,14 @@ import { record } from "$lib/task";
 import { fetchProgress, groupBy, prettyMethodDesc, refFromName } from "$lib/utils";
 import { mappings } from "$lib/workspace/analysis/mapping";
 import type { Member, Node } from "@katana-project/asm";
-import type { Zip, Entry as ZipEntry } from "@katana-project/zip";
+import {
+    type Decompressor,
+    readBlob,
+    UnsupportedCompressionMethodError,
+    type Zip,
+    type Entry as ZipEntry,
+} from "@katana-project/zip";
+import { inflateRaw } from "pako";
 import { derived, get, writable } from "svelte/store";
 import {
     AnalysisState,
@@ -220,10 +227,24 @@ export interface LoadResult {
 export const ZIP_EXTENSIONS = new Set(["zip", "jar", "apk", "xapk", "war", "ear", "jmod", "mrpack"]);
 const NON_ZIP_EXTENSIONS = new Set(["class", "dex", "arsc", "jpg", "png", "json"]);
 
-const readZip = async (blob: Blob): Promise<Zip> => {
-    const { readBlob } = await import("@katana-project/zip");
+// the Compression Stream API seems to not like trailing junk data
+// so we use pako, which discards the data
+const pakoDecompressor: Decompressor = async (method, data) => {
+    if (method === 0) {
+        return data; // Stored
+    }
+    if (method !== 8) {
+        throw new UnsupportedCompressionMethodError(method);
+    }
 
-    const zip = await readBlob(blob, { decoder: get(archiveDecoder) });
+    return inflateRaw(data);
+};
+
+const readZip = async (blob: Blob): Promise<Zip> => {
+    const zip = await readBlob(blob, {
+        decoder: get(archiveDecoder),
+        decompressor: pakoDecompressor,
+    });
     const entries = groupBy(zip.entries, (e) => e.name);
     switch (get(workspaceArchiveDuplicateHandling)) {
         case "skip": {
@@ -298,18 +319,24 @@ const load0 = async (entries: Map<string, Entry>, d: Data, parent?: Entry): Prom
     // this will not work for ZIP files with leading junk before the first header
     // have a proper file extension for those, I guess?
     const checkZipHeader = async (d: Data) => {
-        const blob = await d.blob();
-        const header = await blob.slice(0, 4).arrayBuffer();
-        const headerView = new Uint8Array(header);
-        // local file header signature: 50 4b 03 04
-        // central directory header signature: 50 4b 01 02
-        // end of central directory record signature: 50 4b 05 06
-        return (
-            headerView[0] === 0x50 && // P
-            headerView[1] === 0x4b && // K
-            (headerView[2] === 0x03 || headerView[2] === 0x01 || headerView[2] === 0x05) &&
-            (headerView[3] === 0x04 || headerView[3] === 0x02 || headerView[3] === 0x06)
-        );
+        try {
+            const blob = await d.blob();
+            const header = await blob.slice(0, 4).arrayBuffer();
+            const headerView = new Uint8Array(header);
+            // local file header signature: 50 4b 03 04
+            // central directory header signature: 50 4b 01 02
+            // end of central directory record signature: 50 4b 05 06
+            return (
+                headerView[0] === 0x50 && // P
+                headerView[1] === 0x4b && // K
+                (headerView[2] === 0x03 || headerView[2] === 0x01 || headerView[2] === 0x05) &&
+                (headerView[3] === 0x04 || headerView[3] === 0x02 || headerView[3] === 0x06)
+            );
+        } catch (e) {
+            // decompression error? ignore
+        }
+
+        return false;
     };
 
     // perf: filter out some extensions that definitely will not house ZIPs

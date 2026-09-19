@@ -42,8 +42,8 @@ importers:
         specifier: ^0.3.1
         version: 0.3.1
       '@katana-project/zip':
-        specifier: ^0.7.1
-        version: 0.7.1
+        specifier: ^0.7.3
+        version: 0.7.3
       '@lezer/highlight':
         specifier: ^1.2.3
         version: 1.2.3
@@ -89,6 +89,9 @@ importers:
       idb:
         specifier: ^8.0.3
         version: 8.0.3
+      pako:
+        specifier: ^3.0.2
+        version: 3.0.2
       queueable:
         specifier: ^5.3.2
         version: 5.3.2
@@ -599,8 +602,8 @@ packages:
   '@katana-project/laser@0.3.1':
     resolution: {integrity: sha512-jMBG2plod0tjQxFxnGaBEoreBoE5TcEkahFje6ASLKjgCNvtpmUMyqJGtnopZx1aqEqZbAgFED7JgBsvkgjCLg==}
 
-  '@katana-project/zip@0.7.1':
-    resolution: {integrity: sha512-yRoiCt7H6o9ayFHLBBbTczmlqcy8UHNjKOpHgB2OYZMNG2gVpCXa7vSwFTo9Tal0R0SSDaudhLn+B6m3BOH+mA==}
+  '@katana-project/zip@0.7.3':
+    resolution: {integrity: sha512-yLZBXEZTRhcjMQO6Nqlyvx0la+fv17hn4bOHgDmOXlvVeH46x7yGtz7MzwCp4k784er9MdEXv1W2Chio8EnDmw==}
 
   '@lezer/common@1.5.2':
     resolution: {integrity: sha512-sxQE460fPZyU3sdc8lafxiPwJHBzZRy/udNFynGQky1SePYBdhkBl1kOagA9uT3pxR8K09bOrmTUqA9wb/PjSQ==}
@@ -1198,6 +1201,9 @@ packages:
   obug@2.1.3:
     resolution: {integrity: sha512-9miFgM2OFba7hB+pRgvtV84pYTBaoTHohvmIgiRt6dRIzbwEOIaNaP+dIlGs2fNFoB0SeISs0Jz5WFVRid6Xyg==}
     engines: {node: '>=12.20.0'}
+
+  pako@3.0.2:
+    resolution: {integrity: sha512-uBv6IT2aT1A78iU6dpNEbf6+CyhlV/6g9JlJs9kpgjFGFhruIICVRysF/W0SLzXg5+hCl+KroH7e4YUyfEmgLg==}
 
   paneforge@1.0.2:
     resolution: {integrity: sha512-KzmIXQH1wCfwZ4RsMohD/IUtEjVhteR+c+ulb/CHYJHX8SuDXoJmChtsc/Xs5Wl8NHS4L5Q7cxL8MG40gSU1bA==}
@@ -1925,7 +1931,7 @@ snapshots:
     dependencies:
       '@lezer/common': 1.5.2
 
-  '@katana-project/zip@0.7.1': {}
+  '@katana-project/zip@0.7.3': {}
 
   '@lezer/common@1.5.2': {}
 
@@ -2438,6 +2444,8 @@ snapshots:
   nanoid@3.3.15: {}
 
   obug@2.1.3: {}
+
+  pako@3.0.2: {}
 
   paneforge@1.0.2(svelte@5.56.4(@typescript-eslint/types@8.58.1)):
     dependencies:
