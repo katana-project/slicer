@@ -51,8 +51,8 @@ importers:
         specifier: 0.1.8-0.152
         version: 0.1.8-0.152
       '@run-slicer/jasm':
-        specifier: 0.4.5-2.8.0
-        version: 0.4.5-2.8.0
+        specifier: 0.4.6-aacebfa8b0
+        version: 0.4.6-aacebfa8b0
       '@run-slicer/lezer-java':
         specifier: ^1.2.1
         version: 1.2.1
@@ -744,8 +744,8 @@ packages:
   '@run-slicer/cfr@0.1.8-0.152':
     resolution: {integrity: sha512-FN5I41CF0QcscV5HCcbq5iJHqIueNtROvLtfXohNt9pNJUxo2WFncg0a7jPinRjBi7VgNxjJmWE7sP++vYVFRw==}
 
-  '@run-slicer/jasm@0.4.5-2.8.0':
-    resolution: {integrity: sha512-J/NyVKwgJb3J9G7lOYACiE0Yba0LyaWDyBCvKe4gPrDWEydAOxutKU7NxheKdDCw7EPprNddMNy9DsYATQAs4Q==}
+  '@run-slicer/jasm@0.4.6-aacebfa8b0':
+    resolution: {integrity: sha512-diTsL/tfZDEUlIXo3Tuy21m/pdc1cRGt6nTufy8k2sGxaDKZ2DKimMPfflPpOYjqvkuiYDbVBCDjnQI5TJcSCg==}
 
   '@run-slicer/lezer-java@1.2.1':
     resolution: {integrity: sha512-QlqVAajWw4YNc49Sswyu96mNH3q1u7QLrT6KKheBBBHDZ4cM6cTz+LizBeGTEXZQKTb6dtoq+qlGXAX3Ew+kLA==}
@@ -2041,7 +2041,7 @@ snapshots:
 
   '@run-slicer/cfr@0.1.8-0.152': {}
 
-  '@run-slicer/jasm@0.4.5-2.8.0': {}
+  '@run-slicer/jasm@0.4.6-aacebfa8b0': {}
 
   '@run-slicer/lezer-java@1.2.1':
     dependencies:

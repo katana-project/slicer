@@ -27,7 +27,7 @@
         "@katana-project/zip": "^0.7.3",
         "@lezer/highlight": "^1.2.3",
         "@run-slicer/cfr": "0.1.8-0.152",
-        "@run-slicer/jasm": "0.4.5-2.8.0",
+        "@run-slicer/jasm": "0.4.6-aacebfa8b0",
         "@run-slicer/lezer-java": "^1.2.1",
         "@run-slicer/procyon": "0.1.2-0.6.0",
         "@run-slicer/script": "link:script",
