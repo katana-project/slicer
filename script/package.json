@@ -1,6 +1,6 @@
 {
     "name": "@run-slicer/script",
-    "version": "0.18.0",
+    "version": "0.19.0",
     "author": "katana-project",
     "license": "MIT",
     "description": "Type definitions for the slicer scripting API.",
