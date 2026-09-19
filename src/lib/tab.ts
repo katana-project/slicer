@@ -397,24 +397,29 @@ const typesByExts = new Map(
     (Object.entries(extensions) as [TabType, string[]][]).flatMap(([k, v]) => v.map((ext) => [ext, k]))
 );
 
-export const detectType = (entry: Entry): TabTypeOrDynamic => {
-    if (entry.extension) {
-        const wantedType = typesByExts.get(entry.extension);
-        if (wantedType) {
-            return wantedType;
-        }
+const detectType = async (entry: Entry): Promise<TabTypeOrDynamic> => {
+    const ext = entry.extension ?? "";
 
-        for (const { decl } of get(dynamicTabDefs).values()) {
-            if (decl.preferredTypes?.includes(entry.extension)) {
-                return decl.id;
-            }
+    const scriptEntry = wrapEntry(entry);
+    for (const { decl } of get(dynamicTabDefs).values()) {
+        // noinspection JSDeprecatedSymbols - API implementation
+        if (decl.preferredTypes?.includes(ext) || (decl.prefers && (await decl.prefers(scriptEntry)))) {
+            return decl.id;
         }
+    }
+
+    const wantedType = typesByExts.get(ext);
+    if (wantedType) {
+        return wantedType;
     }
 
     return TabType.CODE;
 };
 
-export const open = async (entry: Entry, type: TabTypeOrDynamic = detectType(entry)): Promise<Tab> => {
+export const open = async (entry: Entry, type?: TabTypeOrDynamic): Promise<Tab> => {
+    if (!type) {
+        type = await detectType(entry);
+    }
     if (entry.type === EntryType.MEMBER && type === TabType.CLASS) {
         entry = entry.parent!; // unwrap to parent class
     }

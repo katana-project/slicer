@@ -392,8 +392,21 @@ export interface TabDeclaration {
      *
      * This is only a hint, a tab must be able to handle any entry passed to it in the {@link TabContext#entry} regardless of the file extension.
      * This only applies if {@link TabDeclaration#contextual} is true.
+     *
+     * @deprecated Use {@link prefers}.
      */
     readonly preferredTypes?: string[];
+
+    /**
+     * Determines whether this tab can handle an entry, used by slicer to determine which tab declaration to use for a given entry.
+     *
+     * This is only a hint, a tab must be able to handle any entry passed to it in the {@link TabContext#entry}.
+     * This only applies if {@link TabDeclaration#contextual} is true.
+     *
+     * @param entry The entry.
+     * @return Whether the tab can be handled.
+     */
+    prefers?: (entry: Entry) => Awaitable<boolean>;
 
     /**
      * Determines the placement of the tab in the UI based on the provided context.

@@ -17,7 +17,6 @@ import { dismissedToasts, projectMode, urlRemote, urlRemoteFile } from "$lib/sta
 import {
     clear as clearTabs,
     current as currentTab,
-    detectType as detectTabType,
     move as moveTab,
     open as openTab,
     openUnscoped as openUnscopedTab,
@@ -233,7 +232,7 @@ export default {
         const [created, skipped] = partition(result, (r) => r.created);
         await toastAdd(created, skipped, time);
     },
-    async open(entry: Entry, tabType: TabTypeOrDynamic = detectTabType(entry)): Promise<void> {
+    async open(entry: Entry, tabType?: TabTypeOrDynamic): Promise<void> {
         try {
             await openTab(entry, tabType);
         } catch (e) {
