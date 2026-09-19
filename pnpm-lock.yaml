@@ -48,8 +48,8 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3
       '@run-slicer/cfr':
-        specifier: 0.1.6-0.152
-        version: 0.1.6-0.152
+        specifier: 0.1.8-0.152
+        version: 0.1.8-0.152
       '@run-slicer/jasm':
         specifier: 0.4.5-2.8.0
         version: 0.4.5-2.8.0
@@ -738,8 +738,8 @@ packages:
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
 
-  '@run-slicer/cfr@0.1.6-0.152':
-    resolution: {integrity: sha512-aZa6UsxGCw0xIxB2Phz74V69kuXvrBJgUZLqcQSLDY2reRQihciGmirT7X4QWR/UUz8Swd6zpOSPGToJnAHw1w==}
+  '@run-slicer/cfr@0.1.8-0.152':
+    resolution: {integrity: sha512-FN5I41CF0QcscV5HCcbq5iJHqIueNtROvLtfXohNt9pNJUxo2WFncg0a7jPinRjBi7VgNxjJmWE7sP++vYVFRw==}
 
   '@run-slicer/jasm@0.4.5-2.8.0':
     resolution: {integrity: sha512-J/NyVKwgJb3J9G7lOYACiE0Yba0LyaWDyBCvKe4gPrDWEydAOxutKU7NxheKdDCw7EPprNddMNy9DsYATQAs4Q==}
@@ -2033,7 +2033,7 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
-  '@run-slicer/cfr@0.1.6-0.152': {}
+  '@run-slicer/cfr@0.1.8-0.152': {}
 
   '@run-slicer/jasm@0.4.5-2.8.0': {}
 

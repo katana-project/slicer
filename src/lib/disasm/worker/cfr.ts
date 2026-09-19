@@ -18,7 +18,7 @@ expose({
         source: EntrySource,
         options?: DisassemblerOptions
     ): Promise<string> {
-        return removeHeader(await decompile(name, { source, options }));
+        return removeHeader((await decompile(name, { source, options }))[name]);
     },
     async method(
         name: string,
@@ -30,6 +30,6 @@ expose({
         options = options ?? {};
         options.methodname = signature.substring(0, signature.indexOf("("));
 
-        return removeHeader(await decompile(name, { source, options }));
+        return removeHeader((await decompile(name, { source, options }))[name]);
     },
 } satisfies DisassemblyWorker);
