@@ -106,7 +106,7 @@
     </div>
     <div class="bg-border my-8 w-px"></div>
     <div class="flex-1 scroll-p-8 overflow-y-auto p-8" bind:this={sectionsElem}>
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-8">
             {#each sections as { component: SectionComponent }}
                 <SectionComponent {...props} />
             {/each}

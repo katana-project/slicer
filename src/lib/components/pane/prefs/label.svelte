@@ -7,28 +7,38 @@
 
     interface Props {
         for: string;
+        collapsed?: boolean;
         danger?: boolean;
         textKey: TranslationKey;
         descKey?: TranslationKey;
     }
 
-    let { for: forId, danger, textKey, descKey }: Props = $props();
+    let { for: forId, collapsed = false, danger, textKey, descKey }: Props = $props();
 </script>
 
 {#if descKey}
-    <TooltipProvider>
-        <div class="flex items-center gap-2">
+    {#if collapsed}
+        <TooltipProvider>
+            <div class="flex items-center gap-2">
+                <Label for={forId}>{$t(textKey)}</Label>
+                <Tooltip>
+                    <TooltipTrigger class="cursor-pointer">
+                        <CircleQuestionMark class={cn("h-4 w-4 text-muted-foreground", danger && "text-destructive")} />
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                        {@html $t(descKey)}
+                    </TooltipContent>
+                </Tooltip>
+            </div>
+        </TooltipProvider>
+    {:else}
+        <div class="flex flex-col gap-1">
             <Label for={forId}>{$t(textKey)}</Label>
-            <Tooltip>
-                <TooltipTrigger class="cursor-pointer">
-                    <CircleQuestionMark class={cn("h-4 w-4", danger ? "text-destructive" : "text-muted-foreground")} />
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                    {@html $t(descKey)}
-                </TooltipContent>
-            </Tooltip>
+            <p class={cn("text-xs text-muted-foreground", danger && "text-destructive")}>
+                {@html $t(descKey)}
+            </p>
         </div>
-    </TooltipProvider>
+    {/if}
 {:else}
     <Label for={forId}>{$t(textKey)}</Label>
 {/if}

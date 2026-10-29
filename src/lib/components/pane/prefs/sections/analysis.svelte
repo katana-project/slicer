@@ -4,11 +4,12 @@
     import Section from "../section.svelte";
     import Label from "../label.svelte";
     import type { PaneProps } from "$lib/components/pane";
+    import { SquareActivity } from "@lucide/svelte";
 
     let _: PaneProps = $props();
 </script>
 
-<Section id="analysis" labelKey="pane.prefs.section.analysis">
+<Section id="analysis" icon={SquareActivity} labelKey="pane.prefs.section.analysis">
     <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
         <Label
             for="analysisBackground"
