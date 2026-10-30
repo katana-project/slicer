@@ -7,7 +7,6 @@
     import { encodings } from "$lib/workspace/encoding";
     import type { ProtoScript } from "$lib/script";
     import { dynamicTabDefs, type Tab, tabDefs, TabPosition, TabType, type TabTypeOrDynamic } from "$lib/tab";
-    import { Modifier } from "$lib/shortcut";
     import Shortcut from "./shortcut.svelte";
     import ScriptMenu from "./script/menu.svelte";
     import {
@@ -223,11 +222,11 @@
             <MenubarContent align="start">
                 <MenubarItem onclick={() => handler.load()}>
                     {$t("menu.file.open")}
-                    <Shortcut key="o" modifier={Modifier.CTRL} />
+                    <Shortcut action="load" />
                 </MenubarItem>
                 <MenubarItem onclick={() => handler.add()}>
                     {$t("menu.file.add")}
-                    <Shortcut key="o" modifier={Modifier.CTRL | Modifier.SHIFT} />
+                    <Shortcut action="add" />
                 </MenubarItem>
                 <MenubarItem onclick={() => modals.open(LoadExternalDialog, { handler })} class="justify-between">
                     {$t("menu.file.add-url")}
@@ -251,11 +250,11 @@
                 <MenubarSeparator />
                 <MenubarItem disabled={!tab?.entry} onclick={() => handler.close()}>
                     {$t("menu.file.close")}
-                    <Shortcut key="w" modifier={Modifier.CTRL | Modifier.ALT} />
+                    <Shortcut action="close" />
                 </MenubarItem>
                 <MenubarItem disabled={!tab?.entry} onclick={exportEntry}>
                     {$t("menu.file.export")}
-                    <Shortcut key="e" modifier={Modifier.CTRL} />
+                    <Shortcut action="export" />
                 </MenubarItem>
                 <InjectedScriptMenu id="menu.file" protos={orderedScripts} />
             </MenubarContent>
@@ -329,7 +328,7 @@
             <MenubarContent align="start">
                 <MenubarItem class="justify-between" onclick={openSearch}>
                     {$t("menu.analysis.search")}
-                    <Shortcut key="f" modifier={Modifier.CTRL | Modifier.SHIFT} />
+                    <Shortcut action="search" />
                 </MenubarItem>
                 <MenubarSeparator />
                 <MenubarSub>

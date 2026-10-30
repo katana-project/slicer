@@ -1,16 +1,17 @@
 <script lang="ts" module>
-    import { Type, FolderOpen, SquareActivity, Settings, SquareCode } from "@lucide/svelte";
+    import { Type, FolderOpen, SquareActivity, Settings, SquareCode, Keyboard } from "@lucide/svelte";
     import GeneralSection from "./sections/general.svelte";
     import EditorSection from "./sections/editor.svelte";
     import WorkspaceSection from "./sections/workspace.svelte";
     import AnalysisSection from "./sections/analysis.svelte";
     import InterpSection from "./sections/interp.svelte";
+    import NavigationSection from "./sections/navigation.svelte";
     import type { Component } from "svelte";
     import type { Icon } from "$lib/components/icons";
     import { t } from "$lib/i18n";
     import type { PaneProps } from "$lib/components/pane";
 
-    type SectionID = "general" | "editor" | "workspace" | "analysis" | "interp";
+    type SectionID = "general" | "editor" | "workspace" | "analysis" | "interp" | "navigation";
     interface Section {
         id: SectionID;
         icon: Icon;
@@ -20,6 +21,7 @@
     const sections: Section[] = [
         { id: "general", icon: Settings, component: GeneralSection },
         { id: "editor", icon: Type, component: EditorSection },
+        { id: "navigation", icon: Keyboard, component: NavigationSection },
         { id: "workspace", icon: FolderOpen, component: WorkspaceSection },
         { id: "analysis", icon: SquareActivity, component: AnalysisSection },
         { id: "interp", icon: SquareCode, component: InterpSection },

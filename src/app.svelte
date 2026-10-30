@@ -14,7 +14,7 @@
     import { root as rootKey, panes, urlRemote, urlScript, urlRemoteFile, urlRemoteMapping } from "$lib/state";
     import { tasks } from "$lib/task";
     import { handler } from "$lib/event";
-    import { register as registerShortcuts } from "$lib/shortcut";
+    import { bindShortcuts } from "$lib/shortcut";
     import { onMount } from "svelte";
     import { transformers } from "$lib/workspace/analysis/transform";
     import { modals, Modals } from "svelte-modals";
@@ -31,7 +31,7 @@
     let disasms0 = $derived(Array.from($disasms.values()));
     let transformers0 = $derived(Array.from($transformers.values()));
 
-    onMount(registerShortcuts);
+    onMount(bindShortcuts);
 
     // ignore default context menu except on double right-clicks
     onMount(() => {

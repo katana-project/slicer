@@ -14,7 +14,6 @@
         ContextMenuSeparator,
         ContextMenuLabel,
     } from "$lib/components/ui/context-menu";
-    import { Modifier } from "$lib/shortcut";
     import Shortcut from "$lib/components/menu/shortcut.svelte";
     import { t } from "$lib/i18n";
     import type { Icon as ScriptIcon } from "@run-slicer/script";
@@ -115,7 +114,7 @@
         <ContextMenuSeparator />
         <ContextMenuItem onclick={(e) => handleClose(e, "self")} class="justify-between">
             {$t("pane.header.menu.close.self")}
-            {#if active}<Shortcut key="w" modifier={Modifier.CTRL | Modifier.ALT} />{/if}
+            {#if active}<Shortcut action="close" />{/if}
         </ContextMenuItem>
         <ContextMenuItem onclick={(e) => handleClose(e, "others")}>
             {$t("pane.header.menu.close.others")}
