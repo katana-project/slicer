@@ -1,0 +1,50 @@
+name: Build and package
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.platform == 'darwin' && 'macos-latest' || matrix.platform == 'win32' && 'windows-latest' || matrix.platform == 'linux' && 'ubuntu-latest' }}
+    strategy:
+      matrix:
+        platform: [win32, darwin, linux]
+        arch: [x64, arm64]
+        exclude:
+          - platform: darwin
+            arch: x64
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - name: Set up Corepack
+        run: corepack enable
+      - name: Build
+        run: pnpm i && pnpm build
+      - name: Package
+        run: cd app && pnpm i && pnpm make --platform ${{ matrix.platform }} --arch ${{ matrix.arch }}
+      - name: Upload artifact (ZIP)
+        uses: actions/upload-artifact@v7
+        with:
+          path: "app/out/make/zip/${{ matrix.platform }}/${{ matrix.arch }}/slicer-${{ matrix.platform }}-${{ matrix.arch }}-*.zip"
+          archive: false
+      - name: Upload artifact (DMG)
+        if: matrix.platform == 'darwin'
+        uses: actions/upload-artifact@v7
+        with:
+          path: "app/out/make/slicer-*-${{ matrix.arch }}.dmg"
+          archive: false
+      - name: Upload artifact (EXE)
+        if: matrix.platform == 'win32'
+        uses: actions/upload-artifact@v7
+        with:
+          name: "slicer-squirrel-${{ matrix.platform }}-${{ matrix.arch }}"
+          path: "app/out/make/squirrel.windows/${{ matrix.arch }}/*"
