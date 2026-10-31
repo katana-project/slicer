@@ -760,6 +760,85 @@ export interface NotificationContext {
 }
 
 /**
+ * A noteworthy property of a workspace entry.
+ */
+export interface Characteristic {
+    /**
+     * The unique ID of the characteristic.
+     *
+     * This should not conflict with types of characteristics defined by slicer internally or by other scripts, to ensure compatibility with other scripts and future versions of slicer,
+     * so it is recommended to use a namespaced type (e.g. "my_script/reflection_special", etc.).
+     */
+    readonly id: string;
+    /**
+     * A human-readable name or a translation key for the characteristic's label.
+     *
+     * Defaults to the {@link id}.
+     */
+    readonly label?: string;
+    /**
+     * An icon for the characteristic to be displayed in the workspace summary.
+     */
+    readonly icon?: Icon;
+}
+
+/**
+ * A provider for detecting characteristics of individual entries.
+ */
+export interface CharacteristicProvider {
+    /**
+     * Tries to detect a set of characteristics from a workspace entry.
+     *
+     * @param entry The entry to be examined.
+     * @returns The detected characteristic IDs.
+     */
+    match(entry: Entry): Awaitable<string[]>;
+}
+
+/**
+ * A sub-context for managing the registration of characteristic types and their detection providers.
+ */
+export interface CharacteristicsContext {
+    /**
+     * Registers a new characteristic type.
+     *
+     * @param ct The characteristic definition.
+     */
+    register(ct: Characteristic): void;
+
+    /**
+     * Removes a previously registered characteristic type.
+     *
+     * @param id The characteristic type ID.
+     */
+    unregister(id: string): void;
+
+    /**
+     * Registers a new characteristic provider.
+     *
+     * @param ctp The characteristic provider.
+     */
+    registerProvider(ctp: CharacteristicProvider): void;
+
+    /**
+     * Removes a previously registered characteristic provider.
+     *
+     * @param ctp The characteristic provider.
+     */
+    unregisterProvider(ctp: CharacteristicProvider): void;
+}
+
+/**
+ * Provides access to extend the analysis capabilities.
+ */
+export interface AnalysisContext {
+    /**
+     * Sub-context for managing characteristic (provider) registration.
+     */
+    readonly ct: CharacteristicsContext;
+}
+
+/**
  * The context in which a script is executed, providing access to the editor, disassembler, and workspace contexts,
  * as well as event handling capabilities.
  */
@@ -797,6 +876,10 @@ export interface ScriptContext {
      * The notification context, which allows displaying toast notifications in the UI.
      */
     readonly notification: NotificationContext;
+    /**
+     * The analysis context, which allows tweaking behavior of automatic analysis.
+     */
+    readonly analysis: AnalysisContext;
 
     /**
      * Adds an event listener for the specified event type.
