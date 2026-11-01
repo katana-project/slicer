@@ -10,10 +10,11 @@
         MenubarSubContent,
         MenubarSubTrigger,
     } from "$lib/components/ui/menubar";
-    import type { CheckboxOption, GroupOption, Option, RadioOption } from "@run-slicer/script";
+    import type { ButtonOption, CheckboxOption, GroupOption, Option, RadioOption } from "@run-slicer/script";
     import type { ProtoScript } from "$lib/script";
     import { t } from "$lib/i18n";
     import IconComponent from "$lib/components/icon.svelte";
+    import Shortcut from "../shortcut.svelte";
 
     interface Props {
         inset?: boolean;
@@ -27,6 +28,7 @@
 
     const groupOption = $derived(option as GroupOption);
 
+    const buttonOption = $derived(option as ButtonOption);
     const handleButton = () => {
         proto.context?.dispatchEvent({ type: "option_change", option });
     };
@@ -62,7 +64,9 @@
 {:else if option.type === "button"}
     <MenubarItem {inset} class="justify-between" onclick={handleButton}>
         {label}
-        {#if option.icon}
+        {#if buttonOption.shortcut}
+            <Shortcut action={buttonOption.shortcut} />
+        {:else if option.icon}
             <IconComponent icon={option.icon} />
         {/if}
     </MenubarItem>

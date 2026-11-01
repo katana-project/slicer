@@ -8,7 +8,7 @@
         format,
         modifierFromEvent,
         normalizeKey,
-        shortcutActions,
+        actions,
         type ShortcutActionType,
         type ShortcutAction,
     } from "$lib/shortcut";
@@ -46,7 +46,7 @@
         }
 
         const key = normalizeKey(e.key);
-        const collision = $shortcutActions.some((action) => {
+        const collision = $actions.some((action) => {
             if (action.type === id) {
                 return false;
             }
@@ -85,7 +85,7 @@
         {$t(conflict ? "pane.prefs.navigation.conflict" : "pane.prefs.navigation.desc")}
     </p>
     <div class="grid gap-3">
-        {#each $shortcutActions as action (action.type)}
+        {#each $actions as action (action.type)}
             {@const binding = bindingFor(action)}
             {@const changed = binding !== action.binding}
             <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto_auto_auto] items-center gap-3">

@@ -14,7 +14,7 @@
     import { root as rootKey, panes, urlRemote, urlScript, urlRemoteFile, urlRemoteMapping } from "$lib/state";
     import { tasks } from "$lib/task";
     import { handler } from "$lib/event";
-    import { bindShortcuts } from "$lib/shortcut";
+    import { bind as bindShortcuts } from "$lib/shortcut";
     import { onMount } from "svelte";
     import { transformers } from "$lib/workspace/analysis/transform";
     import { modals, Modals } from "svelte-modals";

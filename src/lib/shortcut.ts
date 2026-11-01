@@ -1,6 +1,4 @@
-import { handler } from "$lib/event";
 import { type ShortcutBinding, shortcutBindings } from "$lib/state";
-import { tabDefs, TabPosition, TabType } from "$lib/tab";
 import { get, writable } from "svelte/store";
 
 // https://stackoverflow.com/questions/38241480/detect-macos-ios-windows-android-and-linux-os-with-js
@@ -23,36 +21,51 @@ export interface ShortcutAction {
     run: ShortcutCallback;
 }
 
-export const shortcutActions = writable<ShortcutAction[]>([
+export const actions = writable<ShortcutAction[]>([
     {
         type: "load",
         label: "pane.prefs.navigation.load",
         binding: { key: "o", modifier: Modifier.CTRL },
-        run: () => get(handler).load(),
+        run: async () => {
+            const { handler } = await import("$lib/event");
+            await get(handler).load();
+        },
     },
     {
         type: "add",
         label: "pane.prefs.navigation.add",
         binding: { key: "o", modifier: Modifier.CTRL | Modifier.SHIFT },
-        run: () => get(handler).add(),
+        run: async () => {
+            const { handler } = await import("$lib/event");
+            await get(handler).add();
+        },
     },
     {
         type: "close",
         label: "pane.prefs.navigation.close",
         binding: { key: "w", modifier: Modifier.CTRL | Modifier.ALT },
-        run: () => get(handler).close(),
+        run: async () => {
+            const { handler } = await import("$lib/event");
+            await get(handler).close();
+        },
     },
     {
         type: "export",
         label: "pane.prefs.navigation.export",
         binding: { key: "e", modifier: Modifier.CTRL },
-        run: () => get(handler).export(),
+        run: async () => {
+            const { handler } = await import("$lib/event");
+            await get(handler).export();
+        },
     },
     {
         type: "search",
         label: "pane.prefs.navigation.search",
         binding: { key: "f", modifier: Modifier.CTRL | Modifier.SHIFT },
         run: async () => {
+            const { handler } = await import("$lib/event");
+            const { tabDefs, TabPosition, TabType } = await import("$lib/tab");
+
             await get(handler).openUnscoped(
                 get(tabDefs).find((definition) => definition.type === TabType.SEARCH)!,
                 TabPosition.SECONDARY_RIGHT,
@@ -64,7 +77,10 @@ export const shortcutActions = writable<ShortcutAction[]>([
         type: "loadMappings",
         label: "pane.prefs.navigation.load-mappings",
         binding: { key: "m", modifier: Modifier.CTRL | Modifier.SHIFT },
-        run: () => get(handler).loadMappings(),
+        run: async () => {
+            const { handler } = await import("$lib/event");
+            await get(handler).loadMappings();
+        },
     },
 ]);
 
@@ -121,14 +137,14 @@ const register = (key: string, modifier: number, callback: ShortcutCallback): De
     return () => removeRegistration(reg);
 };
 
-export const bindShortcuts = (): DestroyCallback => {
+export const bind = (): DestroyCallback => {
     let destroyBindings: DestroyCallback[] = [];
     const sync = (): void => {
         destroyBindings.forEach((destroy) => destroy());
         destroyBindings = [];
 
         const configured = get(shortcutBindings);
-        for (const action of get(shortcutActions)) {
+        for (const action of get(actions)) {
             const binding = configured[action.type] === undefined ? action.binding : configured[action.type];
             if (binding && !registrations.has(combination(binding.key, binding.modifier))) {
                 destroyBindings.push(register(binding.key, binding.modifier, action.run));
@@ -136,7 +152,7 @@ export const bindShortcuts = (): DestroyCallback => {
         }
     };
 
-    const unsubscribeActions = shortcutActions.subscribe(sync);
+    const unsubscribeActions = actions.subscribe(sync);
     const unsubscribeBindings = shortcutBindings.subscribe(sync);
     return () => {
         unsubscribeActions();

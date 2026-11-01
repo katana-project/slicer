@@ -77,6 +77,13 @@ export interface GroupOption extends Option {
  */
 export interface ButtonOption extends Option {
     readonly type: "button";
+
+    /**
+     * The shortcut ID associated with this button, which can be used to trigger the button's action via a keyboard shortcut.
+     *
+     * _Note: the shortcut must be registered independently with the Navigation API ({@link NavigationContext})._
+     */
+    readonly shortcut?: string;
 }
 
 /**
@@ -760,6 +767,63 @@ export interface NotificationContext {
 }
 
 /**
+ * A keyboard shortcut binding. Modifier flags are CTRL = 1, SHIFT = 2, and ALT = 4;
+ * combine flags with bitwise OR.
+ */
+export interface ShortcutBinding {
+    readonly key: string;
+    readonly modifier: number;
+}
+
+/**
+ * The declaration of a shortcut registered by a script.
+ */
+export interface ShortcutDeclaration {
+    /**
+     * The unique identifier of the shortcut within the script.
+     */
+    readonly id: string;
+    /**
+     * A human-readable name or a translation key shown in shortcut preferences.
+     * Defaults to {@link id}.
+     */
+    readonly label?: string;
+    /**
+     * The default key and modifier combination. Users can change or disable it in preferences.
+     */
+    readonly binding?: ShortcutBinding;
+    /**
+     * Called when the shortcut is activated.
+     * @param event The keyboard event that activated the shortcut.
+     */
+    run(event: KeyboardEvent): Awaitable<void>;
+}
+
+/**
+ * Registers and unregisters keyboard shortcuts.
+ */
+export interface NavigationContext {
+    /**
+     * Returns all registered shortcuts, including built-in and script-defined shortcuts.
+     *
+     * @returns The shortcuts.
+     */
+    shortcuts(): ShortcutDeclaration[];
+
+    /**
+     * Registers a shortcut.
+     * @param declaration The shortcut declaration.
+     */
+    registerShortcut(declaration: ShortcutDeclaration): void;
+    /**
+     * Unregisters a shortcut by its declaration ID or action type. This can also remove built-in
+     * shortcuts such as `load`, `add`, `close`, `export`, `search`, and `loadMappings`.
+     * @param id The shortcut identifier or action type.
+     */
+    unregisterShortcut(id: string): void;
+}
+
+/**
  * The context in which a script is executed, providing access to the editor, disassembler, and workspace contexts,
  * as well as event handling capabilities.
  */
@@ -777,6 +841,10 @@ export interface ScriptContext {
      * The editor context, which allows interaction with the tabs in the UI.
      */
     readonly editor: EditorContext;
+    /**
+     * The navigation context, which allows registering keyboard shortcuts.
+     */
+    readonly navigation: NavigationContext;
     /**
      * The disassembler context, which allows interaction with the available disassemblers.
      */
