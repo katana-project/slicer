@@ -7,7 +7,7 @@
     import NodeMenu from "./menu.svelte";
     import type { PaneProps } from "$lib/components/pane";
     import { Select, SelectContent, SelectItem, SelectTrigger } from "$lib/components/ui/select";
-    import { type ProjectMode, projectMode } from "$lib/state";
+    import { type ProjectMode, projectMode, urlRemoteFile } from "$lib/state";
     import { type ClassEntry, type Entry, entryRef, EntryType } from "$lib/workspace";
     import { t } from "$lib/i18n";
     import { groupBy } from "$lib/utils";
@@ -148,6 +148,7 @@
                         <TreeNode
                             mode={$projectMode}
                             data={node}
+                            highlight={$urlRemoteFile ?? undefined}
                             onopen={open}
                             onmenu={(e, data) => {
                                 menuData = data;

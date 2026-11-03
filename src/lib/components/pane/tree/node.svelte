@@ -23,11 +23,12 @@
     interface Props extends HTMLAttributes<HTMLDivElement> {
         data: Node;
         mode: ProjectMode;
+        highlight?: string;
         onopen?: (data: Node) => void;
         onmenu?: (e: MouseEvent, data: Node) => void;
     }
 
-    let { data = $bindable(), mode, onopen, onmenu, ...rest }: Props = $props();
+    let { data = $bindable(), mode, highlight, onopen, onmenu, ...rest }: Props = $props();
     $effect(() => {
         // no children and not a leaf node, remove ourselves from the parent
         if (data.parent && !data.nodes && !data.entry) {
@@ -35,11 +36,27 @@
         }
     });
 
+    let nodeButton: HTMLButtonElement | undefined = $state();
+
     const { icon: FileIcon, classes } = $derived(data.entry ? entryIcon(data.entry.value) : fileIcon(data.label));
+
+    const containsEntry = (node: Node, name: string): boolean =>
+        node.entry?.name === name || Boolean(node.nodes?.some((child) => containsEntry(child, name)));
+    let highlighted = $derived(highlight && data.entry?.name === highlight);
 
     let expanded = $state(data.expanded === undefined ? (data.parent?.nodes?.length || 0) === 1 : data.expanded);
     $effect(() => {
         data.expanded = expanded;
+    });
+    $effect(() => {
+        if (highlight && containsEntry(data, highlight)) {
+            expanded = true;
+        }
+    });
+    $effect(() => {
+        if (highlighted) {
+            nodeButton?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
     });
 
     let hasNonLeaf = $derived(!data.nodes || data.nodes.some((n) => n.nodes));
@@ -56,7 +73,11 @@
 <div role="button" tabindex="0" oncontextmenu={handleContextMenu} class="contain-layout contain-style" {...rest}>
     {#if sortedNodes}
         {@const ExpandedIcon = expanded ? ChevronDown : ChevronRight}
-        <button class="highlight flex w-full py-[0.2rem]" onclick={() => (expanded = !expanded)}>
+        <button
+            bind:this={nodeButton}
+            class={cn("highlight flex w-full py-[0.2rem]", highlighted && "highlight-primary")}
+            onclick={() => (expanded = !expanded)}
+        >
             <ExpandedIcon size={14} class="text-muted-foreground my-auto mr-1 min-w-3.5" />
             {#if data.entry}
                 <FileIcon size={16} class={cn("my-auto mr-1 min-w-4", classes)} />
@@ -71,6 +92,7 @@
                 <TreeNode
                     {mode}
                     data={node}
+                    {highlight}
                     {onopen}
                     {onmenu}
                     class={cn("border-l-border border-l pl-4.5", hasNonLeaf || "pl-9")}
@@ -78,7 +100,11 @@
             {/each}
         {/if}
     {:else}
-        <button class="highlight flex w-full py-[0.2rem]" ondblclick={() => onopen?.(data)}>
+        <button
+            bind:this={nodeButton}
+            class={cn("highlight flex w-full py-[0.2rem]", highlighted && "highlight-primary")}
+            ondblclick={() => onopen?.(data)}
+        >
             <FileIcon size={16} class={cn("my-auto mr-1 min-w-4", classes)} />
             <span class="text-sm">{data.label}</span>
         </button>
@@ -93,5 +119,10 @@
 
     .highlight:focus {
         border-image: conic-gradient(var(--accent) 0, var(--accent) 0) fill 0/0/0 100vw;
+    }
+
+    .highlight-primary {
+        border-image: conic-gradient(oklch(from var(--primary) l c h / 0.1) 0, oklch(from var(--primary) l c h / 0.1) 0)
+            fill 0/0/0 100vw;
     }
 </style>
