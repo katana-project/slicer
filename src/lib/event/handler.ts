@@ -204,14 +204,6 @@ export default {
         await toastAdd(created, skipped, time);
     },
     async addRemote(url: string): Promise<void> {
-        // append to list of loaded remote URLs, for shareable links
-        urlRemote.update(($urlRemote) => {
-            if (!$urlRemote.includes(url)) {
-                return [...$urlRemote, url];
-            }
-            return $urlRemote;
-        });
-
         const { time, result } = await recordTimedProgress("task.add", url, async (task) => {
             try {
                 return await loadRemote(url, null, remoteProgress(task, url));
@@ -228,6 +220,14 @@ export default {
         if (result === null) {
             return;
         }
+
+        // append to list of loaded remote URLs, for shareable links
+        urlRemote.update(($urlRemote) => {
+            if (!$urlRemote.includes(url)) {
+                return [...$urlRemote, url];
+            }
+            return $urlRemote;
+        });
 
         const [created, skipped] = partition(result, (r) => r.created);
         await toastAdd(created, skipped, time);
