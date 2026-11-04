@@ -51,7 +51,7 @@
 </script>
 
 <ContextMenuContent class="max-w-56 min-w-48">
-    <ContextMenuLabel>{node.label}</ContextMenuLabel>
+    <ContextMenuLabel class="overflow-hidden text-ellipsis">{node.label}</ContextMenuLabel>
     <ContextMenuSeparator />
     {#if entry}
         <ContextMenuSub>

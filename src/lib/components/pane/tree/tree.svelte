@@ -1,3 +1,15 @@
+<script lang="ts" module>
+    import { writable } from "svelte/store";
+    import { urlRemoteFile } from "$lib/state";
+
+    // this is kinda iffy to have in a global store
+    // but whatever, given that the tree pane is a singleton, it should be fine
+    export const highlight = writable<string | null>(null);
+    urlRemoteFile.subscribe((urlRemoteFile0) => {
+        highlight.set(urlRemoteFile0 ?? null);
+    });
+</script>
+
 <script lang="ts">
     import { Plus } from "@lucide/svelte";
     import { Button } from "$lib/components/ui/button";
@@ -7,7 +19,7 @@
     import NodeMenu from "./menu.svelte";
     import type { PaneProps } from "$lib/components/pane";
     import { Select, SelectContent, SelectItem, SelectTrigger } from "$lib/components/ui/select";
-    import { type ProjectMode, projectMode, urlRemoteFile } from "$lib/state";
+    import { type ProjectMode, projectMode } from "$lib/state";
     import { type ClassEntry, type Entry, entryRef, EntryType } from "$lib/workspace";
     import { t } from "$lib/i18n";
     import { groupBy } from "$lib/utils";
@@ -148,7 +160,7 @@
                         <TreeNode
                             mode={$projectMode}
                             data={node}
-                            highlight={$urlRemoteFile ?? undefined}
+                            highlight={$highlight ?? undefined}
                             onopen={open}
                             onmenu={(e, data) => {
                                 menuData = data;

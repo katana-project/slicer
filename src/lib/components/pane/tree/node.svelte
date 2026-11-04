@@ -55,7 +55,7 @@
     });
     $effect(() => {
         if (highlighted) {
-            nodeButton?.scrollIntoView({ behavior: "smooth", block: "center" });
+            nodeButton?.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
     });
 

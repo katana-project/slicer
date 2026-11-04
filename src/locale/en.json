@@ -79,6 +79,7 @@
     "pane.header.menu.pin": "Pin tab",
     "pane.header.menu.unpin": "Unpin tab",
     "pane.header.menu.copy-remote": "Copy shareable link",
+    "pane.header.menu.find-tree": "Find in tree",
     "pane.welcome.title": "Welcome",
     "pane.welcome.get-started": "Get started",
     "pane.welcome.get-started.open": "Open JAR/ZIP file",

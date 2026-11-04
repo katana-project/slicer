@@ -13,6 +13,7 @@
     import type { CloseType } from "./header/item.svelte";
     import { t } from "$lib/i18n";
     import { urlRemote, urlRemoteFile } from "$lib/state";
+    import { highlight } from "./tree/tree.svelte";
 
     interface Props {
         tabs: Tab[];
@@ -151,13 +152,12 @@
                         name={$t(tab0.name || `tab.${tab0.type}`)}
                         active={posCurrent?.id === tab0.id}
                         icon={tab0.icon}
-                        closeable={tab0.closeable}
                         pinned={tab0.pinned}
-                        copyable={$urlRemote.length > 0 && !!tab0.entry}
                         onclick={() => updateCurrent(position, tab0)}
-                        onclose={(type) => handleClose(type, tab0)}
+                        onclose={tab0.closeable ? (type) => handleClose(type, tab0) : undefined}
                         onpin={(value) => handlePin(value, tab0)}
-                        oncopy={() => handleCopy(tab0)}
+                        oncopy={$urlRemote.length > 0 && !!tab0.entry ? () => handleCopy(tab0) : undefined}
+                        onfind={tab0.entry ? () => highlight.set(tab0.entry!.name) : undefined}
                     />
                 {/each}
             </div>
