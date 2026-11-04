@@ -79,6 +79,7 @@
     "pane.header.menu.pin": "Tab anheften",
     "pane.header.menu.unpin": "Tab lösen",
     "pane.header.menu.copy-remote": "Teilbaren Link kopieren",
+    "pane.header.menu.find-tree": "Find in tree",
     "pane.welcome.title": "Willkommen",
     "pane.welcome.get-started": "Erste Schritte",
     "pane.welcome.get-started.open": "JAR/ZIP Datei öffnen",
