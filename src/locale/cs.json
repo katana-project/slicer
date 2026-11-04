@@ -79,6 +79,7 @@
     "pane.header.menu.pin": "Připnout kartu",
     "pane.header.menu.unpin": "Odepnout kartu",
     "pane.header.menu.copy-remote": "Kopírovat odkaz pro sdílení",
+    "pane.header.menu.find-tree": "Find in tree",
     "pane.welcome.title": "Vítejte",
     "pane.welcome.get-started": "Začít",
     "pane.welcome.get-started.open": "Otevřít JAR/ZIP soubor",
