@@ -1,3 +1,11 @@
+<script lang="ts" module>
+    export type ModalPosition = { x: number; y: number };
+
+    export const mouseToPosition = (e: MouseEvent): ModalPosition => {
+        return { x: e.clientX, y: e.clientY };
+    };
+</script>
+
 <script lang="ts">
     import { X, Pin, PinOff } from "@lucide/svelte";
     import { type Snippet, untrack } from "svelte";
@@ -7,7 +15,7 @@
         open: boolean;
         title: string;
         subtitle?: string;
-        initialPosition?: { x: number; y: number };
+        initialPosition?: ModalPosition;
         children: Snippet;
         modalElement?: HTMLDivElement;
     }

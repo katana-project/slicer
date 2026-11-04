@@ -62,6 +62,7 @@
     import InjectedScriptMenu from "./script/injected.svelte";
     import { ScriptState, displayName } from "$lib/script";
     import IconComponent from "$lib/components/icon.svelte";
+    import { mouseToPosition } from "$lib/components/ui/floating-modal";
 
     interface Props {
         panes: PaneData[];
@@ -265,7 +266,7 @@
                 <MenubarItem
                     class="justify-between"
                     disabled={!tab?.entry}
-                    onclick={() => modals.open(PropertiesDialog, { entry })}
+                    onclick={(e) => modals.open(PropertiesDialog, { entry, initialPosition: mouseToPosition(e) })}
                 >
                     {$t("menu.view.properties")}
                     <Info size={16} />
