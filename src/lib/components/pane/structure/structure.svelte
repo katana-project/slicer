@@ -14,6 +14,7 @@
     import { t } from "$lib/i18n";
     import Summary from "./summary.svelte";
     import { Button } from "$lib/components/ui/button";
+    import { createEntry } from "$lib/workspace/jdk";
 
     let { handler, classes, entries }: PaneProps = $props();
 
@@ -66,6 +67,31 @@
     let filteredMethodData = $derived(
         methodData.filter((member) => member.signature.toLowerCase().includes(query.toLowerCase()))
     );
+
+    let superEntry = $derived(absData?.superClass ? (classes.get(absData.superClass) ?? null) : null);
+    $effect(() => {
+        if (!superEntry && absData?.superClass) {
+            createEntry(absData.superClass).then((entry) => {
+                if (entry) {
+                    superEntry = entry;
+                }
+            });
+        }
+    });
+
+    let implEntries = $derived(absData?.implementations.map((name) => classes.get(name) ?? null) ?? []);
+    $effect(() => {
+        Promise.all(
+            absData?.implementations.map((name) => {
+                const entry = classes.get(name);
+                if (entry) {
+                    return Promise.resolve(entry);
+                }
+
+                return createEntry(name);
+            }) ?? []
+        ).then((e) => (implEntries = e));
+    });
 </script>
 
 <div class="flex h-full w-full flex-col">
@@ -97,12 +123,11 @@
             {#if hasSuperData}
                 <div class="text-muted-foreground text-xs">
                     {#if absData.superClass}
-                        {@const superEntry = classes.get(absData.superClass)}
                         <div>
                             {$t("pane.structure.extends")}
                             <button
                                 title={prettyInternalName(absData.superClass)}
-                                class={cn("text-secondary-foreground", superEntry ? "cursor-pointer underline" : "")}
+                                class={cn("text-secondary-foreground", superEntry && "cursor-pointer underline")}
                                 onclick={() => {
                                     if (superEntry) {
                                         handler.open(superEntry);
@@ -118,7 +143,7 @@
                             {$t("pane.structure.implements")}
                             <span class="text-secondary-foreground">
                                 {#each absData.implementations as impl, i}
-                                    {@const implEntry = classes.get(impl)}
+                                    {@const implEntry = implEntries[i]}
                                     {#if i > 0},
                                     {/if}
                                     <button
