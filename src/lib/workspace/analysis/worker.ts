@@ -10,7 +10,7 @@ import type { ClassEntry, Entry, NameTypeEntry, RefEntry } from "@katana-project
 import { AttributeType, ConstantType, Modifier, Opcode } from "@katana-project/asm/spec";
 import { expose } from "comlink";
 import { QueryType, type SearchData, SearchMode, type SearchResultData } from "./search";
-import { CharacteristicType, EntryPointType } from "./types";
+import { type CharacteristicType, EntryPointType, StandardCharacteristicType } from "./types";
 
 export interface AnalysisWorker {
     read(data: Uint8Array, flags: number): Promise<Node>;
@@ -225,10 +225,10 @@ expose({
                     switch (className) {
                         case "java/lang/ClassLoader":
                         case "java/net/URLClassLoader":
-                            chars.add(CharacteristicType.CLASS_LOADING);
+                            chars.add(StandardCharacteristicType.CLASS_LOADING);
                             break;
                         case "javax/crypto/Cipher":
-                            chars.add(CharacteristicType.ENCRYPTION);
+                            chars.add(StandardCharacteristicType.ENCRYPTION);
                             break;
                         case "java/lang/reflect/Method":
                         case "java/lang/reflect/Constructor":
@@ -242,7 +242,7 @@ expose({
                         case "java/util/concurrent/atomic/AtomicReferenceFieldUpdater":
                         case "java/util/concurrent/atomic/AtomicIntegerFieldUpdater":
                         case "java/util/concurrent/atomic/AtomicLongFieldUpdater":
-                            chars.add(CharacteristicType.REFLECTION);
+                            chars.add(StandardCharacteristicType.REFLECTION);
                             break;
                         case "java/io/File":
                         case "java/nio/file/Files":
@@ -252,7 +252,7 @@ expose({
                         case "java/nio/file/FileSystems":
                         case "java/nio/channels/FileChannel":
                         case "java/nio/channels/AsynchronousFileChannel":
-                            chars.add(CharacteristicType.FILE_IO);
+                            chars.add(StandardCharacteristicType.FILE_IO);
                             break;
                         case "java/net/Socket":
                         case "java/net/ServerSocket":
@@ -267,23 +267,23 @@ expose({
                         case "java/nio/channels/DatagramChannel":
                         case "java/nio/channels/AsynchronousSocketChannel":
                         case "java/nio/channels/AsynchronousServerSocketChannel":
-                            chars.add(CharacteristicType.NETWORK_IO);
+                            chars.add(StandardCharacteristicType.NETWORK_IO);
                             break;
                         case "java/io/ObjectInputStream":
                         case "java/io/ObjectOutputStream":
-                            chars.add(CharacteristicType.OBJECT_SERDES);
+                            chars.add(StandardCharacteristicType.OBJECT_SERDES);
                             break;
                         case "java/lang/foreign/MemorySegment":
                         case "java/lang/foreign/Arena":
                         case "java/lang/foreign/Linker":
                         case "java/lang/foreign/SymbolLookup":
                         case "sun/misc/Unsafe":
-                            chars.add(CharacteristicType.NATIVE_CODE);
+                            chars.add(StandardCharacteristicType.NATIVE_CODE);
                             break;
                         case "java/lang/ProcessBuilder":
                         case "java/lang/ProcessHandle":
                         case "java/lang/Process":
-                            chars.add(CharacteristicType.PROCESS_MANIPULATION);
+                            chars.add(StandardCharacteristicType.PROCESS_MANIPULATION);
                             break;
                     }
                     break;
@@ -300,22 +300,22 @@ expose({
                         case "java/lang/Runtime":
                         case "java/lang/System": {
                             if (methodName === "exec") {
-                                chars.add(CharacteristicType.PROCESS_MANIPULATION);
+                                chars.add(StandardCharacteristicType.PROCESS_MANIPULATION);
                             }
                             if (methodName === "load" || methodName === "loadLibrary") {
-                                chars.add(CharacteristicType.NATIVE_CODE);
+                                chars.add(StandardCharacteristicType.NATIVE_CODE);
                             }
                             break;
                         }
                         case "java/lang/invoke/MethodHandles": {
                             if (methodName === "lookup" || methodName === "publicLookup") {
-                                chars.add(CharacteristicType.REFLECTION);
+                                chars.add(StandardCharacteristicType.REFLECTION);
                             }
                             break;
                         }
                         case "java/lang/invoke/MethodHandles$Lookup": {
                             if (methodName.match(/^(find|unreflect).+$/)) {
-                                chars.add(CharacteristicType.REFLECTION);
+                                chars.add(StandardCharacteristicType.REFLECTION);
                             }
                             break;
                         }
@@ -328,7 +328,7 @@ expose({
 
         for (const method of node.methods) {
             if ((method.access & Modifier.NATIVE) !== 0) {
-                chars.add(CharacteristicType.NATIVE_CODE);
+                chars.add(StandardCharacteristicType.NATIVE_CODE);
             }
         }
 

@@ -851,6 +851,14 @@ export interface Characteristic {
  */
 export interface CharacteristicProvider {
     /**
+     * The unique ID of the characteristic provider.
+     *
+     * This should not conflict with types of characteristic providers defined by slicer internally or by other scripts, to ensure compatibility with other scripts and future versions of slicer,
+     * so it is recommended to use a namespaced type (e.g. "my_script/reflection_special", etc.).
+     */
+    readonly id: string;
+
+    /**
      * Tries to detect a set of characteristics from a workspace entry.
      *
      * @param entry The entry to be examined.
@@ -878,6 +886,13 @@ export interface CharacteristicsContext {
     unregister(id: string): void;
 
     /**
+     * Returns all registered characteristic providers.
+     *
+     * @returns The characteristic providers.
+     */
+    providers(): CharacteristicProvider[];
+
+    /**
      * Registers a new characteristic provider.
      *
      * @param ctp The characteristic provider.
@@ -887,15 +902,20 @@ export interface CharacteristicsContext {
     /**
      * Removes a previously registered characteristic provider.
      *
-     * @param ctp The characteristic provider.
+     * @param id The characteristic provider ID.
      */
-    unregisterProvider(ctp: CharacteristicProvider): void;
+    unregisterProvider(id: string): void;
 }
 
 /**
  * Provides access to extend the analysis capabilities.
  */
 export interface AnalysisContext {
+    /**
+     * Sub-context for managing mappings.
+     */
+    readonly mapping: MappingContext;
+
     /**
      * Sub-context for managing characteristic (provider) registration.
      */
@@ -934,6 +954,8 @@ export interface ScriptContext {
     readonly workspace: WorkspaceContext;
     /**
      * The mapping context, which allows loading and exporting mappings in supported formats.
+     *
+     * @deprecated Use {@link AnalysisContext} to get a {@link MappingContext}.
      */
     readonly mapping: MappingContext;
     /**

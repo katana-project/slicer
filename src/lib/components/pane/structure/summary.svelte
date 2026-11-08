@@ -12,12 +12,15 @@
     } from "@lucide/svelte";
     import { cn } from "$lib/components/utils";
     import { EntryType, type ClassEntry, type Entry } from "$lib/workspace";
-    import { characteristicIcon, entryIcon, entryPointIcon } from "$lib/components/icons";
+    import { entryIcon, entryPointIcon } from "$lib/components/icons";
     import handler from "$lib/event/handler";
     import { Button } from "$lib/components/ui/button";
     import { prettyInternalName } from "$lib/utils";
     import { mappings } from "$lib/workspace/analysis/mapping";
-    import { EntryPointType, CharacteristicType } from "$lib/workspace/analysis";
+    import { type CharacteristicType, EntryPointType } from "$lib/workspace/analysis";
+    import IconComponent from "$lib/components/icon.svelte";
+    import { SvelteSet } from "svelte/reactivity";
+    import { characteristics } from "$lib/workspace/analysis/characteristics";
 
     interface Props {
         classes: Map<string, Entry>;
@@ -50,9 +53,7 @@
         return groups;
     });
 
-    let collapsedChars = $state(
-        Object.fromEntries(Object.values(CharacteristicType).map<[CharacteristicType, boolean]>((type) => [type, true]))
-    );
+    let expandedChars = $state(new SvelteSet<CharacteristicType>());
     let groupedCharacteristics = $derived.by(() => {
         const groups = new Map<CharacteristicType, ClassEntry[]>();
 
@@ -190,30 +191,31 @@
                 </div>
             {:else}
                 {#each groupedCharacteristics.entries() as [type, entries]}
-                    {@const Icon = characteristicIcon(type)}
+                    {@const ct = $characteristics.find((c) => c.type === type)}
+                    {@const icon = ct?.icon ?? LandPlot}
                     <button
                         type="button"
-                        onclick={() => (collapsedChars[type] = !collapsedChars[type])}
+                        onclick={() => (expandedChars.has(type) ? expandedChars.delete(type) : expandedChars.add(type))}
                         class="hover:bg-accent/40 group flex w-full items-center gap-2 px-3 py-1 transition-colors"
                     >
                         <ChevronRight
                             class={cn(
                                 "text-muted-foreground h-3.5 w-3.5 transition-transform",
-                                !collapsedChars[type] && "rotate-90"
+                                expandedChars.has(type) && "rotate-90"
                             )}
                         />
                         <span class="flex h-5 w-5 items-center justify-center rounded">
-                            <Icon class="text-muted-foreground h-3 w-3" />
+                            <IconComponent {icon} class="text-muted-foreground h-3 w-3" />
                         </span>
                         <span class="text-muted-foreground text-xs font-medium">
-                            {$t(`pane.structure.summary.characteristics.${type}`)}
+                            {$t(ct?.label ?? `pane.structure.summary.characteristics.${type}`)}
                         </span>
                         <span class="bg-muted/50 text-muted-foreground ml-auto rounded px-1.5 py-0.5 text-[10px]">
                             {entries.length}
                         </span>
                     </button>
 
-                    {#if !collapsedChars[type]}
+                    {#if expandedChars.has(type)}
                         {#each entries as entry (entry.name)}
                             {@const { icon: Icon, classes } = entryIcon(entry)}
                             <div

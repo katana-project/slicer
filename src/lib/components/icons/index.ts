@@ -1,30 +1,23 @@
 import { TabPosition, TabType } from "$lib/tab";
 import { type Modifiers, parseModifiers } from "$lib/utils";
 import { type ClassEntry, type Entry, EntryType } from "$lib/workspace";
-import { CharacteristicType, EntryPointType } from "$lib/workspace/analysis";
+import { EntryPointType } from "$lib/workspace/analysis/types";
 import {
-    Binary,
     Box,
     Braces,
     Bug,
-    CloudUpload,
     CodeXml,
     Coffee,
-    Cpu,
-    EarthLock,
     File,
     FileArchive,
     FileCodeCorner,
     FileDigit,
-    FilePen,
     FilePlay,
     FileText,
-    FlipVertical2,
     GitPullRequest,
     type IconProps,
     Image,
     InspectionPanel,
-    LoaderPinwheel,
     Network,
     PanelBottom,
     PanelBottomDashed,
@@ -35,7 +28,6 @@ import {
     Parentheses,
     PlayIcon,
     Puzzle,
-    ScanText,
     Server,
     Sparkles,
     TextAlignStart,
@@ -251,27 +243,6 @@ export const entryPointIcon = (type: EntryPointType): Icon => {
             return Box;
         case EntryPointType.MINECRAFT_FABRIC:
             return Puzzle;
-    }
-};
-
-export const characteristicIcon = (type: CharacteristicType): Icon => {
-    switch (type) {
-        case CharacteristicType.CLASS_LOADING:
-            return LoaderPinwheel;
-        case CharacteristicType.ENCRYPTION:
-            return EarthLock;
-        case CharacteristicType.FILE_IO:
-            return FilePen;
-        case CharacteristicType.NETWORK_IO:
-            return CloudUpload;
-        case CharacteristicType.OBJECT_SERDES:
-            return ScanText;
-        case CharacteristicType.REFLECTION:
-            return FlipVertical2;
-        case CharacteristicType.NATIVE_CODE:
-            return Binary;
-        case CharacteristicType.PROCESS_MANIPULATION:
-            return Cpu;
     }
 };
 

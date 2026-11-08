@@ -8,7 +8,8 @@ export enum EntryPointType {
     MINECRAFT_FABRIC = "minecraft.fabric",
 }
 
-export enum CharacteristicType {
+export type CharacteristicType = string;
+export enum StandardCharacteristicType {
     CLASS_LOADING = "class-loading",
     ENCRYPTION = "encryption",
     FILE_IO = "file-io",

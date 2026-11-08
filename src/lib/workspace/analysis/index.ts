@@ -5,9 +5,11 @@ import { cancellable, type Cancellable, rateLimit } from "$lib/utils";
 import { createDefaultWorkerPool } from "$lib/worker";
 import { type ClassEntry, entries, type Entry, EntryType, type MemberEntry } from "$lib/workspace";
 import { TransformationPoint, transformInPlace } from "$lib/workspace/analysis/transform";
+import type { CharacteristicType } from "$lib/workspace/analysis/types";
 import { unwrapTransforms } from "$lib/workspace/data";
 import { FLAG_SKIP_ATTR_PARSE, FLAG_SLICE_BUFFER } from "@katana-project/asm";
 import { get } from "svelte/store";
+import { type CharacteristicProvider, providers } from "./characteristics";
 import { QueryType, SearchMode, type SearchQuery, type SearchResult } from "./search";
 import type { AnalysisWorker } from "./worker";
 import Worker from "./worker?worker";
@@ -21,6 +23,20 @@ export const enum AnalysisState {
 }
 
 export const workers = createDefaultWorkerPool<AnalysisWorker>(() => new Worker());
+
+const STANDARD_PROVIDER_ID = "slicer";
+const standardProvider: CharacteristicProvider = {
+    async match(entry: ClassEntry): Promise<string[]> {
+        return await workers.instance().task((w) => w.collectCharacteristics(entry.node));
+    },
+};
+
+// add it here to avoid a circular dependency scenario
+providers.update(($providers) => {
+    $providers.set(STANDARD_PROVIDER_ID, standardProvider);
+    return $providers;
+});
+
 const analyzeClass = async (entry: Entry, skipAttr: boolean) => {
     const buffer = await entry.data.bytes();
 
@@ -47,15 +63,19 @@ const analyzeClass = async (entry: Entry, skipAttr: boolean) => {
 
         // post-transform analysis
         if (entry.type === EntryType.CLASS) {
-            const [entryPoints, characteristics] = await workers
-                .instance()
-                .task(async (w) => [
-                    await w.collectEntryPoints(classEntry.node),
-                    await w.collectCharacteristics(classEntry.node),
-                ]);
+            classEntry.entryPoints = await workers.instance().task((w) => w.collectEntryPoints(classEntry.node));
 
-            classEntry.entryPoints = entryPoints;
-            classEntry.characteristics = characteristics;
+            const $providers = get(providers);
+            const characteristics = new Set<CharacteristicType>();
+            for (const provider of $providers.values()) {
+                try {
+                    (await provider.match(classEntry)).forEach((c) => characteristics.add(c));
+                } catch (e) {
+                    error(`characteristic matching failed on ${classEntry.name}`, e);
+                }
+            }
+
+            classEntry.characteristics = Array.from(characteristics);
         }
     } catch (e) {
         error(`failed to analyze class ${entry.name}`, e);

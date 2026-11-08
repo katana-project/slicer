@@ -35,12 +35,20 @@ import {
     remove as removeEntry,
 } from "$lib/workspace";
 import { AnalysisState, analyze } from "$lib/workspace/analysis";
+import {
+    type Characteristic,
+    type CharacteristicProvider,
+    characteristics,
+    providers,
+} from "$lib/workspace/analysis/characteristics";
 import { mappings } from "$lib/workspace/analysis/mapping";
 import { mappingSet } from "$lib/workspace/analysis/mapping/data";
 import { DataType, memoryData, type MemoryData, unwrapTransforms, type ZipData } from "$lib/workspace/data";
 import { write as writeMappings } from "$lib/writer/mappings";
 import type {
+    AnalysisContext,
     ArchiveEntryMetadata,
+    CharacteristicsContext,
     DisassemblerContext,
     EditorContext,
     EntryMetadata,
@@ -54,6 +62,8 @@ import type {
     NotificationContext,
     NotificationOptions,
     Script,
+    Characteristic as ScriptCharacteristic,
+    CharacteristicProvider as ScriptCharacteristicProvider,
     ScriptContext,
     Disassembler as ScriptDisassembler,
     Entry as ScriptEntry,
@@ -447,6 +457,80 @@ const mappingCtx: MappingContext = {
     },
 };
 
+const wrapProvider = (id: string, provider: CharacteristicProvider): ScriptCharacteristicProvider =>
+    ({
+        _provider: provider,
+        id,
+        async match(entry) {
+            const unwrapped = unwrapEntry(entry);
+            if (unwrapped.type !== EntryType.CLASS) {
+                throw new Error("Characteristic providers can only be used on class entries");
+            }
+
+            return provider.match(unwrapped as ClassEntry);
+        },
+    }) as ScriptCharacteristicProvider;
+
+const unwrapProvider = (provider: ScriptCharacteristicProvider): CharacteristicProvider => {
+    if ((provider as any)._provider) {
+        return (provider as any)._provider;
+    }
+
+    return {
+        async match(entry) {
+            return provider.match(wrapEntry(entry));
+        },
+    };
+};
+
+const unwrapCharacteristic = (ct: ScriptCharacteristic): Characteristic => ({
+    type: ct.id,
+    label: ct.label,
+    icon: ct.icon,
+});
+
+const characteristicsCtx: CharacteristicsContext = {
+    register(ct: ScriptCharacteristic): void {
+        if (get(characteristics).some((c) => c.type === ct.id)) {
+            throw new Error(`Characteristic already registered: ${ct.id}`);
+        }
+
+        characteristics.update(($characteristics) => {
+            $characteristics.push(unwrapCharacteristic(ct));
+            return $characteristics;
+        });
+    },
+    unregister(id: string): void {
+        characteristics.update(($characteristics) => {
+            return $characteristics.filter((c) => c.type !== id);
+        });
+    },
+    providers(): ScriptCharacteristicProvider[] {
+        return Array.from(get(providers).entries()).map(([id, provider]) => wrapProvider(id, provider));
+    },
+    registerProvider(provider: ScriptCharacteristicProvider): void {
+        if (get(providers).has(provider.id)) {
+            throw new Error(`Provider already registered: ${provider.id}`);
+        }
+
+        providers.update(($providers) => {
+            $providers.set(provider.id, unwrapProvider(provider));
+            return $providers;
+        });
+    },
+    unregisterProvider(id: string): void {
+        providers.update(($providers) => {
+            $providers.delete(id);
+            return $providers;
+        });
+    },
+};
+
+const analysisCtx: AnalysisContext = {
+    mapping: mappingCtx,
+    ct: characteristicsCtx,
+};
+
 const i18nCtx: I18NContext = {
     get locale(): string {
         return get(locale);
@@ -524,6 +608,7 @@ const createContext = (script: Script, parent: ScriptContext | null): ScriptCont
         mapping: mappingCtx,
         i18n: i18nCtx,
         notification: notificationCtx,
+        analysis: analysisCtx,
         addEventListener<K extends EventType>(type: K, listener: EventListener<EventMap[K]>) {
             let listeners = scriptListeners.get(type);
             if (!listeners) {
