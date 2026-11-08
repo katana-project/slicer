@@ -11,6 +11,7 @@ import type { Language } from "$lib/lang";
 import { error, warn } from "$lib/log";
 import { workers } from "$lib/reader";
 import type { MappingType } from "$lib/reader/mappings";
+import { actions } from "$lib/shortcut";
 import { analysisJdkClasses, locale, scriptingScripts } from "$lib/state";
 import {
     current as currentTab,
@@ -49,6 +50,7 @@ import type {
     EventType,
     I18NContext,
     MappingContext,
+    NavigationContext,
     NotificationContext,
     NotificationOptions,
     Script,
@@ -57,6 +59,7 @@ import type {
     Entry as ScriptEntry,
     MappingType as ScriptMappingType,
     Tab as ScriptTab,
+    ShortcutDeclaration,
     TabDeclaration,
     WorkspaceContext,
 } from "@run-slicer/script";
@@ -347,6 +350,39 @@ const createEditorCtx = (context: ScriptContext): EditorContext => {
     };
 };
 
+const navigationCtx: NavigationContext = {
+    shortcuts(): ShortcutDeclaration[] {
+        return get(actions).map((action) => ({
+            id: action.type,
+            label: action.label,
+            binding: action.binding,
+            run: action.run,
+        }));
+    },
+    registerShortcut(declaration: ShortcutDeclaration): void {
+        if (!declaration.id || !declaration.run) {
+            throw new Error("Missing required properties");
+        }
+
+        if (get(actions).some((action) => action.type === declaration.id)) {
+            throw new Error(`Shortcut already registered: ${declaration.id}`);
+        }
+
+        actions.update((actions) => [
+            ...actions,
+            {
+                type: declaration.id,
+                label: declaration.label ?? declaration.id,
+                binding: declaration.binding,
+                run: declaration.run,
+            },
+        ]);
+    },
+    unregisterShortcut(id: string): void {
+        actions.update((actions) => actions.filter((action) => action.type !== id));
+    },
+};
+
 const disasmCtx: DisassemblerContext = {
     all(): ScriptDisassembler[] {
         return Array.from(get(disasms).values()).map(wrapDisasm);
@@ -482,6 +518,7 @@ const createContext = (script: Script, parent: ScriptContext | null): ScriptCont
     const context: Partial<ScriptContext> = {
         script,
         parent,
+        navigation: navigationCtx,
         disasm: disasmCtx,
         workspace: workspaceCtx,
         mapping: mappingCtx,

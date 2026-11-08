@@ -40,6 +40,7 @@
     import { modals } from "svelte-modals";
     import { DeleteDialog, PropertiesDialog } from "$lib/components/dialog";
     import IconComponent from "$lib/components/icon.svelte";
+    import { mouseToPosition } from "$lib/components/ui/floating-modal";
 
     interface Props {
         node: Node;
@@ -51,7 +52,7 @@
 </script>
 
 <ContextMenuContent class="max-w-56 min-w-48">
-    <ContextMenuLabel>{node.label}</ContextMenuLabel>
+    <ContextMenuLabel class="overflow-hidden text-ellipsis">{node.label}</ContextMenuLabel>
     <ContextMenuSeparator />
     {#if entry}
         <ContextMenuSub>
@@ -105,7 +106,7 @@
         <ContextMenuSeparator />
         <ContextMenuItem
             class="flex justify-between"
-            onclick={() => modals.open(PropertiesDialog, { entry: entry.value })}
+            onclick={(e) => modals.open(PropertiesDialog, { entry: entry.value, initialPosition: mouseToPosition(e) })}
         >
             {$t("pane.project.menu.properties")}
             <Info size={16} />

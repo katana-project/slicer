@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Alert, AlertTitle } from "$lib/components/ui/alert";
     import { Input } from "$lib/components/ui/input";
-    import { CircleAlert } from "@lucide/svelte";
+    import { CircleAlert, SquareCode } from "@lucide/svelte";
     import { interpHexRowBytes } from "$lib/state";
     import Section from "../section.svelte";
     import Label from "../label.svelte";
@@ -53,8 +53,8 @@
     };
 </script>
 
-<Section id="interp" labelKey="pane.prefs.section.interp">
-    <Alert variant="destructive" class="w-full">
+<Section id="interp" icon={SquareCode} labelKey="pane.prefs.section.interp">
+    <Alert variant="inline-destructive" class="w-full">
         <CircleAlert />
         <AlertTitle>{$t("pane.prefs.workspace.interp.alert")}</AlertTitle>
     </Alert>
@@ -69,7 +69,13 @@
 
     <Section id="disasm" labelKey="pane.prefs.section.disasm" small>
         <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
-            <Label for="disasmCache" textKey="pane.prefs.disasm.cache" descKey="pane.prefs.disasm.cache.desc" danger />
+            <Label
+                for="disasmCache"
+                textKey="pane.prefs.disasm.cache"
+                descKey="pane.prefs.disasm.cache.desc"
+                collapsed
+                danger
+            />
             <Switch id="disasmCache" bind:checked={$toolsDisasmCache} />
         </div>
         <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">

@@ -1,14 +1,17 @@
 <script lang="ts">
     import { MenubarShortcut } from "$lib/components/ui/menubar";
-    import { format } from "$lib/shortcut";
+    import { format, actions, type ShortcutActionType } from "$lib/shortcut";
+    import { shortcutBindings } from "$lib/state";
 
     interface Props {
-        key: string;
-        modifier: number;
-        short?: boolean;
+        action: ShortcutActionType;
     }
 
-    let { key, modifier, short = false }: Props = $props();
+    let { action }: Props = $props();
+    let definition = $derived($actions.find((candidate) => candidate.type === action));
+    let binding = $derived($shortcutBindings[action] === undefined ? definition?.binding : $shortcutBindings[action]);
 </script>
 
-<MenubarShortcut>{format(key, modifier, short)}</MenubarShortcut>
+{#if binding}
+    <MenubarShortcut>{format(binding.key, binding.modifier)}</MenubarShortcut>
+{/if}

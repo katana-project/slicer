@@ -1,6 +1,6 @@
 import type { EventHandler } from "$lib/event";
 import type { Entry } from "$lib/workspace";
-import { index } from "$lib/workspace/jdk";
+import { createEntry, index } from "$lib/workspace/jdk";
 import { type Extension, RangeSetBuilder } from "@codemirror/state";
 import { Decoration, EditorView, ViewPlugin } from "@codemirror/view";
 import type { ResolvedType, TypeReferenceResolver } from "@katana-project/laser";
@@ -67,12 +67,17 @@ export const resolveType = (
                 });
             } else if (className) {
                 const entry = classes.get(className);
-                if (entry) handler.open(entry);
+                if (entry) {
+                    handler.open(entry);
+                } else if (index.has(className)) {
+                    createEntry(className).then((e) => (e ? handler.open(e) : null));
+                }
             }
         },
         canOpen:
             resolution?.kind !== "builtin" &&
-            ((resolution?.kind === "declared" && !!resolution.declaration) || (!!className && classes.has(className))),
+            ((resolution?.kind === "declared" && !!resolution.declaration) ||
+                (!!className && (classes.has(className) || index.has(className)))),
     };
 };
 

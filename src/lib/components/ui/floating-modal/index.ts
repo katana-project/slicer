@@ -1,3 +1,3 @@
-import FloatingModal from "./floating-modal.svelte";
+import FloatingModal, { type ModalPosition, mouseToPosition } from "./floating-modal.svelte";
 
-export { FloatingModal };
+export { FloatingModal, mouseToPosition, type ModalPosition };

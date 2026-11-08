@@ -12,11 +12,12 @@
     import { t } from "$lib/i18n";
     import type { PaneProps } from "$lib/components/pane";
     import { Switch } from "$lib/components/ui/switch";
+    import { FolderOpen } from "@lucide/svelte";
 
     let _: PaneProps = $props();
 </script>
 
-<Section id="workspace" labelKey="pane.prefs.section.workspace">
+<Section id="workspace" icon={FolderOpen} labelKey="pane.prefs.section.workspace">
     <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
         <Label
             for="workspacePreventUnload"
@@ -61,6 +62,7 @@
     </div>
     <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
         <Label
+            collapsed
             for="workspaceArchiveDuplicateHandling"
             textKey="pane.prefs.workspace.duplicate-handling"
             descKey="pane.prefs.workspace.duplicate-handling.desc"

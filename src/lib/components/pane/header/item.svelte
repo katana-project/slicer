@@ -14,7 +14,6 @@
         ContextMenuSeparator,
         ContextMenuLabel,
     } from "$lib/components/ui/context-menu";
-    import { Modifier } from "$lib/shortcut";
     import Shortcut from "$lib/components/menu/shortcut.svelte";
     import { t } from "$lib/i18n";
     import type { Icon as ScriptIcon } from "@run-slicer/script";
@@ -24,26 +23,24 @@
         name?: string;
         icon?: StyledIcon | ScriptIcon | null;
         active?: boolean;
-        closeable?: boolean;
         pinned?: boolean;
-        copyable?: boolean;
         onclick?: () => void;
         onclose?: (type: CloseType) => void;
         onpin?: (value: boolean) => void;
         oncopy?: () => void;
+        onfind?: () => void;
     }
 
     let {
         name = "",
         icon = null,
         active = true,
-        closeable = false,
         pinned = false,
-        copyable = false,
         onclick,
         onclose,
         onpin,
         oncopy,
+        onfind,
     }: Props = $props();
 
     const handleClose = (e: MouseEvent | KeyboardEvent, type: CloseType) => {
@@ -96,7 +93,7 @@
                 >
                     <Pin size={14} class="text-muted-foreground/60 hover:text-muted-foreground/80 min-w-3.5" />
                 </div>
-            {:else if closeable}
+            {:else if onclose}
                 <div
                     role="button"
                     tabindex="-1"
@@ -115,7 +112,7 @@
         <ContextMenuSeparator />
         <ContextMenuItem onclick={(e) => handleClose(e, "self")} class="justify-between">
             {$t("pane.header.menu.close.self")}
-            {#if active}<Shortcut key="w" modifier={Modifier.CTRL | Modifier.ALT} />{/if}
+            {#if active}<Shortcut action="close" />{/if}
         </ContextMenuItem>
         <ContextMenuItem onclick={(e) => handleClose(e, "others")}>
             {$t("pane.header.menu.close.others")}
@@ -131,7 +128,10 @@
             {$t(pinned ? "pane.header.menu.unpin" : "pane.header.menu.pin")}
         </ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem onclick={() => oncopy?.()} disabled={!copyable}>
+        <ContextMenuItem onclick={() => onfind?.()} disabled={!onfind}>
+            {$t("pane.header.menu.find-tree")}
+        </ContextMenuItem>
+        <ContextMenuItem onclick={() => oncopy?.()} disabled={!oncopy}>
             {$t("pane.header.menu.copy-remote")}
         </ContextMenuItem>
     </ContextMenuContent>

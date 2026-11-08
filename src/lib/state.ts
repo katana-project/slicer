@@ -22,6 +22,11 @@ export interface TabData {
     pinned?: boolean;
 }
 
+export interface ShortcutBinding {
+    key: string;
+    modifier: number;
+}
+
 export type ProjectMode = "file" | "package";
 export type WorkspaceSearchSort = "name" | "size" | "last-mod";
 export type WorkspaceSearchSortDirection = "asc" | "desc" | "auto";
@@ -59,6 +64,7 @@ export const analysisBackground = persisted<boolean>(root, "analysis.background"
 export const analysisJdkClasses = persisted<boolean>(root, "analysis.jdk-classes", true);
 export const analysisTransformers = persisted<string[]>(root, "analysis.transformers", []);
 export const interpHexRowBytes = persisted<number>(root, "interp.hex.row-bytes", 16);
+export const shortcutBindings = persisted<Record<string, ShortcutBinding | null>>(root, "shortcut.bindings", {});
 export const dismissedToasts = persisted<string[]>(root, "dismissed-toasts", []);
 
 export const panes = persisted<PaneData[]>(root, "panes", [

@@ -1,4 +1,4 @@
-# slicer [![](https://img.shields.io/badge/documentation-here-red)](https://docs.slicer.run) [![](https://img.shields.io/badge/translate-here-red?logo=crowdin)](https://crowdin.com/project/slicer)
+# slicer [![](https://img.shields.io/badge/documentation-here-red)](https://docs.slicer.run) [![](https://img.shields.io/badge/translate-here-red?logo=crowdin)](https://crowdin.com/project/slicer) [![Discord](https://img.shields.io/discord/1151104250487783555?logo=discord)](https://discord.gg/HZhPBbxpFP)
 
 A modern Java reverse engineering tool for the web.
 

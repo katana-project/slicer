@@ -13,6 +13,8 @@
     import type { CloseType } from "./header/item.svelte";
     import { t } from "$lib/i18n";
     import { urlRemote, urlRemoteFile } from "$lib/state";
+    import { highlight } from "./tree/tree.svelte";
+    import { DataType, type RemoteData, unwrapTransforms } from "$lib/workspace/data";
 
     interface Props {
         tabs: Tab[];
@@ -124,8 +126,19 @@
         localTabs = normalizeTabs([...pinned, tab, ...unpinned]);
     };
 
+    const unwrapEntry = (tab: Tab) => (tab?.entry ? unwrapTransforms(tab.entry?.data) : null);
     const handleCopy = async (tab: Tab) => {
-        $urlRemoteFile = tab.entry!.name;
+        const data = unwrapEntry(tab);
+        if (data?.type === DataType.REMOTE) {
+            const url = (data as RemoteData).url;
+            if (!$urlRemote.includes(url)) {
+                $urlRemote = [...$urlRemote, url];
+            }
+
+            $urlRemoteFile = tab.entry!.shortName;
+        } else {
+            $urlRemoteFile = tab.entry!.name;
+        }
         await navigator.clipboard.writeText(window.location.href);
     };
 </script>
@@ -151,13 +164,14 @@
                         name={$t(tab0.name || `tab.${tab0.type}`)}
                         active={posCurrent?.id === tab0.id}
                         icon={tab0.icon}
-                        closeable={tab0.closeable}
                         pinned={tab0.pinned}
-                        copyable={$urlRemote.length > 0 && !!tab0.entry}
                         onclick={() => updateCurrent(position, tab0)}
-                        onclose={(type) => handleClose(type, tab0)}
+                        onclose={tab0.closeable ? (type) => handleClose(type, tab0) : undefined}
                         onpin={(value) => handlePin(value, tab0)}
-                        oncopy={() => handleCopy(tab0)}
+                        oncopy={!!tab0.entry && ($urlRemote.length > 0 || unwrapEntry(tab0)?.type === DataType.REMOTE)
+                            ? () => handleCopy(tab0)
+                            : undefined}
+                        onfind={tab0.entry ? () => highlight.set(tab0.entry!.name) : undefined}
                     />
                 {/each}
             </div>

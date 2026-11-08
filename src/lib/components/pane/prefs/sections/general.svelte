@@ -9,13 +9,14 @@
     import Label from "../label.svelte";
     import { capitalize, flagEmoji, languageToCountry, tryOrNull } from "$lib/utils";
     import type { PaneProps } from "$lib/components/pane";
+    import { Settings } from "@lucide/svelte";
 
     let _: PaneProps = $props();
 
     let languageNames = $derived(tryOrNull(() => new Intl.DisplayNames($locale, { type: "language" })));
 </script>
 
-<Section id="general" labelKey="pane.prefs.section.general">
+<Section id="general" icon={Settings} labelKey="pane.prefs.section.general">
     <div class="grid min-h-8 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
         <Label for="locale" textKey="pane.prefs.general.language" />
         <Select type="single" bind:value={$locale}>
@@ -72,6 +73,23 @@
     </div>
     <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
         <Label for="themeRadius" textKey="pane.prefs.general.radius" descKey="pane.prefs.general.radius.desc" />
-        <Slider type="single" id="themeRadius" min={0} max={1} step={0.05} bind:value={$themeRadius} class="w-48" />
+        <div class="flex flex-col w-48 gap-2">
+            <Slider
+                type="single"
+                id="themeRadius"
+                min={0}
+                max={1}
+                step={0.25}
+                bind:value={$themeRadius}
+                class="w-full"
+            />
+            <div class="flex flex-row justify-between text-xs text-muted-foreground">
+                <span>0</span>
+                <span>0.25</span>
+                <span>0.5</span>
+                <span>0.75</span>
+                <span>1</span>
+            </div>
+        </div>
     </div>
 </Section>

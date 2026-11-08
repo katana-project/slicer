@@ -43,6 +43,7 @@ export const enum DataType {
     FILE,
     ZIP,
     MEMORY,
+    REMOTE,
 }
 
 export interface Data extends BlobLike {
@@ -150,6 +151,42 @@ export const memoryData = (
         },
         async blob(): Promise<Blob> {
             return data instanceof Blob ? data : new Blob([data as Uint8Array<ArrayBuffer>]);
+        },
+    };
+};
+
+export interface RemoteData extends Data {
+    type: DataType.REMOTE;
+    url: string;
+}
+
+export const remoteData = async (name: string, url: string): Promise<RemoteData> => {
+    const res = await fetch(url, { method: "HEAD" });
+    let size = 0;
+    if (res.headers.has("content-length")) {
+        size = parseInt(res.headers.get("content-length") || "0", 10);
+    }
+
+    return {
+        type: DataType.REMOTE,
+        name,
+        url,
+        size,
+        async stream(): Promise<ReadableStream<Uint8Array>> {
+            const res = await fetch(url);
+            return res.body as ReadableStream<Uint8Array>;
+        },
+        async bytes(): Promise<Uint8Array> {
+            const res = await fetch(url);
+            return new Uint8Array(await res.arrayBuffer());
+        },
+        async text(): Promise<string> {
+            const res = await fetch(url);
+            return await res.text();
+        },
+        async blob(): Promise<Blob> {
+            const res = await fetch(url);
+            return await res.blob();
         },
     };
 };

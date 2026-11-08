@@ -2,9 +2,12 @@ import { tl } from "$lib/i18n";
 import { error } from "$lib/log";
 import { record } from "$lib/task";
 import { refFromName } from "$lib/utils";
+import { parseName, remoteData } from "$lib/workspace/data";
 import type { ExternalTypeReference } from "@katana-project/laser";
 import { openDB } from "idb";
 import { toast } from "svelte-sonner";
+import type { Entry, EntryType } from "./";
+import type { AnalysisState } from "./analysis";
 
 // JDK indexes are produced by the ojdk utility (https://github.com/katana-project/ojdk)
 
@@ -76,6 +79,57 @@ export const findClass = async (name: string): Promise<Uint8Array | null> => {
         await db.put(CLASSES_STORE, data, name);
         return data;
     });
+};
+
+export const createEntry = async (name: string): Promise<Entry | null> => {
+    let module: string | null = null,
+        url: string | null = null;
+    for (const [module0, classes] of Object.entries(rawIndex.data)) {
+        if (classes.includes(name)) {
+            module = module0;
+            url = `${rawIndex.url}/${module0}/${name}.class`;
+            break;
+        }
+    }
+
+    if (!module || !url) {
+        return null;
+    }
+
+    const fqName = `${module}/${name}.class`;
+    return {
+        ...parseName(fqName),
+        type: "file" as EntryType,
+        state: 0 as AnalysisState,
+        data: {
+            ...(await remoteData(fqName, url)),
+            // override data methods to fetch from cache if possible
+            async bytes(): Promise<Uint8Array> {
+                const data = await findClass(name);
+                if (!data) {
+                    throw new Error(`failed to fetch class '${name}'`);
+                }
+
+                return data;
+            },
+            async blob(): Promise<Blob> {
+                return new Blob([(await this.bytes()) as Uint8Array<ArrayBuffer>]);
+            },
+            async stream(): Promise<ReadableStream<Uint8Array>> {
+                const data = await this.bytes();
+                return new ReadableStream({
+                    start(controller) {
+                        controller.enqueue(data);
+                        controller.close();
+                    },
+                });
+            },
+            async text(): Promise<string> {
+                const data = await this.bytes();
+                return new TextDecoder().decode(data);
+            },
+        },
+    };
 };
 
 export const jdkRefs: ExternalTypeReference[] = Object.entries(rawIndex.data).flatMap(([module, classes]) =>
