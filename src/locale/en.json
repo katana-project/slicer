@@ -133,6 +133,7 @@
     "pane.structure.summary.total-mapped": "{0} mapped class(es)",
     "pane.structure.summary.characteristics.none": "No noteworthy characteristics.",
     "pane.structure.summary.characteristics.group.general": "Common characteristics",
+    "pane.structure.summary.characteristics.group.general.desc": "Usage of certain features or APIs that are common in Java applications, but may be noteworthy for analysis.",
     "pane.structure.summary.characteristics.group.entry-point": "Entry points",
     "pane.structure.summary.characteristics.entry-point.main": "Main",
     "pane.structure.summary.characteristics.entry-point.agent": "Java agent",

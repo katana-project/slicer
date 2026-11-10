@@ -8,6 +8,7 @@
         LayoutList,
         LandPlot,
         Map as MapIcon,
+        CircleQuestionMark,
     } from "@lucide/svelte";
     import { cn } from "$lib/components/utils";
     import { EntryType, type ClassEntry, type Entry } from "$lib/workspace";
@@ -24,6 +25,7 @@
     import IconComponent from "$lib/components/icon.svelte";
     import { SvelteSet } from "svelte/reactivity";
     import { characteristics, groups } from "$lib/workspace/analysis/characteristics";
+    import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "$lib/components/ui/tooltip";
 
     interface Props {
         classes: Map<string, Entry>;
@@ -110,13 +112,25 @@
         {:else}
             {#each Array.from(groupedCharacteristics.entries()).sort( ([a], [b]) => a.localeCompare(b) ) as [groupType, grouped]}
                 {@const group = $groups.find((g) => g.type === groupType)}
-                <div class="bg-background sticky top-0 z-10 px-3 py-2">
-                    <span
-                        class="text-muted-foreground/70 text-[11px] font-medium tracking-wider break-anywhere uppercase"
-                    >
-                        {$t(group?.label ?? `pane.structure.summary.characteristics.group.${groupType}`)}
-                    </span>
-                </div>
+                <TooltipProvider>
+                    <div class="bg-background sticky top-0 z-10 px-3 py-2 flex items-center gap-2">
+                        <span
+                            class="text-muted-foreground/70 text-[11px] font-medium tracking-wider break-anywhere uppercase"
+                        >
+                            {$t(group?.label ?? `pane.structure.summary.characteristics.group.${groupType}`)}
+                        </span>
+                        {#if group?.description}
+                            <Tooltip>
+                                <TooltipTrigger class="cursor-pointer">
+                                    <CircleQuestionMark class="h-3 w-3 text-muted-foreground" />
+                                </TooltipTrigger>
+                                <TooltipContent side="right">
+                                    {@html $t(group.description)}
+                                </TooltipContent>
+                            </Tooltip>
+                        {/if}
+                    </div>
+                </TooltipProvider>
 
                 {#each Array.from(grouped.entries()).sort(([a], [b]) => a.localeCompare(b)) as [type, entries]}
                     {@const ct = $characteristics.find((c) => c.type === type)}
@@ -135,9 +149,21 @@
                         <span class="flex h-5 w-5 items-center justify-center rounded">
                             <IconComponent {icon} class="text-muted-foreground h-3 w-3" />
                         </span>
-                        <span class="text-muted-foreground text-xs font-medium break-anywhere">
-                            {$t(ct?.label ?? `pane.structure.summary.characteristics.${type}`)}
-                        </span>
+                        <TooltipProvider>
+                            <span class="text-muted-foreground text-xs font-medium break-anywhere">
+                                {$t(ct?.label ?? `pane.structure.summary.characteristics.${type}`)}
+                            </span>
+                            {#if ct?.description}
+                                <Tooltip>
+                                    <TooltipTrigger class="cursor-pointer">
+                                        <CircleQuestionMark class="h-3 w-3 text-muted-foreground" />
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">
+                                        {@html $t(ct.description)}
+                                    </TooltipContent>
+                                </Tooltip>
+                            {/if}
+                        </TooltipProvider>
                         <span class="bg-muted/50 text-muted-foreground ml-auto rounded px-1.5 py-0.5 text-[10px]">
                             {entries.length}
                         </span>

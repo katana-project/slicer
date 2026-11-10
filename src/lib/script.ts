@@ -498,6 +498,7 @@ const wrapCharacteristic = (c: Characteristic): ScriptCharacteristic =>
         _characteristic: c,
         id: c.type,
         label: c.label,
+        description: c.description,
         group: c.group,
         icon: c.icon ? wrapIcon(c.icon) : undefined,
     }) as ScriptCharacteristic;
@@ -510,6 +511,8 @@ const unwrapCharacteristic = (ct: ScriptCharacteristic): Characteristic => {
     return {
         type: ct.id,
         label: ct.label,
+        description: ct.description,
+        group: ct.group,
         icon: ct.icon,
     };
 };
@@ -519,6 +522,7 @@ const wrapCtGroup = (cg: CharacteristicGroup): ScriptCharacteristicGroup =>
         _group: cg,
         id: cg.type,
         label: cg.label,
+        description: cg.description,
     }) as ScriptCharacteristicGroup;
 
 const unwrapCtGroup = (cg: ScriptCharacteristicGroup): CharacteristicGroup => {
@@ -529,6 +533,7 @@ const unwrapCtGroup = (cg: ScriptCharacteristicGroup): CharacteristicGroup => {
     return {
         type: cg.id,
         label: cg.label,
+        description: cg.description,
     };
 };
 

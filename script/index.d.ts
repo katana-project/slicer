@@ -841,6 +841,10 @@ export interface Characteristic {
      */
     readonly label?: string;
     /**
+     * An optional description for the characteristic, which can be displayed in the workspace summary.
+     */
+    readonly description?: string;
+    /**
      * An optional group ID that this characteristic belongs to, which can be used to organize characteristics in the workspace summary.
      */
     readonly group?: string;
@@ -867,6 +871,10 @@ export interface CharacteristicGroup {
      * Defaults to the {@link id}.
      */
     readonly label?: string;
+    /**
+     * An optional description for the characteristic group, which can be displayed in the workspace summary.
+     */
+    readonly description?: string;
 }
 
 /**

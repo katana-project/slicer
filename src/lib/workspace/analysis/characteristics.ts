@@ -29,6 +29,7 @@ import {
 export interface Characteristic {
     type: CharacteristicType;
     label?: string;
+    description?: string;
     group?: CharacteristicGroupType;
     icon?: Icon | ScriptIcon;
 }
@@ -106,9 +107,18 @@ export const characteristics = writable<Characteristic[]>([
 export interface CharacteristicGroup {
     type: CharacteristicGroupType;
     label?: string;
+    description?: string;
 }
 
-export const groups = writable<CharacteristicGroup[]>([]);
+export const groups = writable<CharacteristicGroup[]>([
+    {
+        type: StandardCharacteristicGroupType.GENERAL,
+        description: "pane.structure.summary.characteristics.group.general.desc",
+    },
+    {
+        type: StandardCharacteristicGroupType.ENTRY_POINT,
+    },
+]);
 
 export interface CharacteristicProvider {
     match(entry: ClassEntry): Promise<CharacteristicType[]>;
