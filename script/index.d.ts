@@ -1,3 +1,5 @@
+import type { Node } from "@katana-project/asm";
+
 type Awaitable<T> = T | PromiseLike<T>;
 
 /**
@@ -282,6 +284,27 @@ export interface Entry {
      * Returns the raw data of the entry as a {@link Blob}.
      */
     blob(): Awaitable<Blob>;
+}
+
+/**
+ * An entry in the workspace that was determined to be a class file.
+ *
+ * *The extended entry information in this type is only available after full or partial analysis,
+ * the scripting API does not make any guarantees about its completeness.*
+ */
+export interface ClassEntry extends Entry {
+    type: "class";
+
+    /**
+     * The parsed data of the class file, which can be used to analyze the class structure and its members.
+     */
+    readonly node: Node;
+
+    // TODO: lift this to Entry?
+    /**
+     * The IDs of the characteristics that were matched for this class.
+     */
+    readonly cts: string[];
 }
 
 /**

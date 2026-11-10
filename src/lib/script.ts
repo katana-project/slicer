@@ -141,6 +141,8 @@ export const wrapEntry = (e: Entry): ScriptEntry => {
         },
         name: e.name,
         meta: wrapMetadata(e),
+        node: e.type === EntryType.CLASS || e.type === EntryType.MEMBER ? (e as ClassEntry).node : undefined, // from ScriptClassEntry
+        cts: e.type === EntryType.CLASS || e.type === EntryType.MEMBER ? (e as ClassEntry).characteristics : undefined, // from ScriptClassEntry
         bytes(): Promise<Uint8Array> {
             return unwrapTransforms(e.data).bytes();
         },
