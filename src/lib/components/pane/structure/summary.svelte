@@ -113,7 +113,7 @@
             {#each Array.from(groupedCharacteristics.entries()).sort( ([a], [b]) => a.localeCompare(b) ) as [groupType, grouped]}
                 {@const group = $groups.find((g) => g.type === groupType)}
                 <TooltipProvider>
-                    <div class="bg-background sticky top-0 z-10 px-3 py-2 flex items-center gap-2">
+                    <div class="bg-background sticky top-0 z-10 px-3 py-2 pt-3 flex items-center gap-2">
                         <span
                             class="text-muted-foreground/70 text-[11px] font-medium tracking-wider break-anywhere uppercase"
                         >
