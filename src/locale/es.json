@@ -192,7 +192,7 @@
     "pane.dump.timestamp": "fecha:",
     "pane.dump.id-size": "tamaño del identificador:",
     "pane.dump.id-size.bits": "({0}-bit)",
-    "pane.dump.total-size": "total size:",
+    "pane.dump.total-size": "tamaño total:",
     "pane.dump.fail.title": "¿El archivo está en formato HPROF?",
     "pane.dump.fail.subtitle": "Failed to read heap dump.",
     "pane.dump.table.total-size": "Tamaño total",
