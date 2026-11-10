@@ -192,7 +192,7 @@
     "pane.dump.timestamp": "Zeitstempel:",
     "pane.dump.id-size": "Bezeichnergröße:",
     "pane.dump.id-size.bits": "({0}-Bit)",
-    "pane.dump.total-size": "gesamtgröße:",
+    "pane.dump.total-size": "Gesamtgröße:",
     "pane.dump.fail.title": "Ist die Datei im HPROF-Format?",
     "pane.dump.fail.subtitle": "Fehler beim Lesen des Heap-Dumps.",
     "pane.dump.table.total-size": "Gesamtgröße",
