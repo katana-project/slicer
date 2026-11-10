@@ -3,7 +3,6 @@
     import {
         Layers,
         ChevronRight,
-        Server,
         LayoutDashboard,
         FileCodeCorner,
         LayoutList,
@@ -12,15 +11,19 @@
     } from "@lucide/svelte";
     import { cn } from "$lib/components/utils";
     import { EntryType, type ClassEntry, type Entry } from "$lib/workspace";
-    import { entryIcon, entryPointIcon } from "$lib/components/icons";
+    import { entryIcon } from "$lib/components/icons";
     import handler from "$lib/event/handler";
     import { Button } from "$lib/components/ui/button";
     import { prettyInternalName } from "$lib/utils";
     import { mappings } from "$lib/workspace/analysis/mapping";
-    import { type CharacteristicType, EntryPointType } from "$lib/workspace/analysis";
+    import {
+        type CharacteristicGroupType,
+        type CharacteristicType,
+        StandardCharacteristicGroupType,
+    } from "$lib/workspace/analysis";
     import IconComponent from "$lib/components/icon.svelte";
     import { SvelteSet } from "svelte/reactivity";
-    import { characteristics } from "$lib/workspace/analysis/characteristics";
+    import { characteristics, groups } from "$lib/workspace/analysis/characteristics";
 
     interface Props {
         classes: Map<string, Entry>;
@@ -30,28 +33,6 @@
     }
 
     let { classes, entries, currentEntry = $bindable(), showSummary = $bindable() }: Props = $props();
-
-    let collapsedEntryPoints = $state(
-        Object.fromEntries(Object.values(EntryPointType).map<[EntryPointType, boolean]>((type) => [type, true]))
-    );
-    let groupedEntryPoints = $derived.by(() => {
-        const groups = new Map<EntryPointType, ClassEntry[]>();
-
-        classes.forEach((entry) => {
-            if (entry.type !== EntryType.CLASS) return;
-
-            const classEntry = entry as ClassEntry;
-            classEntry.entryPoints?.forEach((type) => {
-                if (!groups.has(type)) {
-                    groups.set(type, []);
-                }
-
-                groups.get(type)!.push(classEntry);
-            });
-        });
-
-        return groups;
-    });
 
     let expandedChars = $state(new SvelteSet<CharacteristicType>());
     let groupedCharacteristics = $derived.by(() => {
@@ -70,7 +51,17 @@
             });
         });
 
-        return groups;
+        const groupsOfGroups = new Map<CharacteristicGroupType, Map<CharacteristicType, ClassEntry[]>>();
+        for (const [type, entries] of groups.entries()) {
+            const groupType =
+                $characteristics.find((c) => c.type === type)?.group ?? StandardCharacteristicGroupType.GENERAL;
+            if (!groupsOfGroups.has(groupType)) {
+                groupsOfGroups.set(groupType, new Map());
+            }
+            groupsOfGroups.get(groupType)!.set(type, entries);
+        }
+
+        return groupsOfGroups;
     });
 </script>
 
@@ -111,86 +102,23 @@
     </div>
 
     <div class="flex-1 overflow-y-auto">
-        <div class="bg-background sticky top-0 z-10 px-3 py-2">
-            <span class="text-muted-foreground/70 text-[11px] font-medium tracking-wider uppercase">
-                {$t("pane.structure.summary.entry-points")}
-            </span>
-        </div>
-
-        <div class="pb-2">
-            {#if groupedEntryPoints.size === 0}
-                <div class="text-muted-foreground flex flex-col items-center justify-center py-6 text-center">
-                    <Server class="mb-2 h-5 w-5 opacity-50" />
-                    <span class="text-xs">{$t("pane.structure.summary.entry-points.none")}</span>
-                </div>
-            {:else}
-                {#each groupedEntryPoints.entries() as [type, entries]}
-                    {@const Icon = entryPointIcon(type)}
-                    <button
-                        type="button"
-                        onclick={() => (collapsedEntryPoints[type] = !collapsedEntryPoints[type])}
-                        class="hover:bg-accent/40 group flex w-full items-center gap-2 px-3 py-1 transition-colors"
+        {#if groupedCharacteristics.size === 0}
+            <div class="text-muted-foreground flex flex-col items-center justify-center py-6 text-center">
+                <LandPlot class="mb-2 h-5 w-5 opacity-50" />
+                <span class="text-xs">{$t("pane.structure.summary.characteristics.none")}</span>
+            </div>
+        {:else}
+            {#each Array.from(groupedCharacteristics.entries()).sort( ([a], [b]) => a.localeCompare(b) ) as [groupType, grouped]}
+                {@const group = $groups.find((g) => g.type === groupType)}
+                <div class="bg-background sticky top-0 z-10 px-3 py-2">
+                    <span
+                        class="text-muted-foreground/70 text-[11px] font-medium tracking-wider break-anywhere uppercase"
                     >
-                        <ChevronRight
-                            class={cn(
-                                "text-muted-foreground h-3.5 w-3.5 transition-transform",
-                                !collapsedEntryPoints[type] && "rotate-90"
-                            )}
-                        />
-                        <span class="flex h-5 w-5 items-center justify-center rounded">
-                            <Icon class="text-muted-foreground h-3 w-3" />
-                        </span>
-                        <span class="text-muted-foreground text-xs font-medium">
-                            {$t(`pane.structure.summary.entry-points.${type}`)}
-                        </span>
-                        <span class="bg-muted/50 text-muted-foreground ml-auto rounded px-1.5 py-0.5 text-[10px]">
-                            {entries.length}
-                        </span>
-                    </button>
-
-                    {#if !collapsedEntryPoints[type]}
-                        {#each entries as entry (entry.name)}
-                            {@const { icon: Icon, classes } = entryIcon(entry)}
-                            <div
-                                role="button"
-                                ondblclick={() => handler.open(entry)}
-                                class="group focus:bg-accent/60 hover:bg-accent/50 cursor-pointer pl-4.5 transition-colors"
-                                tabindex="0"
-                            >
-                                <div
-                                    class="group-focus:border-l-primary flex w-full items-center gap-2 border-l py-1 pr-3 pl-4.5 text-left"
-                                >
-                                    <Icon size={16} class={cn("min-w-4", classes)} />
-                                    <span class="text-foreground/90 flex-1 truncate font-mono text-xs">
-                                        {prettyInternalName(entry.node.thisClass.nameEntry?.string || "")}
-                                    </span>
-                                    <ChevronRight
-                                        class="text-muted-foreground/50 h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100"
-                                    />
-                                </div>
-                            </div>
-                        {/each}
-                    {/if}
-                {/each}
-            {/if}
-        </div>
-    </div>
-
-    <div class="flex-1 overflow-y-auto">
-        <div class="bg-background sticky top-0 z-10 px-3 py-2">
-            <span class="text-muted-foreground/70 text-[11px] font-medium tracking-wider uppercase">
-                {$t("pane.structure.summary.characteristics")}
-            </span>
-        </div>
-
-        <div class="pb-2">
-            {#if groupedCharacteristics.size === 0}
-                <div class="text-muted-foreground flex flex-col items-center justify-center py-6 text-center">
-                    <LandPlot class="mb-2 h-5 w-5 opacity-50" />
-                    <span class="text-xs">{$t("pane.structure.summary.characteristics.none")}</span>
+                        {$t(group?.label ?? `pane.structure.summary.characteristics.group.${groupType}`)}
+                    </span>
                 </div>
-            {:else}
-                {#each groupedCharacteristics.entries() as [type, entries]}
+
+                {#each Array.from(grouped.entries()).sort(([a], [b]) => a.localeCompare(b)) as [type, entries]}
                     {@const ct = $characteristics.find((c) => c.type === type)}
                     {@const icon = ct?.icon ?? LandPlot}
                     <button
@@ -207,7 +135,7 @@
                         <span class="flex h-5 w-5 items-center justify-center rounded">
                             <IconComponent {icon} class="text-muted-foreground h-3 w-3" />
                         </span>
-                        <span class="text-muted-foreground text-xs font-medium">
+                        <span class="text-muted-foreground text-xs font-medium break-anywhere">
                             {$t(ct?.label ?? `pane.structure.summary.characteristics.${type}`)}
                         </span>
                         <span class="bg-muted/50 text-muted-foreground ml-auto rounded px-1.5 py-0.5 text-[10px]">
@@ -239,7 +167,7 @@
                         {/each}
                     {/if}
                 {/each}
-            {/if}
-        </div>
+            {/each}
+        {/if}
     </div>
 </div>

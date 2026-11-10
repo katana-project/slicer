@@ -1,13 +1,35 @@
 import type { Icon } from "$lib/components/icons";
 import type { ClassEntry } from "$lib/workspace";
-import { type CharacteristicType, StandardCharacteristicType } from "$lib/workspace/analysis/types";
-import { Binary, CloudUpload, Cpu, EarthLock, FilePen, FlipVertical2, LoaderPinwheel, ScanText } from "@lucide/svelte";
+import {
+    Binary,
+    Box,
+    Bug,
+    CloudUpload,
+    Cpu,
+    EarthLock,
+    FilePen,
+    FlipVertical2,
+    LoaderPinwheel,
+    Network,
+    PlayIcon,
+    Puzzle,
+    ScanText,
+    Server,
+    Zap,
+} from "@lucide/svelte";
 import type { Icon as ScriptIcon } from "@run-slicer/script";
 import { writable } from "svelte/store";
+import {
+    type CharacteristicGroupType,
+    type CharacteristicType,
+    StandardCharacteristicGroupType,
+    StandardCharacteristicType,
+} from "./types";
 
 export interface Characteristic {
     type: CharacteristicType;
     label?: string;
+    group?: CharacteristicGroupType;
     icon?: Icon | ScriptIcon;
 }
 
@@ -44,7 +66,49 @@ export const characteristics = writable<Characteristic[]>([
         type: StandardCharacteristicType.PROCESS_MANIPULATION,
         icon: Cpu,
     },
+    {
+        type: StandardCharacteristicType.ENTRY_POINT_MAIN,
+        group: StandardCharacteristicGroupType.ENTRY_POINT,
+        icon: PlayIcon,
+    },
+    {
+        type: StandardCharacteristicType.ENTRY_POINT_AGENT,
+        group: StandardCharacteristicGroupType.ENTRY_POINT,
+        icon: Bug,
+    },
+    {
+        type: StandardCharacteristicType.ENTRY_POINT_MINECRAFT_BUKKIT,
+        group: StandardCharacteristicGroupType.ENTRY_POINT,
+        icon: Server,
+    },
+    {
+        type: StandardCharacteristicType.ENTRY_POINT_MINECRAFT_BUNGEE,
+        group: StandardCharacteristicGroupType.ENTRY_POINT,
+        icon: Network,
+    },
+    {
+        type: StandardCharacteristicType.ENTRY_POINT_MINECRAFT_VELOCITY,
+        group: StandardCharacteristicGroupType.ENTRY_POINT,
+        icon: Zap,
+    },
+    {
+        type: StandardCharacteristicType.ENTRY_POINT_MINECRAFT_FORGE,
+        group: StandardCharacteristicGroupType.ENTRY_POINT,
+        icon: Box,
+    },
+    {
+        type: StandardCharacteristicType.ENTRY_POINT_MINECRAFT_FABRIC,
+        group: StandardCharacteristicGroupType.ENTRY_POINT,
+        icon: Puzzle,
+    },
 ]);
+
+export interface CharacteristicGroup {
+    type: CharacteristicGroupType;
+    label?: string;
+}
+
+export const groups = writable<CharacteristicGroup[]>([]);
 
 export interface CharacteristicProvider {
     match(entry: ClassEntry): Promise<CharacteristicType[]>;

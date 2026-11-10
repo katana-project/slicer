@@ -63,8 +63,6 @@ const analyzeClass = async (entry: Entry, skipAttr: boolean) => {
 
         // post-transform analysis
         if (entry.type === EntryType.CLASS) {
-            classEntry.entryPoints = await workers.instance().task((w) => w.collectEntryPoints(classEntry.node));
-
             const $providers = get(providers);
             const characteristics = new Set<CharacteristicType>();
             for (const provider of $providers.values()) {

@@ -10,13 +10,12 @@ import type { ClassEntry, Entry, NameTypeEntry, RefEntry } from "@katana-project
 import { AttributeType, ConstantType, Modifier, Opcode } from "@katana-project/asm/spec";
 import { expose } from "comlink";
 import { QueryType, type SearchData, SearchMode, type SearchResultData } from "./search";
-import { type CharacteristicType, EntryPointType, StandardCharacteristicType } from "./types";
+import { type CharacteristicType, StandardCharacteristicType } from "./types";
 
 export interface AnalysisWorker {
     read(data: Uint8Array, flags: number): Promise<Node>;
     search(data: SearchData): Promise<SearchResultData[]>;
 
-    collectEntryPoints(node: Node): Promise<EntryPointType[]>;
     collectCharacteristics(node: Node): Promise<CharacteristicType[]>;
     findCallees(member: Member, owner: Node): Promise<Callable[]>;
 }
@@ -140,80 +139,6 @@ expose({
                     : searchMembers(node.methods, comparator);
         }
     },
-    async collectEntryPoints(node: Node): Promise<EntryPointType[]> {
-        const entryPoints: EntryPointType[] = [];
-
-        const mainMethod = node.methods.find(
-            (m) =>
-                m.name.string === "main" &&
-                m.type.string === "([Ljava/lang/String;)V" &&
-                (m.access & Modifier.STATIC) !== 0
-        );
-
-        if (mainMethod) {
-            entryPoints.push(EntryPointType.MAIN);
-        }
-
-        let annotations: Annotation[] = [];
-        try {
-            const attr = node.attrs.find(
-                (a) =>
-                    a.name?.string === AttributeType.RUNTIME_VISIBLE_ANNOTATIONS ||
-                    a.name?.string === AttributeType.RUNTIME_INVISIBLE_ANNOTATIONS
-            ) as AnnotationsAttribute | undefined;
-
-            if (attr) {
-                annotations = attr.annotations ?? readAnnotations(attr, node.pool).annotations;
-            }
-        } catch {
-            // annotations already defaults to []
-        }
-
-        const premainMethod = node.methods.find(
-            (m) =>
-                m.name.string === "premain" &&
-                (m.type.string === "(Ljava/lang/String;Ljava/lang/instrument/Instrumentation;)V" ||
-                    m.type.string === "(Ljava/lang/String;)V") &&
-                (m.access & Modifier.STATIC) !== 0
-        );
-
-        if (premainMethod) {
-            entryPoints.push(EntryPointType.AGENT);
-        }
-
-        switch (node.superClass?.nameEntry?.string) {
-            case "org/bukkit/plugin/java/JavaPlugin":
-                entryPoints.push(EntryPointType.MINECRAFT_BUKKIT);
-                break;
-            case "net/md_5/bungee/api/plugin/Plugin":
-                entryPoints.push(EntryPointType.MINECRAFT_BUNGEE);
-                break;
-        }
-
-        const velocityPlugin = annotations.some(
-            (a) => a.typeEntry?.string === "Lcom/velocitypowered/api/plugin/Plugin;"
-        );
-        if (velocityPlugin) {
-            entryPoints.push(EntryPointType.MINECRAFT_VELOCITY);
-        }
-
-        // TODO(zlataovce): separate NeoForge into a category of its own?
-        const forgeMod = annotations.some(
-            (a) =>
-                a.typeEntry?.string === "Lnet/minecraftforge/fml/common/Mod;" ||
-                a.typeEntry?.string === "Lnet/neoforged/fml/common/Mod;"
-        );
-        if (forgeMod) {
-            entryPoints.push(EntryPointType.MINECRAFT_FORGE);
-        }
-
-        const fabricMod = node.interfaces?.some((i) => i.nameEntry && FABRIC_INITIALIZERS.has(i.nameEntry.string));
-        if (fabricMod) {
-            entryPoints.push(EntryPointType.MINECRAFT_FABRIC);
-        }
-
-        return entryPoints;
-    },
     async collectCharacteristics(node: Node): Promise<CharacteristicType[]> {
         const chars = new Set<CharacteristicType>();
         for (const entry of node.pool) {
@@ -330,6 +255,75 @@ expose({
             if ((method.access & Modifier.NATIVE) !== 0) {
                 chars.add(StandardCharacteristicType.NATIVE_CODE);
             }
+        }
+
+        const mainMethod = node.methods.find(
+            (m) =>
+                m.name.string === "main" &&
+                m.type.string === "([Ljava/lang/String;)V" &&
+                (m.access & Modifier.STATIC) !== 0
+        );
+
+        if (mainMethod) {
+            chars.add(StandardCharacteristicType.ENTRY_POINT_MAIN);
+        }
+
+        let annotations: Annotation[] = [];
+        try {
+            const attr = node.attrs.find(
+                (a) =>
+                    a.name?.string === AttributeType.RUNTIME_VISIBLE_ANNOTATIONS ||
+                    a.name?.string === AttributeType.RUNTIME_INVISIBLE_ANNOTATIONS
+            ) as AnnotationsAttribute | undefined;
+
+            if (attr) {
+                annotations = attr.annotations ?? readAnnotations(attr, node.pool).annotations;
+            }
+        } catch {
+            // annotations already defaults to []
+        }
+
+        const premainMethod = node.methods.find(
+            (m) =>
+                m.name.string === "premain" &&
+                (m.type.string === "(Ljava/lang/String;Ljava/lang/instrument/Instrumentation;)V" ||
+                    m.type.string === "(Ljava/lang/String;)V") &&
+                (m.access & Modifier.STATIC) !== 0
+        );
+
+        if (premainMethod) {
+            chars.add(StandardCharacteristicType.ENTRY_POINT_AGENT);
+        }
+
+        switch (node.superClass?.nameEntry?.string) {
+            case "org/bukkit/plugin/java/JavaPlugin":
+                chars.add(StandardCharacteristicType.ENTRY_POINT_MINECRAFT_BUKKIT);
+                break;
+            case "net/md_5/bungee/api/plugin/Plugin":
+                chars.add(StandardCharacteristicType.ENTRY_POINT_MINECRAFT_BUNGEE);
+                break;
+        }
+
+        const velocityPlugin = annotations.some(
+            (a) => a.typeEntry?.string === "Lcom/velocitypowered/api/plugin/Plugin;"
+        );
+        if (velocityPlugin) {
+            chars.add(StandardCharacteristicType.ENTRY_POINT_MINECRAFT_VELOCITY);
+        }
+
+        // TODO(zlataovce): separate NeoForge into a category of its own?
+        const forgeMod = annotations.some(
+            (a) =>
+                a.typeEntry?.string === "Lnet/minecraftforge/fml/common/Mod;" ||
+                a.typeEntry?.string === "Lnet/neoforged/fml/common/Mod;"
+        );
+        if (forgeMod) {
+            chars.add(StandardCharacteristicType.ENTRY_POINT_MINECRAFT_FORGE);
+        }
+
+        const fabricMod = node.interfaces?.some((i) => i.nameEntry && FABRIC_INITIALIZERS.has(i.nameEntry.string));
+        if (fabricMod) {
+            chars.add(StandardCharacteristicType.ENTRY_POINT_MINECRAFT_FABRIC);
         }
 
         return Array.from(chars.values());
