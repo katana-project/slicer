@@ -1,3 +1,4 @@
+import type { Icon } from "$lib/components/icons";
 import {
     add as addDisasm,
     all as disasms,
@@ -37,8 +38,10 @@ import {
 import { AnalysisState, analyze } from "$lib/workspace/analysis";
 import {
     type Characteristic,
+    type CharacteristicGroup,
     type CharacteristicProvider,
     characteristics,
+    groups,
     providers,
 } from "$lib/workspace/analysis/characteristics";
 import { mappings } from "$lib/workspace/analysis/mapping";
@@ -63,10 +66,12 @@ import type {
     NotificationOptions,
     Script,
     Characteristic as ScriptCharacteristic,
+    CharacteristicGroup as ScriptCharacteristicGroup,
     CharacteristicProvider as ScriptCharacteristicProvider,
     ScriptContext,
     Disassembler as ScriptDisassembler,
     Entry as ScriptEntry,
+    Icon as ScriptIcon,
     MappingType as ScriptMappingType,
     Tab as ScriptTab,
     ShortcutDeclaration,
@@ -457,6 +462,11 @@ const mappingCtx: MappingContext = {
     },
 };
 
+const wrapIcon = (icon: Icon | ScriptIcon): ScriptIcon => {
+    // don't handle built-in icons I guess
+    return "type" in icon && "value" in icon ? (icon as ScriptIcon) : { type: "html", value: "✨" };
+};
+
 const wrapProvider = (id: string, provider: CharacteristicProvider): ScriptCharacteristicProvider =>
     ({
         _provider: provider,
@@ -483,13 +493,49 @@ const unwrapProvider = (provider: ScriptCharacteristicProvider): CharacteristicP
     };
 };
 
-const unwrapCharacteristic = (ct: ScriptCharacteristic): Characteristic => ({
-    type: ct.id,
-    label: ct.label,
-    icon: ct.icon,
-});
+const wrapCharacteristic = (c: Characteristic): ScriptCharacteristic =>
+    ({
+        _characteristic: c,
+        id: c.type,
+        label: c.label,
+        group: c.group,
+        icon: c.icon ? wrapIcon(c.icon) : undefined,
+    }) as ScriptCharacteristic;
+
+const unwrapCharacteristic = (ct: ScriptCharacteristic): Characteristic => {
+    if ((ct as any)._characteristic) {
+        return (ct as any)._characteristic;
+    }
+
+    return {
+        type: ct.id,
+        label: ct.label,
+        icon: ct.icon,
+    };
+};
+
+const wrapCtGroup = (cg: CharacteristicGroup): ScriptCharacteristicGroup =>
+    ({
+        _group: cg,
+        id: cg.type,
+        label: cg.label,
+    }) as ScriptCharacteristicGroup;
+
+const unwrapCtGroup = (cg: ScriptCharacteristicGroup): CharacteristicGroup => {
+    if ((cg as any)._group) {
+        return (cg as any)._group;
+    }
+
+    return {
+        type: cg.id,
+        label: cg.label,
+    };
+};
 
 const characteristicsCtx: CharacteristicsContext = {
+    cts(): ScriptCharacteristic[] {
+        return Array.from(get(characteristics).values()).map(wrapCharacteristic);
+    },
     register(ct: ScriptCharacteristic): void {
         if (get(characteristics).some((c) => c.type === ct.id)) {
             throw new Error(`Characteristic already registered: ${ct.id}`);
@@ -503,6 +549,24 @@ const characteristicsCtx: CharacteristicsContext = {
     unregister(id: string): void {
         characteristics.update(($characteristics) => {
             return $characteristics.filter((c) => c.type !== id);
+        });
+    },
+    groups(): ScriptCharacteristicGroup[] {
+        return Array.from(get(groups).values()).map(wrapCtGroup);
+    },
+    registerGroup(group: ScriptCharacteristicGroup) {
+        if (get(groups).some((g) => g.type === group.id)) {
+            throw new Error(`Characteristic group already registered: ${group.id}`);
+        }
+
+        groups.update(($groups) => {
+            $groups.push(unwrapCtGroup(group));
+            return $groups;
+        });
+    },
+    unregisterGroup(id: string) {
+        groups.update(($groups) => {
+            return $groups.filter((g) => g.type !== id);
         });
     },
     providers(): ScriptCharacteristicProvider[] {

@@ -841,9 +841,32 @@ export interface Characteristic {
      */
     readonly label?: string;
     /**
+     * An optional group ID that this characteristic belongs to, which can be used to organize characteristics in the workspace summary.
+     */
+    readonly group?: string;
+    /**
      * An icon for the characteristic to be displayed in the workspace summary.
      */
     readonly icon?: Icon;
+}
+
+/**
+ * A group of related characteristics that can be displayed together in the workspace summary.
+ */
+export interface CharacteristicGroup {
+    /**
+     * The unique ID of the characteristic group.
+     *
+     * This should not conflict with types of characteristic groups defined by slicer internally or by other scripts, to ensure compatibility with other scripts and future versions of slicer,
+     * so it is recommended to use a namespaced type (e.g. "my_script/reflection_special", etc.).
+     */
+    readonly id: string;
+    /**
+     * A human-readable name or a translation key for the characteristic group's label.
+     *
+     * Defaults to the {@link id}.
+     */
+    readonly label?: string;
 }
 
 /**
@@ -872,6 +895,13 @@ export interface CharacteristicProvider {
  */
 export interface CharacteristicsContext {
     /**
+     * Returns all registered characteristic types.
+     *
+     * @returns The characteristic types.
+     */
+    cts(): Characteristic[];
+
+    /**
      * Registers a new characteristic type.
      *
      * @param ct The characteristic definition.
@@ -884,6 +914,27 @@ export interface CharacteristicsContext {
      * @param id The characteristic type ID.
      */
     unregister(id: string): void;
+
+    /**
+     * Returns all registered characteristic groups.
+     *
+     * @returns The characteristic groups.
+     */
+    groups(): CharacteristicGroup[];
+
+    /**
+     * Registers a new characteristic group.
+     *
+     * @param group The characteristic group definition.
+     */
+    registerGroup(group: CharacteristicGroup): void;
+
+    /**
+     * Removes a previously registered characteristic group.
+     *
+     * @param id The characteristic group ID.
+     */
+    unregisterGroup(id: string): void;
 
     /**
      * Returns all registered characteristic providers.
