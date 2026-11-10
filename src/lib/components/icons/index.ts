@@ -1,31 +1,20 @@
 import { TabPosition, TabType } from "$lib/tab";
 import { type Modifiers, parseModifiers } from "$lib/utils";
 import { type ClassEntry, type Entry, EntryType } from "$lib/workspace";
-import { CharacteristicType, EntryPointType } from "$lib/workspace/analysis";
 import {
-    Binary,
-    Box,
     Braces,
-    Bug,
-    CloudUpload,
     CodeXml,
     Coffee,
-    Cpu,
-    EarthLock,
     File,
     FileArchive,
     FileCodeCorner,
     FileDigit,
-    FilePen,
     FilePlay,
     FileText,
-    FlipVertical2,
     GitPullRequest,
     type IconProps,
     Image,
     InspectionPanel,
-    LoaderPinwheel,
-    Network,
     PanelBottom,
     PanelBottomDashed,
     PanelLeft,
@@ -33,14 +22,9 @@ import {
     PanelRight,
     PanelRightDashed,
     Parentheses,
-    PlayIcon,
-    Puzzle,
-    ScanText,
-    Server,
     Sparkles,
     TextAlignStart,
     TextQuote,
-    Zap,
 } from "@lucide/svelte";
 import type { Component } from "svelte";
 import Android from "./android.svelte";
@@ -232,46 +216,6 @@ export const paneIcon = (pos: TabPosition, open: boolean): Icon => {
             return open ? PanelLeft : PanelLeftDashed;
         case TabPosition.SECONDARY_RIGHT:
             return open ? PanelRight : PanelRightDashed;
-    }
-};
-
-export const entryPointIcon = (type: EntryPointType): Icon => {
-    switch (type) {
-        case EntryPointType.MAIN:
-            return PlayIcon;
-        case EntryPointType.AGENT:
-            return Bug;
-        case EntryPointType.MINECRAFT_BUKKIT:
-            return Server;
-        case EntryPointType.MINECRAFT_BUNGEE:
-            return Network;
-        case EntryPointType.MINECRAFT_VELOCITY:
-            return Zap;
-        case EntryPointType.MINECRAFT_FORGE:
-            return Box;
-        case EntryPointType.MINECRAFT_FABRIC:
-            return Puzzle;
-    }
-};
-
-export const characteristicIcon = (type: CharacteristicType): Icon => {
-    switch (type) {
-        case CharacteristicType.CLASS_LOADING:
-            return LoaderPinwheel;
-        case CharacteristicType.ENCRYPTION:
-            return EarthLock;
-        case CharacteristicType.FILE_IO:
-            return FilePen;
-        case CharacteristicType.NETWORK_IO:
-            return CloudUpload;
-        case CharacteristicType.OBJECT_SERDES:
-            return ScanText;
-        case CharacteristicType.REFLECTION:
-            return FlipVertical2;
-        case CharacteristicType.NATIVE_CODE:
-            return Binary;
-        case CharacteristicType.PROCESS_MANIPULATION:
-            return Cpu;
     }
 };
 

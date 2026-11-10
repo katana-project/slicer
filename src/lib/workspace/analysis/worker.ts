@@ -10,13 +10,12 @@ import type { ClassEntry, Entry, NameTypeEntry, RefEntry } from "@katana-project
 import { AttributeType, ConstantType, Modifier, Opcode } from "@katana-project/asm/spec";
 import { expose } from "comlink";
 import { QueryType, type SearchData, SearchMode, type SearchResultData } from "./search";
-import { CharacteristicType, EntryPointType } from "./types";
+import { type CharacteristicType, StandardCharacteristicType } from "./types";
 
 export interface AnalysisWorker {
     read(data: Uint8Array, flags: number): Promise<Node>;
     search(data: SearchData): Promise<SearchResultData[]>;
 
-    collectEntryPoints(node: Node): Promise<EntryPointType[]>;
     collectCharacteristics(node: Node): Promise<CharacteristicType[]>;
     findCallees(member: Member, owner: Node): Promise<Callable[]>;
 }
@@ -140,8 +139,123 @@ expose({
                     : searchMembers(node.methods, comparator);
         }
     },
-    async collectEntryPoints(node: Node): Promise<EntryPointType[]> {
-        const entryPoints: EntryPointType[] = [];
+    async collectCharacteristics(node: Node): Promise<CharacteristicType[]> {
+        const chars = new Set<CharacteristicType>();
+        for (const entry of node.pool) {
+            switch (entry?.type) {
+                case ConstantType.CLASS: {
+                    const className = (entry as ClassEntry).nameEntry?.string;
+                    if (!className) break;
+
+                    switch (className) {
+                        case "java/lang/ClassLoader":
+                        case "java/net/URLClassLoader":
+                            chars.add(StandardCharacteristicType.CLASS_LOADING);
+                            break;
+                        case "javax/crypto/Cipher":
+                            chars.add(StandardCharacteristicType.ENCRYPTION);
+                            break;
+                        case "java/lang/reflect/Method":
+                        case "java/lang/reflect/Constructor":
+                        case "java/lang/reflect/Field":
+                        // MethodHandle stuff is emitted by javac in e.g. string concat - we can't have that
+                        // case "java/lang/invoke/MethodHandle":
+                        // case "java/lang/invoke/MethodHandles":
+                        // case "java/lang/invoke/MethodHandles$Lookup":
+                        // case "java/lang/invoke/MethodType":
+                        case "java/lang/invoke/VarHandle":
+                        case "java/util/concurrent/atomic/AtomicReferenceFieldUpdater":
+                        case "java/util/concurrent/atomic/AtomicIntegerFieldUpdater":
+                        case "java/util/concurrent/atomic/AtomicLongFieldUpdater":
+                            chars.add(StandardCharacteristicType.REFLECTION);
+                            break;
+                        case "java/io/File":
+                        case "java/nio/file/Files":
+                        case "java/nio/file/Path":
+                        case "java/nio/file/Paths":
+                        case "java/nio/file/FileSystem":
+                        case "java/nio/file/FileSystems":
+                        case "java/nio/channels/FileChannel":
+                        case "java/nio/channels/AsynchronousFileChannel":
+                            chars.add(StandardCharacteristicType.FILE_IO);
+                            break;
+                        case "java/net/Socket":
+                        case "java/net/ServerSocket":
+                        case "java/net/DatagramSocket":
+                        case "java/net/HttpURLConnection":
+                        case "java/net/URL":
+                        case "java/net/URLConnection":
+                        case "java/net/http/HttpClient":
+                        case "java/nio/channels/NetworkChannel":
+                        case "java/nio/channels/SocketChannel":
+                        case "java/nio/channels/ServerSocketChannel":
+                        case "java/nio/channels/DatagramChannel":
+                        case "java/nio/channels/AsynchronousSocketChannel":
+                        case "java/nio/channels/AsynchronousServerSocketChannel":
+                            chars.add(StandardCharacteristicType.NETWORK_IO);
+                            break;
+                        case "java/io/ObjectInputStream":
+                        case "java/io/ObjectOutputStream":
+                            chars.add(StandardCharacteristicType.OBJECT_SERDES);
+                            break;
+                        case "java/lang/foreign/MemorySegment":
+                        case "java/lang/foreign/Arena":
+                        case "java/lang/foreign/Linker":
+                        case "java/lang/foreign/SymbolLookup":
+                        case "sun/misc/Unsafe":
+                            chars.add(StandardCharacteristicType.NATIVE_CODE);
+                            break;
+                        case "java/lang/ProcessBuilder":
+                        case "java/lang/ProcessHandle":
+                        case "java/lang/Process":
+                            chars.add(StandardCharacteristicType.PROCESS_MANIPULATION);
+                            break;
+                    }
+                    break;
+                }
+                case ConstantType.METHODREF:
+                case ConstantType.INTERFACE_METHODREF: {
+                    const refEntry = entry as RefEntry;
+                    const className = refEntry.refEntry?.nameEntry?.string;
+                    const nameType = refEntry.nameTypeEntry;
+                    const methodName = nameType?.nameEntry?.string;
+
+                    if (!className || !methodName) break;
+                    switch (className) {
+                        case "java/lang/Runtime":
+                        case "java/lang/System": {
+                            if (methodName === "exec") {
+                                chars.add(StandardCharacteristicType.PROCESS_MANIPULATION);
+                            }
+                            if (methodName === "load" || methodName === "loadLibrary") {
+                                chars.add(StandardCharacteristicType.NATIVE_CODE);
+                            }
+                            break;
+                        }
+                        case "java/lang/invoke/MethodHandles": {
+                            if (methodName === "lookup" || methodName === "publicLookup") {
+                                chars.add(StandardCharacteristicType.REFLECTION);
+                            }
+                            break;
+                        }
+                        case "java/lang/invoke/MethodHandles$Lookup": {
+                            if (methodName.match(/^(find|unreflect).+$/)) {
+                                chars.add(StandardCharacteristicType.REFLECTION);
+                            }
+                            break;
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        for (const method of node.methods) {
+            if ((method.access & Modifier.NATIVE) !== 0) {
+                chars.add(StandardCharacteristicType.NATIVE_CODE);
+            }
+        }
 
         const mainMethod = node.methods.find(
             (m) =>
@@ -151,7 +265,7 @@ expose({
         );
 
         if (mainMethod) {
-            entryPoints.push(EntryPointType.MAIN);
+            chars.add(StandardCharacteristicType.ENTRY_POINT_MAIN);
         }
 
         let annotations: Annotation[] = [];
@@ -178,15 +292,15 @@ expose({
         );
 
         if (premainMethod) {
-            entryPoints.push(EntryPointType.AGENT);
+            chars.add(StandardCharacteristicType.ENTRY_POINT_AGENT);
         }
 
         switch (node.superClass?.nameEntry?.string) {
             case "org/bukkit/plugin/java/JavaPlugin":
-                entryPoints.push(EntryPointType.MINECRAFT_BUKKIT);
+                chars.add(StandardCharacteristicType.ENTRY_POINT_MINECRAFT_BUKKIT);
                 break;
             case "net/md_5/bungee/api/plugin/Plugin":
-                entryPoints.push(EntryPointType.MINECRAFT_BUNGEE);
+                chars.add(StandardCharacteristicType.ENTRY_POINT_MINECRAFT_BUNGEE);
                 break;
         }
 
@@ -194,7 +308,7 @@ expose({
             (a) => a.typeEntry?.string === "Lcom/velocitypowered/api/plugin/Plugin;"
         );
         if (velocityPlugin) {
-            entryPoints.push(EntryPointType.MINECRAFT_VELOCITY);
+            chars.add(StandardCharacteristicType.ENTRY_POINT_MINECRAFT_VELOCITY);
         }
 
         // TODO(zlataovce): separate NeoForge into a category of its own?
@@ -204,132 +318,12 @@ expose({
                 a.typeEntry?.string === "Lnet/neoforged/fml/common/Mod;"
         );
         if (forgeMod) {
-            entryPoints.push(EntryPointType.MINECRAFT_FORGE);
+            chars.add(StandardCharacteristicType.ENTRY_POINT_MINECRAFT_FORGE);
         }
 
         const fabricMod = node.interfaces?.some((i) => i.nameEntry && FABRIC_INITIALIZERS.has(i.nameEntry.string));
         if (fabricMod) {
-            entryPoints.push(EntryPointType.MINECRAFT_FABRIC);
-        }
-
-        return entryPoints;
-    },
-    async collectCharacteristics(node: Node): Promise<CharacteristicType[]> {
-        const chars = new Set<CharacteristicType>();
-        for (const entry of node.pool) {
-            switch (entry?.type) {
-                case ConstantType.CLASS: {
-                    const className = (entry as ClassEntry).nameEntry?.string;
-                    if (!className) break;
-
-                    switch (className) {
-                        case "java/lang/ClassLoader":
-                        case "java/net/URLClassLoader":
-                            chars.add(CharacteristicType.CLASS_LOADING);
-                            break;
-                        case "javax/crypto/Cipher":
-                            chars.add(CharacteristicType.ENCRYPTION);
-                            break;
-                        case "java/lang/reflect/Method":
-                        case "java/lang/reflect/Constructor":
-                        case "java/lang/reflect/Field":
-                        // MethodHandle stuff is emitted by javac in e.g. string concat - we can't have that
-                        // case "java/lang/invoke/MethodHandle":
-                        // case "java/lang/invoke/MethodHandles":
-                        // case "java/lang/invoke/MethodHandles$Lookup":
-                        // case "java/lang/invoke/MethodType":
-                        case "java/lang/invoke/VarHandle":
-                        case "java/util/concurrent/atomic/AtomicReferenceFieldUpdater":
-                        case "java/util/concurrent/atomic/AtomicIntegerFieldUpdater":
-                        case "java/util/concurrent/atomic/AtomicLongFieldUpdater":
-                            chars.add(CharacteristicType.REFLECTION);
-                            break;
-                        case "java/io/File":
-                        case "java/nio/file/Files":
-                        case "java/nio/file/Path":
-                        case "java/nio/file/Paths":
-                        case "java/nio/file/FileSystem":
-                        case "java/nio/file/FileSystems":
-                        case "java/nio/channels/FileChannel":
-                        case "java/nio/channels/AsynchronousFileChannel":
-                            chars.add(CharacteristicType.FILE_IO);
-                            break;
-                        case "java/net/Socket":
-                        case "java/net/ServerSocket":
-                        case "java/net/DatagramSocket":
-                        case "java/net/HttpURLConnection":
-                        case "java/net/URL":
-                        case "java/net/URLConnection":
-                        case "java/net/http/HttpClient":
-                        case "java/nio/channels/NetworkChannel":
-                        case "java/nio/channels/SocketChannel":
-                        case "java/nio/channels/ServerSocketChannel":
-                        case "java/nio/channels/DatagramChannel":
-                        case "java/nio/channels/AsynchronousSocketChannel":
-                        case "java/nio/channels/AsynchronousServerSocketChannel":
-                            chars.add(CharacteristicType.NETWORK_IO);
-                            break;
-                        case "java/io/ObjectInputStream":
-                        case "java/io/ObjectOutputStream":
-                            chars.add(CharacteristicType.OBJECT_SERDES);
-                            break;
-                        case "java/lang/foreign/MemorySegment":
-                        case "java/lang/foreign/Arena":
-                        case "java/lang/foreign/Linker":
-                        case "java/lang/foreign/SymbolLookup":
-                        case "sun/misc/Unsafe":
-                            chars.add(CharacteristicType.NATIVE_CODE);
-                            break;
-                        case "java/lang/ProcessBuilder":
-                        case "java/lang/ProcessHandle":
-                        case "java/lang/Process":
-                            chars.add(CharacteristicType.PROCESS_MANIPULATION);
-                            break;
-                    }
-                    break;
-                }
-                case ConstantType.METHODREF:
-                case ConstantType.INTERFACE_METHODREF: {
-                    const refEntry = entry as RefEntry;
-                    const className = refEntry.refEntry?.nameEntry?.string;
-                    const nameType = refEntry.nameTypeEntry;
-                    const methodName = nameType?.nameEntry?.string;
-
-                    if (!className || !methodName) break;
-                    switch (className) {
-                        case "java/lang/Runtime":
-                        case "java/lang/System": {
-                            if (methodName === "exec") {
-                                chars.add(CharacteristicType.PROCESS_MANIPULATION);
-                            }
-                            if (methodName === "load" || methodName === "loadLibrary") {
-                                chars.add(CharacteristicType.NATIVE_CODE);
-                            }
-                            break;
-                        }
-                        case "java/lang/invoke/MethodHandles": {
-                            if (methodName === "lookup" || methodName === "publicLookup") {
-                                chars.add(CharacteristicType.REFLECTION);
-                            }
-                            break;
-                        }
-                        case "java/lang/invoke/MethodHandles$Lookup": {
-                            if (methodName.match(/^(find|unreflect).+$/)) {
-                                chars.add(CharacteristicType.REFLECTION);
-                            }
-                            break;
-                        }
-                    }
-
-                    break;
-                }
-            }
-        }
-
-        for (const method of node.methods) {
-            if ((method.access & Modifier.NATIVE) !== 0) {
-                chars.add(CharacteristicType.NATIVE_CODE);
-            }
+            chars.add(StandardCharacteristicType.ENTRY_POINT_MINECRAFT_FABRIC);
         }
 
         return Array.from(chars.values());

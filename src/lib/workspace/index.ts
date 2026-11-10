@@ -20,7 +20,6 @@ import {
     analyzeBackground,
     analyzeSchedule,
     type CharacteristicType,
-    type EntryPointType,
     waitForBackgroundAnalysis,
 } from "./analysis";
 import { transform } from "./analysis/transform";
@@ -70,7 +69,6 @@ export interface ArchiveEntry extends Entry {
 export interface ClassEntry extends Entry {
     type: EntryType.CLASS | EntryType.MEMBER;
     node: Node;
-    entryPoints: EntryPointType[];
     characteristics: CharacteristicType[];
 }
 

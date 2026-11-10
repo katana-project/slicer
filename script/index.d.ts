@@ -1,3 +1,5 @@
+import type { Node } from "@katana-project/asm";
+
 type Awaitable<T> = T | PromiseLike<T>;
 
 /**
@@ -282,6 +284,27 @@ export interface Entry {
      * Returns the raw data of the entry as a {@link Blob}.
      */
     blob(): Awaitable<Blob>;
+}
+
+/**
+ * An entry in the workspace that was determined to be a class file.
+ *
+ * *The extended entry information in this type is only available after full or partial analysis,
+ * the scripting API does not make any guarantees about its completeness.*
+ */
+export interface ClassEntry extends Entry {
+    type: "class";
+
+    /**
+     * The parsed data of the class file, which can be used to analyze the class structure and its members.
+     */
+    readonly node: Node;
+
+    // TODO: lift this to Entry?
+    /**
+     * The IDs of the characteristics that were matched for this class.
+     */
+    readonly cts: string[];
 }
 
 /**
@@ -824,6 +847,164 @@ export interface NavigationContext {
 }
 
 /**
+ * A noteworthy property of a workspace entry.
+ */
+export interface Characteristic {
+    /**
+     * The unique ID of the characteristic.
+     *
+     * This should not conflict with types of characteristics defined by slicer internally or by other scripts, to ensure compatibility with other scripts and future versions of slicer,
+     * so it is recommended to use a namespaced type (e.g. "my_script/reflection_special", etc.).
+     */
+    readonly id: string;
+    /**
+     * A human-readable name or a translation key for the characteristic's label.
+     *
+     * Defaults to the {@link id}.
+     */
+    readonly label?: string;
+    /**
+     * An optional description for the characteristic, which can be displayed in the workspace summary.
+     */
+    readonly description?: string;
+    /**
+     * An optional group ID that this characteristic belongs to, which can be used to organize characteristics in the workspace summary.
+     */
+    readonly group?: string;
+    /**
+     * An icon for the characteristic to be displayed in the workspace summary.
+     */
+    readonly icon?: Icon;
+}
+
+/**
+ * A group of related characteristics that can be displayed together in the workspace summary.
+ */
+export interface CharacteristicGroup {
+    /**
+     * The unique ID of the characteristic group.
+     *
+     * This should not conflict with types of characteristic groups defined by slicer internally or by other scripts, to ensure compatibility with other scripts and future versions of slicer,
+     * so it is recommended to use a namespaced type (e.g. "my_script/reflection_special", etc.).
+     */
+    readonly id: string;
+    /**
+     * A human-readable name or a translation key for the characteristic group's label.
+     *
+     * Defaults to the {@link id}.
+     */
+    readonly label?: string;
+    /**
+     * An optional description for the characteristic group, which can be displayed in the workspace summary.
+     */
+    readonly description?: string;
+}
+
+/**
+ * A provider for detecting characteristics of individual entries.
+ */
+export interface CharacteristicProvider {
+    /**
+     * The unique ID of the characteristic provider.
+     *
+     * This should not conflict with types of characteristic providers defined by slicer internally or by other scripts, to ensure compatibility with other scripts and future versions of slicer,
+     * so it is recommended to use a namespaced type (e.g. "my_script/reflection_special", etc.).
+     */
+    readonly id: string;
+
+    /**
+     * Tries to detect a set of characteristics from a workspace entry.
+     *
+     * @param entry The entry to be examined.
+     * @returns The detected characteristic IDs.
+     */
+    match(entry: Entry): Awaitable<string[]>;
+}
+
+/**
+ * A sub-context for managing the registration of characteristic types and their detection providers.
+ */
+export interface CharacteristicsContext {
+    /**
+     * Returns all registered characteristic types.
+     *
+     * @returns The characteristic types.
+     */
+    cts(): Characteristic[];
+
+    /**
+     * Registers a new characteristic type.
+     *
+     * @param ct The characteristic definition.
+     */
+    register(ct: Characteristic): void;
+
+    /**
+     * Removes a previously registered characteristic type.
+     *
+     * @param id The characteristic type ID.
+     */
+    unregister(id: string): void;
+
+    /**
+     * Returns all registered characteristic groups.
+     *
+     * @returns The characteristic groups.
+     */
+    groups(): CharacteristicGroup[];
+
+    /**
+     * Registers a new characteristic group.
+     *
+     * @param group The characteristic group definition.
+     */
+    registerGroup(group: CharacteristicGroup): void;
+
+    /**
+     * Removes a previously registered characteristic group.
+     *
+     * @param id The characteristic group ID.
+     */
+    unregisterGroup(id: string): void;
+
+    /**
+     * Returns all registered characteristic providers.
+     *
+     * @returns The characteristic providers.
+     */
+    providers(): CharacteristicProvider[];
+
+    /**
+     * Registers a new characteristic provider.
+     *
+     * @param ctp The characteristic provider.
+     */
+    registerProvider(ctp: CharacteristicProvider): void;
+
+    /**
+     * Removes a previously registered characteristic provider.
+     *
+     * @param id The characteristic provider ID.
+     */
+    unregisterProvider(id: string): void;
+}
+
+/**
+ * Provides access to extend the analysis capabilities.
+ */
+export interface AnalysisContext {
+    /**
+     * Sub-context for managing mappings.
+     */
+    readonly mapping: MappingContext;
+
+    /**
+     * Sub-context for managing characteristic (provider) registration.
+     */
+    readonly ct: CharacteristicsContext;
+}
+
+/**
  * The context in which a script is executed, providing access to the editor, disassembler, and workspace contexts,
  * as well as event handling capabilities.
  */
@@ -855,6 +1036,8 @@ export interface ScriptContext {
     readonly workspace: WorkspaceContext;
     /**
      * The mapping context, which allows loading and exporting mappings in supported formats.
+     *
+     * @deprecated Use {@link AnalysisContext} to get a {@link MappingContext}.
      */
     readonly mapping: MappingContext;
     /**
@@ -865,6 +1048,10 @@ export interface ScriptContext {
      * The notification context, which allows displaying toast notifications in the UI.
      */
     readonly notification: NotificationContext;
+    /**
+     * The analysis context, which allows tweaking behavior of automatic analysis.
+     */
+    readonly analysis: AnalysisContext;
 
     /**
      * Adds an event listener for the specified event type.
