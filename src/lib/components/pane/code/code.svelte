@@ -34,6 +34,8 @@
     import { typeResolver } from "./resolver";
     import { Compartment } from "@codemirror/state";
     import { Loading } from "$lib/components/ui/loading";
+    import { Input } from "$lib/components/ui/input";
+    import { Separator } from "$lib/components/ui/separator";
 
     let { tab, disasms, handler, classes }: PaneProps = $props();
     const entry = $derived(tab.entry!);
@@ -51,9 +53,10 @@
 
     const detectedInterp = detectInterpretation(entry);
     let interpType = $state(detectedInterp);
+    let localHexRowBytes = $derived($interpHexRowBytes);
     let interpOptions = $derived({
         type: interpType,
-        hexRowBytes: $interpHexRowBytes,
+        hexRowBytes: localHexRowBytes,
         disasmOptions: $toolsDisasmOptions,
     });
 
@@ -214,6 +217,31 @@
                         </SelectContent>
                     </Select>
                 </div>
+                {#if interpType === Interpretation.HEX}
+                    <Separator class="my-4" />
+                    <div class="flex flex-col gap-2">
+                        <div class="text-xs">{$t("pane.code.interp.hex.bytes-per-row")}</div>
+                        <Input
+                            type="number"
+                            value={localHexRowBytes}
+                            class="w-full"
+                            step={localHexRowBytes}
+                            onkeypress={(e) => e.preventDefault()}
+                            oninput={(e) => {
+                                const value = parseInt(e.currentTarget.value);
+                                if (isNaN(value) || value < 0) {
+                                    localHexRowBytes = 1;
+                                } else if (value === 0) {
+                                    localHexRowBytes = Math.ceil(localHexRowBytes / 2);
+                                } else {
+                                    localHexRowBytes = value;
+                                }
+
+                                e.currentTarget.value = localHexRowBytes.toString();
+                            }}
+                        />
+                    </div>
+                {/if}
             </PopoverContent>
         </Popover>
     </div>

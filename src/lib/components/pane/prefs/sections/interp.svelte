@@ -64,7 +64,26 @@
             textKey="pane.prefs.workspace.interp.bytes-per-row"
             descKey="pane.prefs.workspace.interp.bytes-per-row.desc"
         />
-        <Input id="bytesPerRow" type="number" bind:value={$interpHexRowBytes} class="w-48" />
+        <Input
+            id="bytesPerRow"
+            type="number"
+            value={$interpHexRowBytes}
+            class="w-48"
+            step={$interpHexRowBytes}
+            onkeypress={(e) => e.preventDefault()}
+            oninput={(e) => {
+                const value = parseInt(e.currentTarget.value);
+                if (isNaN(value) || value < 0) {
+                    $interpHexRowBytes = 1;
+                } else if (value === 0) {
+                    $interpHexRowBytes = Math.ceil($interpHexRowBytes / 2);
+                } else {
+                    $interpHexRowBytes = value;
+                }
+
+                e.currentTarget.value = $interpHexRowBytes.toString();
+            }}
+        />
     </div>
 
     <Section id="disasm" labelKey="pane.prefs.section.disasm" small>

@@ -159,6 +159,7 @@
     "pane.code.interp.text": "Text",
     "pane.code.interp.binary-xml": "Binary XML",
     "pane.code.interp.detected": "(detected)",
+    "pane.code.interp.hex.bytes-per-row": "Bytes per row",
     "pane.code.tooltip.default-package": "default package",
     "pane.code.menu.editor": "Editor",
     "pane.code.menu.editor.wrap": "Wrap lines",
