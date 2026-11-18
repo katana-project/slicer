@@ -159,6 +159,7 @@
     "pane.code.interp.text": "Text",
     "pane.code.interp.binary-xml": "Binární XML",
     "pane.code.interp.detected": "(detekováno)",
+    "pane.code.interp.hex.bytes-per-row": "Bytes per row",
     "pane.code.tooltip.default-package": "výchozí balíček",
     "pane.code.menu.editor": "Editor",
     "pane.code.menu.editor.wrap": "Zalomit řádky",
