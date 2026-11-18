@@ -159,6 +159,7 @@
     "pane.code.interp.text": "Texto",
     "pane.code.interp.binary-xml": "Binario XML",
     "pane.code.interp.detected": "(detectado)",
+    "pane.code.interp.hex.bytes-per-row": "Bytes per row",
     "pane.code.tooltip.default-package": "paquete predeterminado",
     "pane.code.menu.editor": "Editor",
     "pane.code.menu.editor.wrap": "Ajustar líneas",
