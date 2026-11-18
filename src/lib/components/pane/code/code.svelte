@@ -36,6 +36,7 @@
     import { Loading } from "$lib/components/ui/loading";
     import { Input } from "$lib/components/ui/input";
     import { Separator } from "$lib/components/ui/separator";
+    import { hexSelectionMatches } from "./hex";
 
     let { tab, disasms, handler, classes }: PaneProps = $props();
     const entry = $derived(tab.entry!);
@@ -107,12 +108,18 @@
     let resolver = $derived(unit ? createTypeReferenceResolver(unit, [...jdkRefs, ...$classRefs]) : null);
 
     const resolverStore = new Compartment();
+    const hexSelectionStore = new Compartment();
     $effect(() => {
         if (!view) return;
 
         view.focus();
         view.dispatch({
-            effects: resolverStore.reconfigure(typeResolver(resolver, handler, classes)),
+            effects: [
+                resolverStore.reconfigure(typeResolver(resolver, handler, classes)),
+                hexSelectionStore.reconfigure(
+                    interpType === Interpretation.HEX ? hexSelectionMatches(localHexRowBytes) : []
+                ),
+            ],
         });
     });
 
@@ -136,7 +143,12 @@
                     bind:size={$textSize}
                     scrollResize={!$editorTextSizeLock}
                     {wrap}
-                    extensions={[resolverStore.of(typeResolver(resolver, handler, classes))]}
+                    extensions={[
+                        resolverStore.of(typeResolver(resolver, handler, classes)),
+                        hexSelectionStore.of(
+                            interpType === Interpretation.HEX ? hexSelectionMatches(localHexRowBytes) : []
+                        ),
+                    ]}
                     tooltip={() => [Tooltip, { resolver, classes, handler }]}
                 />
             </ContextMenuTrigger>
