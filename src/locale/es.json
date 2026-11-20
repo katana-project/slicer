@@ -94,6 +94,7 @@
     "pane.welcome.customize.theme.dark": "Cambiar al tema oscuro",
     "pane.welcome.customize.theme.light": "Cambiar al tema claro",
     "pane.welcome.customize.theme.desc": "... échale un vistazo a más opciones en <span class=\"bg-muted rounded p-1\">slicer</span> -> <span class=\"bg-muted rounded p-1\">Tema</span>",
+    "pane.welcome.changelog": "What's new",
     "pane.welcome.tips.0": "¡Mira nuestra documentación en <a href=\"https://docs.slicer.run\" target=\"_blank\" class=\"text-blue-600 hover:text-blue-700 hover:underline\">docs.slicer.run</a>!",
     "pane.welcome.tip": "Consejo:",
     "pane.welcome.tips.1": "¡Toca dos veces <span class=\"text-xs bg-muted rounded p-1\">Mayús.</span> para ver la paleta de comandos!",
