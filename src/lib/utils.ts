@@ -141,6 +141,21 @@ export const rateLimit = <T extends (...args: any[]) => Promise<any>>(
     };
 };
 
+// https://stackoverflow.com/a/60114832
+
+export const assignEverything = <T extends {}, U extends {}>(target: T, source: U): T & U => {
+    Object.defineProperties(
+        target,
+        Object.fromEntries([
+            ...Object.keys(source).map((key) => [key, Object.getOwnPropertyDescriptor(source, key)!]),
+            ...Object.getOwnPropertySymbols(source)
+                .map((sym) => [sym, Object.getOwnPropertyDescriptor(source, sym)!])
+                .filter(([, desc]) => (desc as PropertyDescriptor).enumerable),
+        ])
+    );
+    return target as T & U;
+};
+
 export class CancelledError extends Error {
     constructor(message: string = "Operation cancelled") {
         super(message);

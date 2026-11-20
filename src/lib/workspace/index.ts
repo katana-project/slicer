@@ -127,22 +127,33 @@ export const transformEntry = (entry: Entry, ext: string, value: string): Entry 
 };
 
 export const memberEntry = (entry: ClassEntry, member: Member): MemberEntry => {
-    const nodeName = entry.node.thisClass.nameEntry!.string;
-    const signature = member.name.string + prettyMethodDesc(member.type.string);
-
-    const slashIndex = nodeName.lastIndexOf("/");
     return {
         ...entry,
         type: EntryType.MEMBER,
         parent: entry,
-        name: `${entry.name}/${member.name.string}${member.type.string}`,
-        shortName: `${slashIndex !== -1 ? nodeName.substring(slashIndex + 1) : nodeName}#${signature}`,
-        data: {
-            ...entry.data,
-            name: signature,
+        get name() {
+            return `${this.parent!.name}/${this.member.name.string}${this.member.type.string}`;
+        },
+        get shortName() {
+            const nodeName = this.node.thisClass.nameEntry!.string;
+            const signature = this.member.name.string + prettyMethodDesc(this.member.type.string);
+
+            const slashIndex = nodeName.lastIndexOf("/");
+            return `${slashIndex !== -1 ? nodeName.substring(slashIndex + 1) : nodeName}#${signature}`;
+        },
+        _data: entry.data,
+        get data() {
+            const signature = this.member.name.string + prettyMethodDesc(this.member.type.string);
+            return {
+                ...this._data,
+                name: signature,
+            };
+        },
+        set data(value: Data) {
+            this._data = value;
         },
         member,
-    };
+    } as MemberEntry & { _data: Data };
 };
 
 export const aliasEntry = (entry: Entry, name: string): Entry => {

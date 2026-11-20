@@ -1,5 +1,6 @@
 import { error, log } from "$lib/log";
 import { analysisTransformers } from "$lib/state";
+import { assignEverything } from "$lib/utils";
 import type { ClassEntry } from "$lib/workspace";
 import { transformData, unwrapTransforms } from "$lib/workspace/data";
 import { get, writable, type Writable } from "svelte/store";
@@ -43,7 +44,9 @@ export const transform = async (
     const originalData = await unwrappedData.bytes();
     let data = originalData;
 
-    const cloneEntry: ClassEntry = { ...entry, node: window.structuredClone(entry.node) };
+    // cannot spread as we need to clone getters/setters for e.g. member entries
+    const cloneEntry: ClassEntry = assignEverything({}, entry);
+    cloneEntry.node = window.structuredClone(entry.node);
     for (const transformer of enabledTrfs) {
         if (!transformer.internal) {
             log(`running transformer '${transformer.id}' on '${entry.name}'`);
@@ -76,7 +79,7 @@ export const transformInPlace = async (
 ): Promise<void> => {
     const transformedEntry = await transform(entry, point);
     if (transformedEntry !== entry) {
-        Object.assign(entry, transformedEntry);
+        assignEverything(entry, transformedEntry);
     }
 };
 
