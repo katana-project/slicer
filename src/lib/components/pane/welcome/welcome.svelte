@@ -152,7 +152,7 @@
                     </Button>
                 </h2>
                 <div class="flex flex-col gap-2">
-                    {#each changelog as entry}
+                    {#each changelog.slice(0, 3) as entry}
                         <div class="flex flex-col gap-1">
                             <p class="text-xs font-medium">{new Date(entry.date).toLocaleDateString()}</p>
                             <p class="text-muted-foreground text-xs break-anywhere">
