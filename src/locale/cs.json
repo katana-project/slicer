@@ -94,6 +94,7 @@
     "pane.welcome.customize.theme.dark": "Přepnout na tmavý motiv",
     "pane.welcome.customize.theme.light": "Přepnout na světlý motiv",
     "pane.welcome.customize.theme.desc": "... další možnosti najdete v <span class=\"bg-muted rounded p-1\">slicer</span> -> <span class=\"bg-muted rounded p-1\">Motiv</span>",
+    "pane.welcome.changelog": "What's new",
     "pane.welcome.tips.0": "Zobrazte si naši dokumentaci na <a href=\"https://docs.slicer.run\" target=\"_blank\" class=\"text-blue-600 hover:text-blue-700 hover:underline\">docs.slicer.run</a>!",
     "pane.welcome.tip": "Tip:",
     "pane.welcome.tips.1": "Dvakrát stiskněte <span class=\"text-xs bg-muted rounded p-1\">Shift</span> pro zobrazení palety příkazů!",
