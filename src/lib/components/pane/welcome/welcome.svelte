@@ -3,11 +3,12 @@
 
     interface ChangelogEntry {
         date: string;
-        description: string;
+        summary: string;
+        description?: string;
         url?: string;
     }
 
-    const changelog = (untypedChangelog as ChangelogEntry[]).map((e) => ({
+    export const changelog = (untypedChangelog as ChangelogEntry[]).map((e) => ({
         ...e,
         url: e.url ? e.url.replace("commit:", "https://github.com/katana-project/slicer/commit/") : undefined,
     }));
@@ -15,7 +16,17 @@
 
 <script lang="ts">
     import { mode, userPrefersMode } from "mode-watcher";
-    import { FilePlusCorner, Folder, Moon, Settings, Sun, BookText, ScrollText, Heart } from "@lucide/svelte";
+    import {
+        FilePlusCorner,
+        Folder,
+        Moon,
+        Settings,
+        Sun,
+        BookText,
+        ScrollText,
+        Heart,
+        ExternalLink,
+    } from "@lucide/svelte";
     import { ToggleGroup, ToggleGroupItem } from "$lib/components/ui/toggle-group";
     import { Button } from "$lib/components/ui/button";
     import type { PaneProps } from "$lib/components/pane";
@@ -23,6 +34,8 @@
     import { themeColor } from "$lib/state";
     import { themes } from "$lib/theme";
     import { t, tls } from "$lib/i18n";
+    import { modals } from "svelte-modals";
+    import { ChangelogDialog } from "$lib/components/dialog";
 
     let { handler }: PaneProps = $props();
 
@@ -132,22 +145,27 @@
                 </div>
             </div>
             <div>
-                <h2 class="text-muted-foreground text-lg font-medium pb-2">{$t("pane.welcome.changelog")}</h2>
+                <h2 class="text-muted-foreground text-lg font-medium pb-2 flex flex-row items-center gap-1">
+                    {$t("pane.welcome.changelog")}
+                    <Button variant="link" size="icon-sm" onclick={() => modals.open(ChangelogDialog)}>
+                        <ExternalLink />
+                    </Button>
+                </h2>
                 <div class="flex flex-col gap-2">
                     {#each changelog as entry}
                         <div class="flex flex-col gap-1">
                             <p class="text-xs font-medium">{new Date(entry.date).toLocaleDateString()}</p>
-                            <p class="text-muted-foreground text-xs">
+                            <p class="text-muted-foreground text-xs break-anywhere">
                                 {#if entry.url}
                                     <a
                                         href={entry.url}
                                         target="_blank"
                                         class="text-blue-500 hover:text-blue-600 hover:underline"
                                     >
-                                        {@html entry.description}
+                                        {@html entry.summary}
                                     </a>
                                 {:else}
-                                    {@html entry.description}
+                                    {@html entry.summary}
                                 {/if}
                             </p>
                         </div>

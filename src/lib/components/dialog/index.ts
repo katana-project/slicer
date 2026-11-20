@@ -1,4 +1,5 @@
 import AboutDialog from "./about.svelte";
+import ChangelogDialog from "./changelog.svelte";
 import ClearDialog from "./clear.svelte";
 import DeleteDialog from "./delete.svelte";
 import ExportMappingsDialog from "./export_mappings.svelte";
@@ -15,6 +16,7 @@ import ScriptLoadShareDialog from "./script_load_share.svelte";
 
 export {
     AboutDialog,
+    ChangelogDialog,
     ClearDialog,
     DeleteDialog,
     ExportMappingsDialog,

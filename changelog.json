@@ -1,16 +1,19 @@
 [
     {
         "date": "2026-11-20",
-        "description": "Updated Vineflower bindings to improve accuracy (requires JSPI support for maximum performance)."
+        "summary": "Updated Vineflower bindings to improve accuracy.",
+        "description": "The Vineflower WASM/JS bindings have been updated to remove decompilation inaccuracies stemming from the bindings themselves, they now require the support of the JS Promise Integration API to work at maximum performance (a JS fallback is still available).",
+        "url": "commit:399ca119f1fa45085a40ffb047f2415bb0d2b984"
     },
     {
         "date": "2026-11-20",
-        "description": "Added a changelog to the welcome pane.",
+        "summary": "Added a changelog to the welcome pane.",
         "url": "commit:a7633eda535e41df4c8cd65b2e76ae6673edf002"
     },
     {
         "date": "2026-11-18",
-        "description": "Highlighting of corresponding bytes and ASCII in the hexadecimal interpretation.",
+        "summary": "Added highlighting of corresponding bytes and ASCII in the hexadecimal interpretation.",
+        "description": "When hovering over a range of bytes in the hexadecimal interpretation, the corresponding ASCII characters are highlighted and vice versa.",
         "url": "commit:28f2d259a6c92a062c8511c62f649bf38478ca34"
     }
 ]

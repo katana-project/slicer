@@ -366,6 +366,7 @@
     "dialog.about.build.branch": ", branch {0}",
     "dialog.about.sponsored-by": "Sponsored by \uD83D\uDC96",
     "dialog.about.footer": "Open-source ❤\uFE0F <span class=\"mx-2\">@</span> <a href=\"https://github.com/katana-project/slicer\" target=\"_blank\" class=\"text-blue-600 hover:text-blue-700 hover:underline\">katana-project/slicer</a>",
+    "dialog.changelog.title": "Changelog",
     "dialog.properties.size": "Size",
     "dialog.properties.type": "Type",
     "dialog.properties.type.file": "File",
