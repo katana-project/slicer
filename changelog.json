@@ -1,7 +1,12 @@
 [
     {
         "date": "2026-11-20",
-        "description": "Added a changelog to the welcome pane."
+        "description": "Updated Vineflower bindings to improve accuracy (requires JSPI support for maximum performance)."
+    },
+    {
+        "date": "2026-11-20",
+        "description": "Added a changelog to the welcome pane.",
+        "url": "commit:a7633eda535e41df4c8cd65b2e76ae6673edf002"
     },
     {
         "date": "2026-11-18",
