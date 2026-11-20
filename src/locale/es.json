@@ -366,6 +366,7 @@
     "dialog.about.build.branch": ", rama {0}",
     "dialog.about.sponsored-by": "Patrocinado por 💖",
     "dialog.about.footer": "Código abierto ❤️ <span class=\"mx-2\">en</span> <a href=\"https://github.com/katana-project/slicer\" target=\"_blank\" class=\"text-blue-600 hover:text-blue-700 hover:underline\">katana-project/slicer</a>",
+    "dialog.changelog.title": "Changelog",
     "dialog.properties.size": "Tamaño",
     "dialog.properties.type": "Tipo",
     "dialog.properties.type.file": "Archivo",
