@@ -1,0 +1,11 @@
+[
+    {
+        "date": "2026-11-20",
+        "description": "Added a changelog to the welcome pane."
+    },
+    {
+        "date": "2026-11-18",
+        "description": "Highlighting of corresponding bytes and ASCII in the hexadecimal interpretation.",
+        "url": "commit:28f2d259a6c92a062c8511c62f649bf38478ca34"
+    }
+]

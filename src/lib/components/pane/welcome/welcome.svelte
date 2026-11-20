@@ -1,3 +1,18 @@
+<script lang="ts" module>
+    import untypedChangelog from "../../../../../changelog.json" with { type: "json" };
+
+    interface ChangelogEntry {
+        date: string;
+        description: string;
+        url?: string;
+    }
+
+    const changelog = (untypedChangelog as ChangelogEntry[]).map((e) => ({
+        ...e,
+        url: e.url ? e.url.replace("commit:", "https://github.com/katana-project/slicer/commit/") : undefined,
+    }));
+</script>
+
 <script lang="ts">
     import { mode, userPrefersMode } from "mode-watcher";
     import { FilePlusCorner, Folder, Moon, Settings, Sun, BookText, ScrollText, Heart } from "@lucide/svelte";
@@ -114,6 +129,29 @@
                     <p class="text-muted-foreground text-xs">
                         {@html $t("pane.welcome.customize.theme.desc")}
                     </p>
+                </div>
+            </div>
+            <div>
+                <h2 class="text-muted-foreground text-lg font-medium pb-2">{$t("pane.welcome.changelog")}</h2>
+                <div class="flex flex-col gap-2">
+                    {#each changelog as entry}
+                        <div class="flex flex-col gap-1">
+                            <p class="text-xs font-medium">{new Date(entry.date).toLocaleDateString()}</p>
+                            <p class="text-muted-foreground text-xs">
+                                {#if entry.url}
+                                    <a
+                                        href={entry.url}
+                                        target="_blank"
+                                        class="text-blue-500 hover:text-blue-600 hover:underline"
+                                    >
+                                        {@html entry.description}
+                                    </a>
+                                {:else}
+                                    {@html entry.description}
+                                {/if}
+                            </p>
+                        </div>
+                    {/each}
                 </div>
             </div>
         </div>
