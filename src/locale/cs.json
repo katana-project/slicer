@@ -366,6 +366,7 @@
     "dialog.about.build.branch": ", větev {0}",
     "dialog.about.sponsored-by": "Sponzorováno 💖",
     "dialog.about.footer": "Open-source ❤️ <span class=\"mx-2\">@</span> <a href=\"https://github.com/katana-project/slicer\" target=\"_blank\" class=\"text-blue-600 hover:text-blue-700 hover:underline\">katana-project/slicer</a>",
+    "dialog.changelog.title": "Changelog",
     "dialog.properties.size": "Velikost",
     "dialog.properties.type": "Typ",
     "dialog.properties.type.file": "Soubor",
