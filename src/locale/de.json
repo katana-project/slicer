@@ -94,6 +94,7 @@
     "pane.welcome.customize.theme.dark": "Dunkles Farbschema umschalten",
     "pane.welcome.customize.theme.light": "Helles Farbschema umschalten",
     "pane.welcome.customize.theme.desc": "... weitere Optionen im <span class=\"bg-muted rounded p-1\">slicer</span> -> <span class=\"bg-muted rounded p-1\">Farbschema</span>",
+    "pane.welcome.changelog": "What's new",
     "pane.welcome.tips.0": "Sehen Sie sich unsere Dokumentation unter <a href=\"https://docs.slicer.run\" target=\"_blank\" class=\"text-blue-600 hover:text-blue-700 hover:underline\">docs.slicer.run</a> an!",
     "pane.welcome.tip": "Tipp:",
     "pane.welcome.tips.1": "Doppelklicken Sie auf <span class=\"text-xs bg-muted rounded p-1\">Shift</span> um die Befehlspalette anzuzeigen!",
