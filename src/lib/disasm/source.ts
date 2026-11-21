@@ -26,6 +26,6 @@ export const createSource = (name: string, buf: Uint8Array, useJdkClasses: boole
 
 export const createResources = (useJdkClasses: boolean): string[] => {
     return useJdkClasses
-        ? [...Array.from(get(classes).keys()), ...Array.from(index.keys())]
+        ? [...Array.from(get(classes).keys()), ...Array.from(get(index).keys())]
         : Array.from(get(classes).keys());
 };

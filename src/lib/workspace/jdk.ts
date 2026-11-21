@@ -1,11 +1,12 @@
 import { tl } from "$lib/i18n";
 import { error } from "$lib/log";
+import { analysisJdkVersion } from "$lib/state";
 import { record } from "$lib/task";
 import { refFromName } from "$lib/utils";
 import { parseName, remoteData } from "$lib/workspace/data";
-import type { ExternalTypeReference } from "@katana-project/laser";
 import { openDB } from "idb";
 import { toast } from "svelte-sonner";
+import { derived, get } from "svelte/store";
 import type { Entry, EntryType } from "./";
 import type { AnalysisState } from "./analysis";
 
@@ -30,11 +31,26 @@ const fetchIndex = async (url: string): Promise<RawDataIndex> => {
     return { url, data };
 };
 
-// use the OpenJDK 25 index globally
-const JDK_VERSION = "25";
-const rawIndex = await fetchIndex(`https://data.slicer.run/${JDK_VERSION}`);
+const BUCKET_URL = "https://data.slicer.run";
+export const SUPPORTED_VERSIONS = [21, 25];
 
-type DataIndex = Map<string, string>; // [class name -> url]
+export const isVersionSupported = (version: number): boolean => SUPPORTED_VERSIONS.includes(version);
+
+const rawIndex = derived<typeof analysisJdkVersion, RawDataIndex>(
+    analysisJdkVersion,
+    ($jdkVersion, set) => {
+        const url = `${BUCKET_URL}/${$jdkVersion}`;
+        if (!isVersionSupported($jdkVersion)) {
+            set({ url, data: {} });
+            return;
+        }
+
+        fetchIndex(url).then(set);
+    },
+    { url: `${BUCKET_URL}/25`, data: {} }
+);
+
+export type DataIndex = Map<string, string>; // [class name -> url]
 
 const createIndex = ({ url, data }: RawDataIndex): DataIndex => {
     const index = new Map<string, string>();
@@ -47,23 +63,35 @@ const createIndex = ({ url, data }: RawDataIndex): DataIndex => {
     return index;
 };
 
-export const index = createIndex(rawIndex);
+export const index = derived(rawIndex, ($rawIndex) => createIndex($rawIndex));
 
-const CLASSES_STORE = `classes-${JDK_VERSION}`;
-const lazyDB = openDB("jdk-cache", 1, {
+const classesStoreId = (version: number) => `classes-${version}`;
+const lazyDB = openDB("jdk-cache", 2, {
     upgrade(db) {
-        db.createObjectStore(CLASSES_STORE);
+        for (const version of SUPPORTED_VERSIONS) {
+            const CLASSES_STORE = classesStoreId(version);
+            if (!db.objectStoreNames.contains(CLASSES_STORE)) {
+                db.createObjectStore(CLASSES_STORE);
+            }
+        }
     },
 });
 
-export const findClass = async (name: string): Promise<Uint8Array | null> => {
+export const findClass = async (
+    name: string,
+    // for looking up and caching specific JDK versions, default to the current version in state
+    url: string | null = null,
+    version: number = get(analysisJdkVersion)
+): Promise<Uint8Array | null> => {
+    const CLASSES_STORE = classesStoreId(version);
+
     const db = await lazyDB;
     const cacheData = await db.get(CLASSES_STORE, name);
     if (cacheData) {
         return cacheData;
     }
 
-    const url = index.get(name);
+    url = url ?? get(index).get(name) ?? null;
     if (!url) {
         return null;
     }
@@ -84,10 +112,12 @@ export const findClass = async (name: string): Promise<Uint8Array | null> => {
 export const createEntry = async (name: string): Promise<Entry | null> => {
     let module: string | null = null,
         url: string | null = null;
-    for (const [module0, classes] of Object.entries(rawIndex.data)) {
+    const version = get(analysisJdkVersion);
+    const $rawIndex = get(rawIndex);
+    for (const [module0, classes] of Object.entries($rawIndex.data)) {
         if (classes.includes(name)) {
             module = module0;
-            url = `${rawIndex.url}/${module0}/${name}.class`;
+            url = `${$rawIndex.url}/${module0}/${name}.class`;
             break;
         }
     }
@@ -96,7 +126,7 @@ export const createEntry = async (name: string): Promise<Entry | null> => {
         return null;
     }
 
-    const fqName = `${module}/${name}.class`;
+    const fqName = `${version}/${module}/${name}.class`;
     return {
         ...parseName(fqName),
         type: "file" as EntryType,
@@ -105,7 +135,7 @@ export const createEntry = async (name: string): Promise<Entry | null> => {
             ...(await remoteData(fqName, url)),
             // override data methods to fetch from cache if possible
             async bytes(): Promise<Uint8Array> {
-                const data = await findClass(name);
+                const data = await findClass(name, url, version);
                 if (!data) {
                     throw new Error(`failed to fetch class '${name}'`);
                 }
@@ -132,6 +162,6 @@ export const createEntry = async (name: string): Promise<Entry | null> => {
     };
 };
 
-export const jdkRefs: ExternalTypeReference[] = Object.entries(rawIndex.data).flatMap(([module, classes]) =>
-    classes.map((k) => refFromName(k, module))
+export const jdkRefs = derived(rawIndex, ($rawIndex) =>
+    Object.entries($rawIndex.data).flatMap(([module, classes]) => classes.map((k) => refFromName(k, module)))
 );

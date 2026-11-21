@@ -13,7 +13,7 @@ import { error, warn } from "$lib/log";
 import { workers } from "$lib/reader";
 import type { MappingType } from "$lib/reader/mappings";
 import { actions } from "$lib/shortcut";
-import { analysisJdkClasses, locale, scriptingScripts } from "$lib/state";
+import { analysisJdkVersion, locale, scriptingScripts } from "$lib/state";
 import {
     current as currentTab,
     dynamicTabDefs,
@@ -47,6 +47,7 @@ import {
 import { mappings } from "$lib/workspace/analysis/mapping";
 import { mappingSet } from "$lib/workspace/analysis/mapping/data";
 import { DataType, memoryData, type MemoryData, unwrapTransforms, type ZipData } from "$lib/workspace/data";
+import { isVersionSupported } from "$lib/workspace/jdk";
 import { write as writeMappings } from "$lib/writer/mappings";
 import type {
     AnalysisContext,
@@ -284,7 +285,7 @@ const unwrapDisasm = (disasm: ScriptDisassembler): Disassembler => {
                 const buf = await data.bytes();
                 const name = node.thisClass.nameEntry!.string;
 
-                const needJdk = get(analysisJdkClasses);
+                const needJdk = isVersionSupported(get(analysisJdkVersion));
                 return disasm.class(name, createClassSource(name, buf, needJdk), createResources(needJdk));
             });
         },
@@ -297,7 +298,7 @@ const unwrapDisasm = (disasm: ScriptDisassembler): Disassembler => {
                       const name = node.thisClass.nameEntry!.string;
                       const signature = method.name.string + method.type.string;
 
-                      const needJdk = get(analysisJdkClasses);
+                      const needJdk = isVersionSupported(get(analysisJdkVersion));
                       return disasm.method!(
                           name,
                           signature,

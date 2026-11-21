@@ -7,6 +7,7 @@
     import { resolveType } from "$lib/components/pane/code/resolver";
     import { prettyInternalName } from "$lib/utils";
     import { t } from "$lib/i18n";
+    import { index } from "$lib/workspace/jdk";
 
     interface Props extends TooltipProps {
         resolver: TypeReferenceResolver | null;
@@ -18,7 +19,7 @@
 
     let resolution = $derived(resolver?.resolveAt(pos, side));
     let { className, packageName, simpleName, open } = $derived(
-        resolveType(resolution ?? null, handler, view, classes)
+        resolveType(resolution ?? null, handler, view, classes, $index)
     );
 </script>
 

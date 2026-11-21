@@ -1,6 +1,7 @@
 import type { Disassembler, DisassemblerOptions } from "$lib/disasm";
-import { analysisJdkClasses, toolsDisasmOptions } from "$lib/state";
+import { analysisJdkVersion, toolsDisasmOptions } from "$lib/state";
 import { createDefaultWorkerPool } from "$lib/worker";
+import { isVersionSupported } from "$lib/workspace/jdk";
 import { proxy } from "comlink";
 import { get } from "svelte/store";
 import { type EntrySource, createResources, createSource } from "../source";
@@ -42,7 +43,7 @@ export const createFromWorker = (
                 const buf = await data.bytes();
                 const name = node.thisClass.nameEntry!.string;
 
-                const needJdk = get(analysisJdkClasses) && useJdkClasses;
+                const needJdk = isVersionSupported(get(analysisJdkVersion)) && useJdkClasses;
                 return w.class(name, createResources(needJdk), proxy(createSource(name, buf, needJdk)), result.options);
             });
         },
@@ -56,7 +57,7 @@ export const createFromWorker = (
                       const name = node.thisClass.nameEntry!.string;
                       const signature = method.name.string + method.type.string;
 
-                      const needJdk = get(analysisJdkClasses) && useJdkClasses;
+                      const needJdk = isVersionSupported(get(analysisJdkVersion)) && useJdkClasses;
                       return w.method(
                           name,
                           signature,

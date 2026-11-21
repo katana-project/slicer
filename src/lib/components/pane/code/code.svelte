@@ -30,7 +30,7 @@
     import { createTypeReferenceResolver, parseUnit } from "@katana-project/laser";
     import { EditorView } from "@codemirror/view";
     import { ensureSyntaxTree } from "@codemirror/language";
-    import { jdkRefs } from "$lib/workspace/jdk";
+    import { index, jdkRefs } from "$lib/workspace/jdk";
     import { typeResolver } from "./resolver";
     import { Compartment } from "@codemirror/state";
     import { Loading } from "$lib/components/ui/loading";
@@ -105,7 +105,7 @@
 
         return parseUnit(tree, view.state.doc.toString());
     });
-    let resolver = $derived(unit ? createTypeReferenceResolver(unit, [...jdkRefs, ...$classRefs]) : null);
+    let resolver = $derived(unit ? createTypeReferenceResolver(unit, [...$jdkRefs, ...$classRefs]) : null);
 
     const resolverStore = new Compartment();
     const hexSelectionStore = new Compartment();
@@ -115,7 +115,7 @@
         view.focus();
         view.dispatch({
             effects: [
-                resolverStore.reconfigure(typeResolver(resolver, handler, classes)),
+                resolverStore.reconfigure(typeResolver(resolver, handler, classes, $index)),
                 hexSelectionStore.reconfigure(
                     interpType === Interpretation.HEX ? hexSelectionMatches(localHexRowBytes) : []
                 ),
@@ -144,7 +144,7 @@
                     scrollResize={!$editorTextSizeLock}
                     {wrap}
                     extensions={[
-                        resolverStore.of(typeResolver(resolver, handler, classes)),
+                        resolverStore.of(typeResolver(resolver, handler, classes, $index)),
                         hexSelectionStore.of(
                             interpType === Interpretation.HEX ? hexSelectionMatches(localHexRowBytes) : []
                         ),
