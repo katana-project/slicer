@@ -31,7 +31,7 @@ const fetchIndex = async (url: string): Promise<RawDataIndex> => {
     return { url, data };
 };
 
-const BUCKET_URL = "https://data.slicer.run";
+export const BUCKET_URL = "https://data.slicer.run";
 export const SUPPORTED_VERSIONS = [21, 25];
 
 export const isVersionSupported = (version: number): boolean => SUPPORTED_VERSIONS.includes(version);

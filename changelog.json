@@ -1,5 +1,10 @@
 [
     {
+        "date": "2026-11-22",
+        "summary": "Added a selector for the integrated JDK version and a command for searching in its classes.",
+        "description": "A new option for selecting the integrated JDK version (as opposed to a yes/no that was there previously) has been added to the workspace settings, and a new command for searching in the integrated JDK classes has been added to the command palette. Might be useful for users who want to explore the JDK classes :)"
+    },
+    {
         "date": "2026-11-20",
         "summary": "Updated Vineflower bindings to improve accuracy.",
         "description": "The Vineflower WASM/JS bindings have been updated to remove decompilation inaccuracies stemming from the bindings themselves, they now require the support of the JS Promise Integration API to work at maximum performance (a JS fallback is still available).",
