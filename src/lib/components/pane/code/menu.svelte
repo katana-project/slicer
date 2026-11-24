@@ -24,6 +24,7 @@
     import HierarchyContent from "./hierarchy.svelte";
     import { inheritanceGraph } from "$lib/workspace/analysis/graph";
     import { FloatingModal } from "$lib/components/ui/floating-modal";
+    import { index } from "$lib/workspace/jdk";
 
     interface Props {
         view: EditorView | null;
@@ -64,7 +65,7 @@
         return resolved && resolved.kind !== "builtin" ? resolved : null;
     });
 
-    let detail = $derived(view ? resolveType(resolved, handler, view, classes) : null);
+    let detail = $derived(view ? resolveType(resolved, handler, view, classes, $index) : null);
 
     let usagesOpen = $state(false);
 
