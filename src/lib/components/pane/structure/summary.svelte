@@ -113,16 +113,16 @@
             {#each Array.from(groupedCharacteristics.entries()).sort( ([a], [b]) => a.localeCompare(b) ) as [groupType, grouped]}
                 {@const group = $groups.find((g) => g.type === groupType)}
                 <TooltipProvider>
-                    <div class="bg-background sticky top-0 z-10 px-3 py-2 pt-3 flex items-center gap-2">
+                    <div class="bg-background sticky top-0 z-10 flex items-center gap-2 px-3 py-2 pt-3">
                         <span
-                            class="text-muted-foreground/70 text-[11px] font-medium tracking-wider break-anywhere uppercase"
+                            class="text-muted-foreground/70 break-anywhere text-[11px] font-medium tracking-wider uppercase"
                         >
                             {$t(group?.label ?? `pane.structure.summary.characteristics.group.${groupType}`)}
                         </span>
                         {#if group?.description}
                             <Tooltip>
                                 <TooltipTrigger class="cursor-pointer">
-                                    <CircleQuestionMark class="h-3 w-3 text-muted-foreground" />
+                                    <CircleQuestionMark class="text-muted-foreground h-3 w-3" />
                                 </TooltipTrigger>
                                 <TooltipContent side="right">
                                     {@html $t(group.description)}
@@ -150,13 +150,13 @@
                             <IconComponent {icon} class="text-muted-foreground h-3 w-3" />
                         </span>
                         <TooltipProvider>
-                            <span class="text-muted-foreground text-xs font-medium break-anywhere">
+                            <span class="text-muted-foreground break-anywhere text-xs font-medium">
                                 {$t(ct?.label ?? `pane.structure.summary.characteristics.${type}`)}
                             </span>
                             {#if ct?.description}
                                 <Tooltip>
                                     <TooltipTrigger class="cursor-pointer">
-                                        <CircleQuestionMark class="h-3 w-3 text-muted-foreground" />
+                                        <CircleQuestionMark class="text-muted-foreground h-3 w-3" />
                                     </TooltipTrigger>
                                     <TooltipContent side="right">
                                         {@html $t(ct.description)}

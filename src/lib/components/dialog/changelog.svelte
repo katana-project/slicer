@@ -8,17 +8,17 @@
 </script>
 
 <Dialog bind:open={isOpen} onOpenChangeComplete={(open) => open || close()}>
-    <DialogContent class="flex flex-col justify-between max-w-1/2!">
+    <DialogContent class="flex max-w-1/2! flex-col justify-between">
         <DialogHeader>
             <DialogTitle>
                 {$t("dialog.changelog.title")}
             </DialogTitle>
         </DialogHeader>
-        <div class="flex flex-col gap-4 overflow-x-auto max-h-[60vh]">
+        <div class="flex max-h-[60vh] flex-col gap-4 overflow-x-auto">
             {#each changelog as entry}
                 <div class="flex flex-col gap-1">
                     <p class="text-sm font-medium">{new Date(entry.date).toLocaleDateString()}</p>
-                    <p class="text-sm break-anywhere">
+                    <p class="break-anywhere text-sm">
                         {#if entry.url}
                             <a
                                 href={entry.url}
@@ -32,7 +32,7 @@
                         {/if}
                     </p>
                     {#if entry.description}
-                        <p class="text-muted-foreground text-xs break-anywhere">
+                        <p class="text-muted-foreground break-anywhere text-xs">
                             {@html entry.description}
                         </p>
                     {/if}

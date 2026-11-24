@@ -17,7 +17,7 @@
     </div>
     <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
         <Label for="editorTextSize" textKey="pane.prefs.editor.text-size" descKey="pane.prefs.editor.text-size.desc" />
-        <div class="flex flex-col w-48 gap-2">
+        <div class="flex w-48 flex-col gap-2">
             <Slider
                 type="single"
                 id="editorTextSize"
@@ -27,7 +27,7 @@
                 bind:value={$editorTextSize}
                 class="w-full"
             />
-            <div class="flex flex-row justify-between text-xs text-muted-foreground">
+            <div class="text-muted-foreground flex flex-row justify-between text-xs">
                 <span>0.5</span>
                 <span>0.75</span>
                 <span>1</span>

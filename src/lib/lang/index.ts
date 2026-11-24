@@ -1,18 +1,7 @@
 import type { LanguageSupport } from "@codemirror/language";
 
 export type Language =
-    | "java"
-    | "kotlin"
-    | "xml"
-    | "json"
-    | "js"
-    | "ts"
-    | "yaml"
-    | "properties"
-    | "toml"
-    | "hex"
-    | "jasm"
-    | "plaintext";
+    "java" | "kotlin" | "xml" | "json" | "js" | "ts" | "yaml" | "properties" | "toml" | "hex" | "jasm" | "plaintext";
 
 export const load = async (lang: Language): Promise<LanguageSupport | null> => {
     switch (lang) {

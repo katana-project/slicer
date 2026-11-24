@@ -120,7 +120,7 @@
                 src={createURL(blob)}
                 controls
                 class={cn(
-                    "z-10 max-h-full max-w-full overflow-hidden border border-border",
+                    "border-border z-10 max-h-full max-w-full overflow-hidden border",
                     videoHeight > 0 || "h-full w-full"
                 )}
                 crossorigin="anonymous"

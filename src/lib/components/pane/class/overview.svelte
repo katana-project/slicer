@@ -92,9 +92,9 @@
     </TableRow>
     <TableRow>
         <TableHead>{$t("pane.class.overview.super")}</TableHead>
-        <TableCell class="break-anywhere font-mono tracking-tight"
-            >{superName || $t("pane.class.overview.none")}</TableCell
-        >
+        <TableCell class="break-anywhere font-mono tracking-tight">
+            {superName || $t("pane.class.overview.none")}
+        </TableCell>
     </TableRow>
     <TableRow>
         <TableHead>{$t("pane.class.overview.interfaces")}</TableHead>

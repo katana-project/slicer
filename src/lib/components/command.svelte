@@ -156,7 +156,7 @@
         placeholder={$t(searchSource ? "command.workspace.search.placeholder" : "command.placeholder")}
     />
     {#if searchSource}
-        <div class="flex flex-row w-full border-border border-b">
+        <div class="border-border flex w-full flex-row border-b">
             <Select type="single" bind:value={$sortMode}>
                 <SelectTrigger class="h-7 w-full rounded-none border-0 text-xs [&_svg]:ml-2 [&_svg]:h-4 [&_svg]:w-4">
                     <span>
@@ -183,7 +183,7 @@
             <Button
                 variant="outline"
                 size="icon"
-                class="rounded-none border-0 border-l border-border"
+                class="border-border rounded-none border-0 border-l"
                 onclick={() =>
                     $sortDir === "auto"
                         ? ($sortDir = "asc")

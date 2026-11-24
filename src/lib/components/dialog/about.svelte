@@ -49,8 +49,10 @@
                         <a
                             href={`https://github.com/katana-project/slicer/commit/${commit}`}
                             target="_blank"
-                            class="hover:text-blue-700 hover:underline">{commit.substring(0, 7)}</a
-                        >{$t("dialog.about.build.branch", import.meta.env.WORKERS_CI_BRANCH || "unknown")}
+                            class="hover:text-blue-700 hover:underline"
+                        >
+                            {commit.substring(0, 7)}
+                        </a>{$t("dialog.about.build.branch", import.meta.env.WORKERS_CI_BRANCH || "unknown")}
                     {/if}
                 </p>
                 <p class="mt-6 font-mono text-sm">

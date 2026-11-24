@@ -91,8 +91,7 @@ export const computeControlFlowGraph = async (
 
     const pool = node.pool;
     const bsmAttr = node.attrs.find((a) => a.type === AttributeType.BOOTSTRAP_METHODS) as
-        | BootstrapMethodsAttribute
-        | undefined;
+        BootstrapMethodsAttribute | undefined;
 
     const excEdges = (withExcHandlers ? nodes : []).flatMap((node) => {
         return code.exceptionTable
@@ -282,8 +281,8 @@ export const computeHierarchyGraph = async (
 
         let width = Math.max(metrics.width, smallMetrics.width) + 20 /* padding */ + 2; /* border */
         let height = 18 + 15 * lines.length /* line height */ + 20 /* padding */ + 2; /* border */
-        if (node.fields.length > 0) height += 1 /* separator */ + 20 /* separator padding */;
-        if (node.methods.length > 0) height += 1 /* separator */ + 20 /* separator padding */;
+        if (node.fields.length > 0) height += 1 /* separator */ + 20; /* separator padding */
+        if (node.methods.length > 0) height += 1 /* separator */ + 20; /* separator padding */
 
         if (node.name !== node.displayName) height += 1; // underline
 

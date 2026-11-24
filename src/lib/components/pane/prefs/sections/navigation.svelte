@@ -81,7 +81,7 @@
 </script>
 
 <Section id="navigation" icon={Keyboard} labelKey="pane.prefs.section.navigation">
-    <p class={cn("text-sm text-muted-foreground", conflict && "text-destructive")}>
+    <p class={cn("text-muted-foreground text-sm", conflict && "text-destructive")}>
         {$t(conflict ? "pane.prefs.navigation.conflict" : "pane.prefs.navigation.desc")}
     </p>
     <div class="grid gap-3">
