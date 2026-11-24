@@ -12,7 +12,7 @@
     interface Props extends TooltipProps {
         resolver: CompositeResolver | null;
         classes: Map<string, Entry>;
-        entry: ClassEntry;
+        entry: ClassEntry | null;
         handler: EventHandler;
     }
 
