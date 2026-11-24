@@ -27,7 +27,7 @@
     import { onDestroy } from "svelte";
     import type { Cancellable } from "$lib/utils";
     import Tooltip from "./tooltip.svelte";
-    import { createTypeReferenceResolver, parseUnit } from "@katana-project/laser";
+    import { createCompositeResolver, parseUnit } from "@katana-project/laser";
     import { EditorView } from "@codemirror/view";
     import { ensureSyntaxTree } from "@codemirror/language";
     import { index, jdkRefs } from "$lib/workspace/jdk";
@@ -105,7 +105,7 @@
 
         return parseUnit(tree, view.state.doc.toString());
     });
-    let resolver = $derived(unit ? createTypeReferenceResolver(unit, [...$jdkRefs, ...$classRefs]) : null);
+    let resolver = $derived(unit ? createCompositeResolver(unit, [...$jdkRefs, ...$classRefs]) : null);
 
     const resolverStore = new Compartment();
     const hexSelectionStore = new Compartment();
@@ -126,7 +126,7 @@
     let mousePosition = $state({ x: 0, y: 0 });
 </script>
 
-<div class="scrollbar-thin relative basis-full overflow-hidden">
+<div class="relative basis-full scrollbar-thin overflow-hidden">
     {#await Promise.all([loadLanguage(language), readPromise])}
         <Loading
             value={$t(interpType !== Interpretation.TEXT ? "pane.code.loading.disasm" : "pane.code.loading.read")}
@@ -149,7 +149,7 @@
                             interpType === Interpretation.HEX ? hexSelectionMatches(localHexRowBytes) : []
                         ),
                     ]}
-                    tooltip={() => [Tooltip, { resolver, classes, handler }]}
+                    tooltip={() => [Tooltip, { resolver, classes, handler, entry }]}
                 />
             </ContextMenuTrigger>
             <CodeMenu

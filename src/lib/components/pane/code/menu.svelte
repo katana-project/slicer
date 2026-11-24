@@ -1,15 +1,15 @@
 <script lang="ts">
     import type { Tab } from "$lib/tab";
-    import { type Entry, transformEntry } from "$lib/workspace";
+    import { type ClassEntry, type Entry, EntryType, transformEntry } from "$lib/workspace";
     import {
         ContextMenuCheckboxItem,
         ContextMenuContent,
         ContextMenuItem,
+        ContextMenuLabel,
         ContextMenuSeparator,
         ContextMenuSub,
         ContextMenuSubContent,
         ContextMenuSubTrigger,
-        ContextMenuLabel,
     } from "$lib/components/ui/context-menu";
     import { Binary, CaseSensitive, Code, CornerDownRight, TextSearch, TextWrap, Workflow } from "@lucide/svelte";
     import { type Language, toExtension } from "$lib/lang";
@@ -17,10 +17,10 @@
     import type { EventHandler } from "$lib/event";
     import { t } from "$lib/i18n";
     import type { EditorView } from "@codemirror/view";
-    import { prettyInternalName } from "$lib/utils";
+    import { prettyInternalName, prettyJavaType, prettyMethodDesc } from "$lib/utils";
     import UsagesContent from "./usages.svelte";
-    import type { TypeReferenceResolver } from "@katana-project/laser";
-    import { resolveType } from "./resolver";
+    import type { CompositeResolver, ResolvedDeclaration, ResolvedType } from "@katana-project/laser";
+    import { resolveDeclaration, resolveType } from "./resolver";
     import HierarchyContent from "./hierarchy.svelte";
     import { inheritanceGraph } from "$lib/workspace/analysis/graph";
     import { FloatingModal } from "$lib/components/ui/floating-modal";
@@ -36,7 +36,7 @@
         wrap: boolean;
         sizeLock: boolean;
         handler: EventHandler;
-        resolver: TypeReferenceResolver | null;
+        resolver: CompositeResolver | null;
         mousePosition: { x: number; y: number };
     }
 
@@ -61,39 +61,66 @@
             return null;
         }
 
-        const resolved = resolver.resolveAt(coords.pos, coords.assoc);
-        return resolved && resolved.kind !== "builtin" ? resolved : null;
+        return resolver.resolveAt(coords.pos, coords.assoc);
     });
 
-    let detail = $derived(view ? resolveType(resolved, handler, view, classes, $index) : null);
+    let typeDetail = $derived(
+        view && resolved?.category === "type" && (resolved as ResolvedType).kind !== "builtin"
+            ? resolveType(resolved as ResolvedType, handler, view, classes, $index)
+            : null
+    );
+    let declDetail = $derived(
+        view && resolved?.category === "declaration"
+            ? resolveDeclaration(
+                  resolved as ResolvedDeclaration,
+                  handler,
+                  view,
+                  entry.type === EntryType.CLASS ? (entry as ClassEntry) : null
+              )
+            : null
+    );
 
     let usagesOpen = $state(false);
+    let usagesName = $derived(
+        declDetail?.name ? `${declDetail.name} ${declDetail.descriptor}` : (typeDetail?.className ?? null)
+    );
+    let usagesPrettyName = $derived(
+        declDetail?.name
+            ? `${declDetail.name}${declDetail.type === "field" ? prettyJavaType(declDetail.descriptor!) : prettyMethodDesc(declDetail.descriptor!, true)}`
+            : typeDetail?.className
+              ? prettyInternalName(typeDetail.className)
+              : null
+    );
 
     let hierarchyOpen = $state(false);
-    let hasGraphNode = $derived($inheritanceGraph[detail?.className ?? ""] !== undefined);
+    let hasGraphNode = $derived($inheritanceGraph[typeDetail?.className ?? ""] !== undefined);
 </script>
 
 <ContextMenuContent class="min-w-54">
-    {@const hasReference = view && resolved}
     <ContextMenuLabel inset>{$t("pane.code.menu.reference")}</ContextMenuLabel>
     <ContextMenuSeparator />
     <ContextMenuItem
         inset
         class="flex justify-between gap-5"
-        disabled={!hasReference || !detail?.canOpen}
-        onclick={() => detail?.open()}
+        disabled={!declDetail?.canOpen && !typeDetail?.canOpen}
+        onclick={() => (declDetail ?? typeDetail)?.open()}
     >
         {$t("pane.code.menu.reference.declaration")}
         <CornerDownRight size={16} class="text-foreground" />
     </ContextMenuItem>
-    <ContextMenuItem inset class="flex justify-between" disabled={!hasReference} onclick={() => (usagesOpen = true)}>
+    <ContextMenuItem
+        inset
+        class="flex justify-between"
+        disabled={!declDetail && !typeDetail}
+        onclick={() => (usagesOpen = true)}
+    >
         {$t("pane.code.menu.reference.usages")}
         <TextSearch size={16} />
     </ContextMenuItem>
     <ContextMenuItem
         inset
         class="flex justify-between gap-5"
-        disabled={!hasReference || !hasGraphNode}
+        disabled={!typeDetail || !hasGraphNode}
         onclick={() => (hierarchyOpen = true)}
     >
         {$t("pane.code.menu.reference.implementations")}
@@ -135,23 +162,20 @@
 <FloatingModal
     bind:open={usagesOpen}
     title={$t("modal.usages.title")}
-    subtitle={$t(
-        detail?.className ? "modal.usages.subtitle" : "modal.usages.subtitle.none",
-        prettyInternalName(detail?.className || "")
-    )}
+    subtitle={$t(usagesName ? "modal.usages.subtitle" : "modal.usages.subtitle.none", usagesPrettyName ?? "")}
     initialPosition={mousePosition}
 >
-    <UsagesContent bind:open={usagesOpen} name={detail?.className ?? null} {classes} {handler} />
+    <UsagesContent bind:open={usagesOpen} name={usagesName} {classes} {handler} />
 </FloatingModal>
 
 <FloatingModal
     bind:open={hierarchyOpen}
     title={$t("modal.hierarchy.title")}
     subtitle={$t(
-        detail?.className ? "modal.hierarchy.subtitle" : "modal.hierarchy.subtitle.none",
-        prettyInternalName(detail?.className || "")
+        typeDetail?.className ? "modal.hierarchy.subtitle" : "modal.hierarchy.subtitle.none",
+        prettyInternalName(typeDetail?.className || "")
     )}
     initialPosition={mousePosition}
 >
-    <HierarchyContent bind:open={hierarchyOpen} name={detail?.className ?? null} {handler} />
+    <HierarchyContent bind:open={hierarchyOpen} name={typeDetail?.className ?? null} {handler} />
 </FloatingModal>
