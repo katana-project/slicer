@@ -1,5 +1,5 @@
 import type { EventHandler } from "$lib/event";
-import { type ClassEntry, type Entry, memberEntry } from "$lib/workspace";
+import { type ClassEntry, type Entry, EntryType, memberEntry } from "$lib/workspace";
 import { createEntry, type DataIndex } from "$lib/workspace/jdk";
 import { type Extension, RangeSetBuilder } from "@codemirror/state";
 import { Decoration, EditorView, ViewPlugin } from "@codemirror/view";
@@ -19,6 +19,7 @@ interface TypeResolution extends Resolution {
 
 interface DeclarationResolution extends Resolution {
     type: "field" | "method" | null;
+    owner: string | null;
     name: string | null;
     descriptor: string | null;
 }
@@ -95,11 +96,12 @@ export const resolveDeclaration = (
     resolution: ResolvedDeclaration | null,
     handler: EventHandler,
     view: EditorView,
-    entry: ClassEntry | null
+    classes: Map<string, Entry>
 ): DeclarationResolution => {
     if (!resolution) {
         return {
             type: null,
+            owner: null,
             name: null,
             descriptor: null,
             open() {},
@@ -111,13 +113,15 @@ export const resolveDeclaration = (
         resolution.kind === "method" || resolution.kind === "constructor" || resolution.kind === "staticInitializer";
     const resolvedMethodType = parseType(resolution.descriptor) as MethodType;
 
-    if (entry) {
+    const entry = classes.get(resolution.owner) as ClassEntry | undefined;
+    if (entry?.type === EntryType.CLASS) {
         const memberColl = isMethod ? entry.node.methods : entry.node.fields;
         for (const member of memberColl) {
             if (member.name.string === resolution.name && member.type.string === resolution.descriptor) {
                 return {
                     type: isMethod ? "method" : "field",
                     name: resolution.name,
+                    owner: entry.node.thisClass.nameEntry!.string,
                     descriptor: member.type.string,
                     open() {
                         if (isMethod) {
@@ -148,6 +152,7 @@ export const resolveDeclaration = (
                 return {
                     type: isMethod ? "method" : "field",
                     name: resolution.name,
+                    owner: entry.node.thisClass.nameEntry!.string,
                     descriptor: member.type.string,
                     open() {
                         if (isMethod) {
@@ -168,6 +173,7 @@ export const resolveDeclaration = (
     return {
         type: isMethod ? "method" : "field",
         name: resolution.name,
+        owner: resolution.owner,
         descriptor: resolution.descriptor,
         open() {
             view.dispatch({

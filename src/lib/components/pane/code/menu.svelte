@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Tab } from "$lib/tab";
-    import { type ClassEntry, type Entry, EntryType, transformEntry } from "$lib/workspace";
+    import { type Entry, transformEntry } from "$lib/workspace";
     import {
         ContextMenuCheckboxItem,
         ContextMenuContent,
@@ -71,22 +71,19 @@
     );
     let declDetail = $derived(
         view && resolved?.category === "declaration"
-            ? resolveDeclaration(
-                  resolved as ResolvedDeclaration,
-                  handler,
-                  view,
-                  entry.type === EntryType.CLASS ? (entry as ClassEntry) : null
-              )
+            ? resolveDeclaration(resolved as ResolvedDeclaration, handler, view, classes)
             : null
     );
 
     let usagesOpen = $state(false);
     let usagesName = $derived(
-        declDetail?.name ? `${declDetail.name} ${declDetail.descriptor}` : (typeDetail?.className ?? null)
+        declDetail?.name
+            ? `${declDetail.owner} ${declDetail.name} ${declDetail.descriptor}`
+            : (typeDetail?.className ?? null)
     );
     let usagesPrettyName = $derived(
         declDetail?.name
-            ? `${declDetail.name}${declDetail.type === "field" ? prettyJavaType(declDetail.descriptor!) : prettyMethodDesc(declDetail.descriptor!, true)}`
+            ? `${prettyInternalName(declDetail.owner!, true)}.${declDetail.name}${declDetail.type === "field" ? `: ${prettyJavaType(declDetail.descriptor!)}` : prettyMethodDesc(declDetail.descriptor!, true)}`
             : typeDetail?.className
               ? prettyInternalName(typeDetail.className)
               : null

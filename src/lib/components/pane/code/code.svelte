@@ -149,7 +149,7 @@
                             interpType === Interpretation.HEX ? hexSelectionMatches(localHexRowBytes) : []
                         ),
                     ]}
-                    tooltip={() => [Tooltip, { resolver, classes, handler, entry: entry.type === EntryType.CLASS ? entry : null }]}
+                    tooltip={() => [Tooltip, { resolver, classes, handler }]}
                 />
             </ContextMenuTrigger>
             <CodeMenu

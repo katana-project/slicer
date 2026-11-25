@@ -2,7 +2,7 @@
     import type { TooltipProps } from "$lib/components/editor/editor.svelte";
     import type { CompositeResolver, ResolvedDeclaration, ResolvedType } from "@katana-project/laser";
     import type { EventHandler } from "$lib/event";
-    import type { ClassEntry, Entry } from "$lib/workspace";
+    import type { Entry } from "$lib/workspace";
     import { cn } from "$lib/components/utils";
     import { resolveDeclaration, resolveType } from "$lib/components/pane/code/resolver";
     import { prettyInternalName, prettyJavaType, prettyMethodDesc } from "$lib/utils";
@@ -12,11 +12,10 @@
     interface Props extends TooltipProps {
         resolver: CompositeResolver | null;
         classes: Map<string, Entry>;
-        entry: ClassEntry | null;
         handler: EventHandler;
     }
 
-    let { view, pos, side, resolver, classes, entry, handler }: Props = $props();
+    let { view, pos, side, resolver, classes, handler }: Props = $props();
 
     let resolution = $derived(resolver?.resolveAt(pos, side));
     let {
@@ -28,9 +27,10 @@
     let {
         type,
         name,
+        owner,
         descriptor,
         open: openMember,
-    } = $derived(resolveDeclaration((resolution ?? null) as ResolvedDeclaration, handler, view, entry));
+    } = $derived(resolveDeclaration((resolution ?? null) as ResolvedDeclaration, handler, view, classes));
 </script>
 
 {#if resolution?.category === "type" && className && (resolution as ResolvedType)?.kind !== "builtin"}
@@ -53,7 +53,7 @@
             </div>
         </div>
     </div>
-{:else if resolution?.category === "declaration" && name && descriptor}
+{:else if resolution?.category === "declaration" && name && descriptor && owner}
     <div
         class="text-card-foreground bg-card animate-in fade-in-0 zoom-in-95 border-border z-50 flex max-w-md cursor-pointer flex-col rounded-sm border shadow-lg"
         onclick={openMember}
@@ -69,6 +69,9 @@
 
                 <div class="text-muted-foreground break-anywhere text-[11px]">
                     {type === "method" ? prettyMethodDesc(descriptor, true) : prettyJavaType(descriptor)}
+                </div>
+                <div class={cn("text-muted-foreground break-anywhere text-[11px]", !packageName && "italic")}>
+                    {prettyInternalName(owner ?? "")}
                 </div>
             </div>
         </div>
