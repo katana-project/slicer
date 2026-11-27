@@ -126,7 +126,7 @@
     let mousePosition = $state({ x: 0, y: 0 });
 </script>
 
-<div class="relative basis-full scrollbar-thin overflow-hidden">
+<div class="scrollbar-thin relative basis-full overflow-hidden">
     {#await Promise.all([loadLanguage(language), readPromise])}
         <Loading
             value={$t(interpType !== Interpretation.TEXT ? "pane.code.loading.disasm" : "pane.code.loading.read")}

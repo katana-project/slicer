@@ -26,11 +26,11 @@
 <button
     type="button"
     onclick={() => (collapsed = !collapsed)}
-    class="hover:bg-accent/50 flex w-full items-center gap-2 rounded-sm px-2 py-1 text-left text-sm font-medium"
+    class="flex items-center gap-2 px-2 py-1 text-sm font-medium text-left w-full hover:bg-accent/50 rounded-sm"
 >
     <ChevronRight class={cn("text-muted-foreground h-3.5 w-3.5 transition-transform", !collapsed && "rotate-90")} />
     <Icon class={cn(iconClasses, "h-4 w-4 shrink-0")} />
-    <span class="text-foreground basis-full truncate">{prettyInternalName(value)}</span>
+    <span class="text-foreground truncate basis-full">{prettyInternalName(value)}</span>
     <span class="bg-muted/50 text-muted-foreground ml-auto rounded px-1.5 py-0.5 text-[10px]">
         {usages.length}
     </span>
@@ -42,7 +42,7 @@
         {@const TypeIcon = mods.abstract ? AbstractMethod : Method}
         {@const ModifierIcon = accessIcon(mods)}
 
-        <div class="ml-6 flex w-[calc(100%-1.5rem)] items-center gap-1 px-2 py-1 text-left text-xs">
+        <div class="ml-6 flex w-[calc(100%-1.5rem)] gap-1 px-2 py-1 text-left text-xs items-center">
             <div class="flex items-center gap-1">
                 <TypeIcon finalMember={mods.final} staticMember={mods.static} class="size-4" />
 
@@ -50,7 +50,7 @@
                     <ModifierIcon class="size-2.5" />
                 {/if}
             </div>
-            <span class="text-foreground basis-full truncate">{memberName}</span>
+            <span class="text-foreground truncate basis-full">{memberName}</span>
             <span class="bg-muted/50 text-muted-foreground ml-auto rounded px-1.5 py-0.5 text-[10px]">
                 {memberUsages.length}
             </span>

@@ -5,11 +5,11 @@
         ContextMenuCheckboxItem,
         ContextMenuContent,
         ContextMenuItem,
-        ContextMenuLabel,
         ContextMenuSeparator,
         ContextMenuSub,
         ContextMenuSubContent,
         ContextMenuSubTrigger,
+        ContextMenuLabel,
     } from "$lib/components/ui/context-menu";
     import { Binary, CaseSensitive, Code, CornerDownRight, TextSearch, TextWrap, Workflow } from "@lucide/svelte";
     import { type Language, toExtension } from "$lib/lang";
