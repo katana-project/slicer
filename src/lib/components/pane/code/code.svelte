@@ -31,7 +31,7 @@
     import { EditorView } from "@codemirror/view";
     import { ensureSyntaxTree } from "@codemirror/language";
     import { index, jdkRefs } from "$lib/workspace/jdk";
-    import { typeResolver } from "./resolver";
+    import { ctrlClickToGo } from "./resolver";
     import { Compartment } from "@codemirror/state";
     import { Loading } from "$lib/components/ui/loading";
     import { Input } from "$lib/components/ui/input";
@@ -115,7 +115,7 @@
         view.focus();
         view.dispatch({
             effects: [
-                resolverStore.reconfigure(typeResolver(resolver, handler, classes, $index)),
+                resolverStore.reconfigure(ctrlClickToGo(resolver, handler, classes, $index)),
                 hexSelectionStore.reconfigure(
                     interpType === Interpretation.HEX ? hexSelectionMatches(localHexRowBytes) : []
                 ),
@@ -144,7 +144,7 @@
                     scrollResize={!$editorTextSizeLock}
                     {wrap}
                     extensions={[
-                        resolverStore.of(typeResolver(resolver, handler, classes, $index)),
+                        resolverStore.of(ctrlClickToGo(resolver, handler, classes, $index)),
                         hexSelectionStore.of(
                             interpType === Interpretation.HEX ? hexSelectionMatches(localHexRowBytes) : []
                         ),

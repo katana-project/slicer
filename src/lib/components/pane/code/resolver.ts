@@ -4,7 +4,7 @@ import { createEntry, type DataIndex } from "$lib/workspace/jdk";
 import { type Extension, RangeSetBuilder } from "@codemirror/state";
 import { Decoration, EditorView, ViewPlugin } from "@codemirror/view";
 import { type MethodType, parseType } from "@katana-project/asm/type";
-import type { CompositeResolver, ResolvedDeclaration, ResolvedType } from "@katana-project/laser";
+import type { CompositeResolver, Resolved, ResolvedDeclaration, ResolvedType } from "@katana-project/laser";
 
 interface Resolution {
     open(): void;
@@ -185,7 +185,7 @@ export const resolveDeclaration = (
     };
 };
 
-export const typeResolver = (
+export const ctrlClickToGo = (
     resolver: CompositeResolver | null,
     handler: EventHandler,
     classes: Map<string, Entry>,
@@ -206,15 +206,17 @@ export const typeResolver = (
                     return;
                 }
 
-                const resolved = resolver.resolveAt(this.hoverPos) as ResolvedType | null;
-                if (!resolved || resolved.category !== "type") {
+                const resolved = resolver.resolveAt(this.hoverPos);
+                if (!resolved || (resolved.category === "type" && (resolved as ResolvedType).kind === "builtin")) {
                     this.decorations = Decoration.none;
                     return;
                 }
 
-                const node = resolved?.ref?.node;
-
-                if (!node || resolved.kind === "builtin") {
+                const node =
+                    resolved.category === "type"
+                        ? (resolved as ResolvedType).ref.node
+                        : (resolved as ResolvedDeclaration).node;
+                if (!node) {
                     this.decorations = Decoration.none;
                     return;
                 }
@@ -229,8 +231,16 @@ export const typeResolver = (
         }
     );
 
-    const navigateToClass = (view: EditorView, resolution: ResolvedType) =>
-        resolveType(resolution, handler, view, classes, index).open();
+    const navigate = (view: EditorView, resolution: Resolved) => {
+        switch (resolution.category) {
+            case "type":
+                resolveType(resolution as ResolvedType, handler, view, classes, index).open();
+                break;
+            case "declaration":
+                resolveDeclaration(resolution as ResolvedDeclaration, handler, view, classes).open();
+                break;
+        }
+    };
 
     const handlers = EditorView.domEventHandlers({
         mousemove(event, view) {
@@ -252,9 +262,9 @@ export const typeResolver = (
             if ((event.ctrlKey || event.metaKey) && event.button === 0 && inst.hoverPos != null) {
                 event.preventDefault(); // prevent selection/context menu
 
-                const resolved = resolver.resolveAt(inst.hoverPos) as ResolvedType | null;
-                if (resolved && resolved.category === "type" && resolved.kind !== "builtin") {
-                    navigateToClass(view, resolved);
+                const resolved = resolver.resolveAt(inst.hoverPos);
+                if (resolved && (resolved.category !== "type" || (resolved as ResolvedType).kind !== "builtin")) {
+                    navigate(view, resolved);
                 }
 
                 // clear highlight after click
