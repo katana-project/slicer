@@ -39,8 +39,8 @@ importers:
         specifier: ^0.25.4
         version: 0.25.4
       '@katana-project/laser':
-        specifier: ^0.3.1
-        version: 0.3.1
+        specifier: ^0.4.2
+        version: 0.4.2
       '@katana-project/zip':
         specifier: ^0.7.3
         version: 0.7.3
@@ -599,8 +599,8 @@ packages:
   '@katana-project/asm@0.25.4':
     resolution: {integrity: sha512-dbsayR3GT2IfGHk1xpmWaBZs51vl4a7ADAzevWzolsCpp9JzMOlIV7vqDm688LxRs6Ktn7QZBQIJ1tcdnbU5nA==}
 
-  '@katana-project/laser@0.3.1':
-    resolution: {integrity: sha512-jMBG2plod0tjQxFxnGaBEoreBoE5TcEkahFje6ASLKjgCNvtpmUMyqJGtnopZx1aqEqZbAgFED7JgBsvkgjCLg==}
+  '@katana-project/laser@0.4.2':
+    resolution: {integrity: sha512-ac/h6ebzMiW4n+VLGOFDpRYlRVmg7UNbSNKXkarRW3L4z9s7SIbjcwYw/XsxZ8pJlH3XBLOc5/4+qZE1F58nYg==}
 
   '@katana-project/zip@0.7.3':
     resolution: {integrity: sha512-yLZBXEZTRhcjMQO6Nqlyvx0la+fv17hn4bOHgDmOXlvVeH46x7yGtz7MzwCp4k784er9MdEXv1W2Chio8EnDmw==}
@@ -1927,7 +1927,7 @@ snapshots:
 
   '@katana-project/asm@0.25.4': {}
 
-  '@katana-project/laser@0.3.1':
+  '@katana-project/laser@0.4.2':
     dependencies:
       '@lezer/common': 1.5.2
 

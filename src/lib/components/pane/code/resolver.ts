@@ -1,17 +1,27 @@
 import type { EventHandler } from "$lib/event";
-import type { Entry } from "$lib/workspace";
+import { type ClassEntry, type Entry, EntryType, memberEntry } from "$lib/workspace";
 import { createEntry, type DataIndex } from "$lib/workspace/jdk";
 import { type Extension, RangeSetBuilder } from "@codemirror/state";
 import { Decoration, EditorView, ViewPlugin } from "@codemirror/view";
-import type { ResolvedType, TypeReferenceResolver } from "@katana-project/laser";
+import { type MethodType, parseType } from "@katana-project/asm/type";
+import type { CompositeResolver, Resolved, ResolvedDeclaration, ResolvedType } from "@katana-project/laser";
 
-interface ResolutionDetail {
+interface Resolution {
+    open(): void;
+    canOpen: boolean;
+}
+
+interface TypeResolution extends Resolution {
     className: string | null;
     packageName: string | null;
     simpleName: string | null;
+}
 
-    open(): void;
-    canOpen: boolean;
+interface DeclarationResolution extends Resolution {
+    type: "field" | "method" | null;
+    owner: string | null;
+    name: string | null;
+    descriptor: string | null;
 }
 
 export const resolveType = (
@@ -20,7 +30,7 @@ export const resolveType = (
     view: EditorView,
     classes: Map<string, Entry>,
     index: DataIndex
-): ResolutionDetail => {
+): TypeResolution => {
     let className: string | null = null;
     if (resolution?.qualifiedName) {
         const parts = resolution.qualifiedName.split(".");
@@ -82,8 +92,101 @@ export const resolveType = (
     };
 };
 
-export const typeResolver = (
-    resolver: TypeReferenceResolver | null,
+export const resolveDeclaration = (
+    resolution: ResolvedDeclaration | null,
+    handler: EventHandler,
+    view: EditorView,
+    classes: Map<string, Entry>
+): DeclarationResolution => {
+    if (!resolution) {
+        return {
+            type: null,
+            owner: null,
+            name: null,
+            descriptor: null,
+            open() {},
+            canOpen: false,
+        };
+    }
+
+    const isMethod =
+        resolution.kind === "method" || resolution.kind === "constructor" || resolution.kind === "staticInitializer";
+    const resolvedMethodType = parseType(resolution.descriptor) as MethodType;
+
+    const entry = classes.get(resolution.owner) as ClassEntry | undefined;
+    if (entry?.type === EntryType.CLASS) {
+        const memberColl = isMethod ? entry.node.methods : entry.node.fields;
+        for (const member of memberColl) {
+            if (member.name.string === resolution.name && member.type.string === resolution.descriptor) {
+                return {
+                    type: isMethod ? "method" : "field",
+                    name: resolution.name,
+                    owner: entry.node.thisClass.nameEntry!.string,
+                    descriptor: member.type.string,
+                    open() {
+                        if (isMethod) {
+                            handler.open(memberEntry(entry, member));
+                        } else {
+                            view.dispatch({
+                                selection: { anchor: resolution.declaration.from },
+                                effects: EditorView.scrollIntoView(resolution.declaration.from, { y: "center" }),
+                            });
+                        }
+                    },
+                    canOpen: true,
+                };
+            }
+        }
+
+        // FIXME: the resolution logic is not mature enough to get a perfect descriptor match all the time
+        // so we just check if the parameter count matches, which is a good enough heuristic
+        for (const member of memberColl) {
+            if (member.name.string === resolution.name) {
+                if (isMethod) {
+                    const lookupType = parseType(member.type.string) as MethodType;
+                    if (lookupType.parameters.length !== resolvedMethodType.parameters.length) {
+                        continue;
+                    }
+                }
+
+                return {
+                    type: isMethod ? "method" : "field",
+                    name: resolution.name,
+                    owner: entry.node.thisClass.nameEntry!.string,
+                    descriptor: member.type.string,
+                    open() {
+                        if (isMethod) {
+                            handler.open(memberEntry(entry, member));
+                        } else {
+                            view.dispatch({
+                                selection: { anchor: resolution.declaration.from },
+                                effects: EditorView.scrollIntoView(resolution.declaration.from, { y: "center" }),
+                            });
+                        }
+                    },
+                    canOpen: true,
+                };
+            }
+        }
+    }
+
+    return {
+        type: isMethod ? "method" : "field",
+        name: resolution.name,
+        owner: resolution.owner,
+        descriptor: resolution.descriptor,
+        open() {
+            view.dispatch({
+                selection: { anchor: resolution.declaration.from },
+                effects: EditorView.scrollIntoView(resolution.declaration.from, { y: "center" }),
+            });
+        },
+        canOpen: true,
+    };
+};
+
+export const ctrlClickToGo = (
+    resolver: CompositeResolver | null,
     handler: EventHandler,
     classes: Map<string, Entry>,
     index: DataIndex
@@ -104,10 +207,16 @@ export const typeResolver = (
                 }
 
                 const resolved = resolver.resolveAt(this.hoverPos);
+                if (!resolved || (resolved.category === "type" && (resolved as ResolvedType).kind === "builtin")) {
+                    this.decorations = Decoration.none;
+                    return;
+                }
 
-                const node = resolved?.ref?.node;
-
-                if (!node || resolved.kind === "builtin") {
+                const node =
+                    resolved.category === "type"
+                        ? (resolved as ResolvedType).ref.node
+                        : (resolved as ResolvedDeclaration).node;
+                if (!node) {
                     this.decorations = Decoration.none;
                     return;
                 }
@@ -122,8 +231,16 @@ export const typeResolver = (
         }
     );
 
-    const navigateToClass = (view: EditorView, resolution: ResolvedType) =>
-        resolveType(resolution, handler, view, classes, index).open();
+    const navigate = (view: EditorView, resolution: Resolved) => {
+        switch (resolution.category) {
+            case "type":
+                resolveType(resolution as ResolvedType, handler, view, classes, index).open();
+                break;
+            case "declaration":
+                resolveDeclaration(resolution as ResolvedDeclaration, handler, view, classes).open();
+                break;
+        }
+    };
 
     const handlers = EditorView.domEventHandlers({
         mousemove(event, view) {
@@ -146,8 +263,8 @@ export const typeResolver = (
                 event.preventDefault(); // prevent selection/context menu
 
                 const resolved = resolver.resolveAt(inst.hoverPos);
-                if (resolved && resolved.kind !== "builtin") {
-                    navigateToClass(view, resolved);
+                if (resolved && (resolved.category !== "type" || (resolved as ResolvedType).kind !== "builtin")) {
+                    navigate(view, resolved);
                 }
 
                 // clear highlight after click
