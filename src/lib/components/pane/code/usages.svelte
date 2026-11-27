@@ -11,23 +11,24 @@
 
     interface Props {
         open: boolean;
-        name: string | null;
+        value: string | null;
+        owner: string | null;
         classes: Map<string, Entry>;
         handler: EventHandler;
     }
 
-    let { open = $bindable(), name, classes, handler }: Props = $props();
+    let { open = $bindable(), value, owner, classes, handler }: Props = $props();
 
     let usages: SearchResult[] = $state.raw([]);
     $effect(() => {
         usages = [];
-        if (!open || !name) {
+        if (!open || !value) {
             return;
         }
 
         const task = search(
             Array.from(classes.values()),
-            { type: QueryType.PSEUDOCODE, value: name, mode: SearchMode.PARTIAL_MATCH, ref: true },
+            { type: QueryType.PSEUDOCODE, value, mode: SearchMode.PARTIAL_MATCH, ref: true },
             (res) => {
                 usages = [...usages, res];
             }
@@ -45,7 +46,7 @@
         };
     });
 
-    const isRelatedToSelf = (ref: string): boolean => name === ref || ref.startsWith(`${name}$`);
+    const isRelatedToSelf = (ref: string): boolean => owner === ref || ref.startsWith(`${owner}$`);
 
     let grouped = $derived(
         Array.from(groupBy(usages, (usage) => usage.entry.node.thisClass.nameEntry!.string).entries())
@@ -62,9 +63,9 @@
     </div>
 
     <div class="min-h-0 flex-1">
-        <VList data={grouped} getKey={([name]) => name} class="h-full overflow-x-hidden p-1">
-            {#snippet children([name, usages])}
-                <Usage {name} {usages} {handler} collapsed={isRelatedToSelf(name)} bind:modalOpen={open} />
+        <VList data={grouped} getKey={([value]) => value} class="h-full overflow-x-hidden p-1">
+            {#snippet children([value, usages])}
+                <Usage {value} {usages} {handler} collapsed={isRelatedToSelf(value)} bind:modalOpen={open} />
             {/snippet}
         </VList>
     </div>

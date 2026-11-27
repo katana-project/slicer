@@ -35,7 +35,7 @@
 
 {#if resolution?.category === "type" && className && (resolution as ResolvedType)?.kind !== "builtin"}
     <div
-        class="text-card-foreground bg-card animate-in fade-in-0 zoom-in-95 border-border z-50 flex max-w-md cursor-pointer flex-col rounded-sm border shadow-lg"
+        class="text-card-foreground bg-card animate-in fade-in-0 zoom-in-95 border-border z-50 flex max-w-xl cursor-pointer flex-col rounded-sm border shadow-lg"
         onclick={openClass}
         onkeydown={openClass}
         role="button"
@@ -55,7 +55,7 @@
     </div>
 {:else if resolution?.category === "declaration" && name && descriptor && owner}
     <div
-        class="text-card-foreground bg-card animate-in fade-in-0 zoom-in-95 border-border z-50 flex max-w-md cursor-pointer flex-col rounded-sm border shadow-lg"
+        class="text-card-foreground bg-card animate-in fade-in-0 zoom-in-95 border-border z-50 flex max-w-xl cursor-pointer flex-col rounded-sm border shadow-lg"
         onclick={openMember}
         onkeydown={openMember}
         role="button"
@@ -64,13 +64,14 @@
         <div class="border-border hover:bg-accent-foreground/5 border-b px-3 py-2 transition-colors">
             <div class="flex flex-col gap-1">
                 <div class="text-foreground break-anywhere text-sm font-semibold">
-                    {name}
+                    {name}<span class="text-muted-foreground">
+                        {type === "method"
+                            ? prettyMethodDesc(descriptor, true)
+                            : `: ${prettyJavaType(descriptor, true)}`}
+                    </span>
                 </div>
 
                 <div class="text-muted-foreground break-anywhere text-[11px]">
-                    {type === "method" ? prettyMethodDesc(descriptor, true) : prettyJavaType(descriptor)}
-                </div>
-                <div class={cn("text-muted-foreground break-anywhere text-[11px]", !packageName && "italic")}>
                     {prettyInternalName(owner ?? "")}
                 </div>
             </div>

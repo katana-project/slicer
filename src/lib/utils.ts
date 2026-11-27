@@ -584,15 +584,10 @@ export const prettyJavaType = (desc: string, short: boolean = false): string => 
             return `${prettyJavaType(desc.substring(1), short)}[]`;
         case "L": {
             const type = desc.substring(1, desc.length - 1);
-            if (short) {
-                const index = type.lastIndexOf("/");
-                return index !== -1 ? type.substring(index + 1) : type;
-            }
-
-            return type.replaceAll("/", ".");
+            return prettyInternalName(type, short);
         }
     }
-    return primTypes[desc] || desc.replaceAll("/", ".");
+    return primTypes[desc] || prettyInternalName(desc, short);
 };
 
 export const prettyMethodDesc = (desc: string, includeReturnType: boolean = false): string => {

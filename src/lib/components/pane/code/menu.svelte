@@ -83,7 +83,7 @@
     );
     let usagesPrettyName = $derived(
         declDetail?.name
-            ? `${prettyInternalName(declDetail.owner!, true)}.${declDetail.name}${declDetail.type === "field" ? `: ${prettyJavaType(declDetail.descriptor!)}` : prettyMethodDesc(declDetail.descriptor!, true)}`
+            ? `${prettyInternalName(declDetail.owner!, true)}.${declDetail.name}${declDetail.type === "field" ? `: ${prettyJavaType(declDetail.descriptor!, true)}` : prettyMethodDesc(declDetail.descriptor!, true)}`
             : typeDetail?.className
               ? prettyInternalName(typeDetail.className)
               : null
@@ -162,7 +162,13 @@
     subtitle={$t(usagesName ? "modal.usages.subtitle" : "modal.usages.subtitle.none", usagesPrettyName ?? "")}
     initialPosition={mousePosition}
 >
-    <UsagesContent bind:open={usagesOpen} name={usagesName} {classes} {handler} />
+    <UsagesContent
+        bind:open={usagesOpen}
+        value={usagesName}
+        owner={declDetail?.owner ?? typeDetail?.className ?? null}
+        {classes}
+        {handler}
+    />
 </FloatingModal>
 
 <FloatingModal

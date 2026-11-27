@@ -8,14 +8,14 @@
     import { groupBy, parseModifiers, prettyInternalName, prettyMethodDesc } from "$lib/utils";
 
     interface Props {
-        name: string;
+        value: string;
         usages: SearchResult[];
         handler: EventHandler;
         collapsed: boolean;
         modalOpen: boolean;
     }
 
-    let { name, usages, handler, collapsed, modalOpen = $bindable() }: Props = $props();
+    let { value, usages, handler, collapsed, modalOpen = $bindable() }: Props = $props();
 
     let { icon: Icon, classes: iconClasses } = $derived(entryIcon(usages[0].entry));
     let usagesByMember = $derived(
@@ -30,7 +30,7 @@
 >
     <ChevronRight class={cn("text-muted-foreground h-3.5 w-3.5 transition-transform", !collapsed && "rotate-90")} />
     <Icon class={cn(iconClasses, "h-4 w-4 shrink-0")} />
-    <span class="text-foreground basis-full truncate">{prettyInternalName(name)}</span>
+    <span class="text-foreground basis-full truncate">{prettyInternalName(value)}</span>
     <span class="bg-muted/50 text-muted-foreground ml-auto rounded px-1.5 py-0.5 text-[10px]">
         {usages.length}
     </span>
