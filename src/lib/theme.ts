@@ -697,7 +697,7 @@ export const themes: Theme[] = [
 ] as const;
 
 export const theme = derived(themeColor, ($themeColor) => {
-    return themes.find((t) => t.name === $themeColor) || themes[0]; /* zinc */
+    return themes.find((t) => t.name === $themeColor) || themes[0] /* zinc */;
 });
 
 const themeStyle = document.createElement("style");

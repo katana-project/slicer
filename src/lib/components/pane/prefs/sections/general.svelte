@@ -73,7 +73,7 @@
     </div>
     <div class="grid min-h-10 grid-cols-[minmax(auto,1fr)_auto] items-center gap-4">
         <Label for="themeRadius" textKey="pane.prefs.general.radius" descKey="pane.prefs.general.radius.desc" />
-        <div class="flex w-48 flex-col gap-2">
+        <div class="flex flex-col w-48 gap-2">
             <Slider
                 type="single"
                 id="themeRadius"
@@ -83,7 +83,7 @@
                 bind:value={$themeRadius}
                 class="w-full"
             />
-            <div class="text-muted-foreground flex flex-row justify-between text-xs">
+            <div class="flex flex-row justify-between text-xs text-muted-foreground">
                 <span>0</span>
                 <span>0.25</span>
                 <span>0.5</span>

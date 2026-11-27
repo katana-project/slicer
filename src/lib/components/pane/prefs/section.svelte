@@ -16,7 +16,7 @@
 </script>
 
 <div class="space-y-4" data-section={id}>
-    <h2 class={cn("flex flex-row items-center gap-2 border-b pb-2 font-semibold", small || "text-lg")}>
+    <h2 class={cn("flex flex-row gap-2 items-center border-b pb-2 font-semibold", small || "text-lg")}>
         {#if SectionIcon}<SectionIcon size={20} />{/if}
         {$t(labelKey)}
     </h2>

@@ -145,7 +145,7 @@
                 </div>
             </div>
             <div>
-                <h2 class="text-muted-foreground flex flex-row items-center gap-1 pb-2 text-lg font-medium">
+                <h2 class="text-muted-foreground text-lg font-medium pb-2 flex flex-row items-center gap-1">
                     {$t("pane.welcome.changelog")}
                     <Button variant="link" size="icon-sm" onclick={() => modals.open(ChangelogDialog)}>
                         <ExternalLink />
@@ -155,7 +155,7 @@
                     {#each changelog.slice(0, 3) as entry}
                         <div class="flex flex-col gap-1">
                             <p class="text-xs font-medium">{new Date(entry.date).toLocaleDateString()}</p>
-                            <p class="text-muted-foreground break-anywhere text-xs">
+                            <p class="text-muted-foreground text-xs break-anywhere">
                                 {#if entry.url}
                                     <a
                                         href={entry.url}

@@ -34,7 +34,7 @@
 </script>
 
 <Separator />
-<div class="flex h-6 scrollbar-none items-center justify-between overflow-x-auto px-2">
+<div class="scrollbar-none flex h-6 items-center justify-between overflow-x-auto px-2">
     <Breadcrumb>
         {#if tab?.entry}
             {@const entries = flatten(tab.entry)}

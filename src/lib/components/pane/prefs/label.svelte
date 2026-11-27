@@ -23,7 +23,7 @@
                 <Label for={forId}>{$t(textKey)}</Label>
                 <Tooltip>
                     <TooltipTrigger class="cursor-pointer">
-                        <CircleQuestionMark class={cn("text-muted-foreground h-4 w-4", danger && "text-destructive")} />
+                        <CircleQuestionMark class={cn("h-4 w-4 text-muted-foreground", danger && "text-destructive")} />
                     </TooltipTrigger>
                     <TooltipContent side="right">
                         {@html $t(descKey)}
@@ -34,7 +34,7 @@
     {:else}
         <div class="flex flex-col gap-1">
             <Label for={forId}>{$t(textKey)}</Label>
-            <p class={cn("text-muted-foreground text-xs", danger && "text-destructive")}>
+            <p class={cn("text-xs text-muted-foreground", danger && "text-destructive")}>
                 {@html $t(descKey)}
             </p>
         </div>

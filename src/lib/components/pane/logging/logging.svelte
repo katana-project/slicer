@@ -29,7 +29,7 @@
     let value = $derived(readEntries(logEntries));
 </script>
 
-<div class="relative basis-full scrollbar-thin overflow-hidden">
+<div class="scrollbar-thin relative basis-full overflow-hidden">
     <CodeEditor
         wrap
         readonly
