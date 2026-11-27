@@ -91,7 +91,8 @@ export const computeControlFlowGraph = async (
 
     const pool = node.pool;
     const bsmAttr = node.attrs.find((a) => a.type === AttributeType.BOOTSTRAP_METHODS) as
-        BootstrapMethodsAttribute | undefined;
+        | BootstrapMethodsAttribute
+        | undefined;
 
     const excEdges = (withExcHandlers ? nodes : []).flatMap((node) => {
         return code.exceptionTable

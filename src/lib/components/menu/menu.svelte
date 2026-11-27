@@ -108,11 +108,7 @@
     };
 
     const openPrefs = async () => {
-        await handler.openUnscoped(
-            $tabDefs.find((d) => d.type === TabType.PREFS)!,
-            TabPosition.PRIMARY_CENTER,
-            false
-        );
+        await handler.openUnscoped($tabDefs.find((d) => d.type === TabType.PREFS)!, TabPosition.PRIMARY_CENTER, false);
     };
     const openSearch = async () => {
         await handler.openUnscoped(
